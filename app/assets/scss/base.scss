@@ -1,0 +1,37 @@
+/**
+ * 基础样式
+ *
+ * 只负责文档级基础排版（html / body / #__nuxt）。
+ *
+ * 第三方组件库的主题映射已经迁到 assets/css/adapters/：
+ * - element-plus.css
+ * - vxe-table.css
+ *
+ * 页面级、布局级的样式不要放这里：
+ * - 多个页面复用的页面排版 -> pages.scss
+ * - 单个布局的样式 -> layouts/*.vue 的 scoped 样式
+ * - 单个页面的样式 -> 页面的 scoped 样式
+ *
+ * 这里的规则保持未分层（unlayered）：
+ * modern-normalize 的样式是未分层的，未分层声明优先于任何 @layer。
+ */
+
+html,
+body,
+#__nuxt {
+  height: 100vh;
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--fg-default);
+  font-family: var(--font-family-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 切换深浅色时给背景和文字一个短过渡，避免整屏跳变 */
+html {
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}

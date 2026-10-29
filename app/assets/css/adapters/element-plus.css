@@ -1,0 +1,97 @@
+/**
+ * Element Plus 适配层
+ *
+ * 项目约定：Element Plus 的外观以官方默认样式为基础，只允许覆盖颜色。
+ * 圆角、字号、控件高度、字体等一律使用 Element Plus 默认值，不在这里改。
+ *
+ * 特异性说明：
+ * Element Plus 的变量定义在 :root，dark/css-vars.css 定义在 html.dark。
+ * 这里用 :root:root 提到 (0,2,0)，稳定压过两者，深色模式下也以项目颜色为准。
+ */
+
+:root:root[data-theme]:not([data-theme='element']) {
+  /* 状态色保留 Element Plus 的语义色相，并随主题略作协调。 */
+  --theme-success: color-mix(in srgb, #67c23a 90%, var(--brand-seed));
+  --theme-warning: color-mix(in srgb, #e6a23c 90%, var(--brand-seed));
+  --theme-danger: color-mix(in srgb, #f56c6c 90%, var(--brand-seed));
+  --theme-info: color-mix(in srgb, #909399 90%, var(--brand-seed));
+
+  --el-color-success: var(--theme-success);
+  --el-color-warning: var(--theme-warning);
+  --el-color-danger: var(--theme-danger);
+  --el-color-error: var(--theme-danger);
+  --el-color-info: var(--theme-info);
+
+  --el-color-success-dark-2: color-mix(in srgb, var(--theme-success), black 20%);
+  --el-color-warning-dark-2: color-mix(in srgb, var(--theme-warning), black 20%);
+  --el-color-danger-dark-2: color-mix(in srgb, var(--theme-danger), black 20%);
+  --el-color-error-dark-2: var(--el-color-danger-dark-2);
+  --el-color-info-dark-2: color-mix(in srgb, var(--theme-info), black 20%);
+
+  --el-color-success-light-3: color-mix(in srgb, var(--theme-success), var(--brand-tint) 30%);
+  --el-color-success-light-5: color-mix(in srgb, var(--theme-success), var(--brand-tint) 50%);
+  --el-color-success-light-7: color-mix(in srgb, var(--theme-success), var(--brand-tint) 70%);
+  --el-color-success-light-8: color-mix(in srgb, var(--theme-success), var(--brand-tint) 80%);
+  --el-color-success-light-9: color-mix(in srgb, var(--theme-success), var(--brand-tint) 90%);
+  --el-color-warning-light-3: color-mix(in srgb, var(--theme-warning), var(--brand-tint) 30%);
+  --el-color-warning-light-5: color-mix(in srgb, var(--theme-warning), var(--brand-tint) 50%);
+  --el-color-warning-light-7: color-mix(in srgb, var(--theme-warning), var(--brand-tint) 70%);
+  --el-color-warning-light-8: color-mix(in srgb, var(--theme-warning), var(--brand-tint) 80%);
+  --el-color-warning-light-9: color-mix(in srgb, var(--theme-warning), var(--brand-tint) 90%);
+  --el-color-danger-light-3: color-mix(in srgb, var(--theme-danger), var(--brand-tint) 30%);
+  --el-color-danger-light-5: color-mix(in srgb, var(--theme-danger), var(--brand-tint) 50%);
+  --el-color-danger-light-7: color-mix(in srgb, var(--theme-danger), var(--brand-tint) 70%);
+  --el-color-danger-light-8: color-mix(in srgb, var(--theme-danger), var(--brand-tint) 80%);
+  --el-color-danger-light-9: color-mix(in srgb, var(--theme-danger), var(--brand-tint) 90%);
+  --el-color-error-light-3: var(--el-color-danger-light-3);
+  --el-color-error-light-5: var(--el-color-danger-light-5);
+  --el-color-error-light-7: var(--el-color-danger-light-7);
+  --el-color-error-light-8: var(--el-color-danger-light-8);
+  --el-color-error-light-9: var(--el-color-danger-light-9);
+  --el-color-info-light-3: color-mix(in srgb, var(--theme-info), var(--brand-tint) 30%);
+  --el-color-info-light-5: color-mix(in srgb, var(--theme-info), var(--brand-tint) 50%);
+  --el-color-info-light-7: color-mix(in srgb, var(--theme-info), var(--brand-tint) 70%);
+  --el-color-info-light-8: color-mix(in srgb, var(--theme-info), var(--brand-tint) 80%);
+  --el-color-info-light-9: color-mix(in srgb, var(--theme-info), var(--brand-tint) 90%);
+
+  --el-color-primary: var(--brand-primary);
+  --el-color-primary-dark-2: var(--brand-primary-dark);
+
+  --el-color-primary-light-3: var(--brand-primary-3);
+  --el-color-primary-light-4: var(--brand-primary-4);
+  --el-color-primary-light-5: var(--brand-primary-5);
+  --el-color-primary-light-6: var(--brand-primary-6);
+  --el-color-primary-light-7: var(--brand-primary-7);
+  --el-color-primary-light-8: var(--brand-primary-8);
+  --el-color-primary-light-9: var(--brand-primary-9);
+
+  /*
+   * 语义色板：表面与文字跟项目颜色令牌一致；
+   * 边框保留三级层次（向背景混合），避免压平后表格/分割线层次丢失。
+   */
+  --el-bg-color: var(--bg-surface);
+  --el-bg-color-page: var(--bg-page);
+  --el-bg-color-overlay: var(--bg-elevated);
+  --el-text-color-primary: var(--fg-strong);
+  --el-text-color-regular: var(--fg-default);
+  --el-text-color-secondary: var(--fg-muted);
+  --el-text-color-placeholder: var(--fg-subtle);
+  --el-text-color-disabled: var(--fg-subtle);
+  --el-border-color: var(--border-default);
+  --el-border-color-light: color-mix(in srgb, var(--border-default) 78%, var(--bg-surface));
+  --el-border-color-lighter: color-mix(in srgb, var(--border-default) 56%, var(--bg-surface));
+  --el-border-color-extra-light: color-mix(in srgb, var(--border-default) 36%, var(--bg-surface));
+  --el-fill-color-blank: var(--bg-surface);
+}
+
+:root:root.dark[data-theme]:not([data-theme='element']) {
+  --el-color-primary-dark-2: color-mix(in srgb, var(--brand-primary), white 20%);
+  --el-color-success-dark-2: color-mix(in srgb, var(--theme-success), white 20%);
+  --el-color-warning-dark-2: color-mix(in srgb, var(--theme-warning), white 20%);
+  --el-color-danger-dark-2: color-mix(in srgb, var(--theme-danger), white 20%);
+  --el-color-error-dark-2: var(--el-color-danger-dark-2);
+  --el-color-info-dark-2: color-mix(in srgb, var(--theme-info), white 20%);
+  --el-border-color-light: color-mix(in srgb, var(--border-default) 86%, var(--bg-surface));
+  --el-border-color-lighter: color-mix(in srgb, var(--border-default) 68%, var(--bg-surface));
+  --el-border-color-extra-light: color-mix(in srgb, var(--border-default) 48%, var(--bg-surface));
+}

@@ -1,0 +1,82 @@
+/**
+ * VXE Table 适配层
+ *
+ * 项目约定：VXE 的外观以 Element Plus 的变量为基础覆盖。
+ * 字体、圆角、颜色、边框、阴影引用 --el-*，
+ * 不再维护 VXE 自己的像素值或另一套色板。
+ *
+ * VXE 的表格尺寸由 app.vue 的 xeSizeInfo 注入（small / medium / default）。
+ * 表格、控件和分页均保持 VXE 同一原生尺寸档位。
+ *
+ * 特异性说明：VXE 的主题变量定义在 [data-vxe-ui-theme="..."] (0,1,0)，
+ * 这里用 :root:root 提到 (0,2,0)。颜色变量引用 --el-*，深色模式由
+ * Element Plus 的 html.dark 变量自动切换，不再单独维护深色块。
+ */
+:root:root {
+  --vxe-ui-font-family: var(--el-font-family);
+
+  --vxe-ui-font-primary-color: var(--el-color-primary);
+  --vxe-ui-font-primary-hover-color: var(--el-color-primary-light-9);
+  --vxe-ui-font-primary-tinge-color: var(--el-color-primary-light-9);
+  --vxe-ui-font-primary-lighten-color: var(--el-color-primary-light-3);
+  --vxe-ui-font-primary-darken-color: var(--el-color-primary-dark-2);
+  --vxe-ui-font-primary-disabled-color: var(--el-color-primary-light-5);
+  --vxe-ui-font-color: var(--el-text-color-regular);
+  --vxe-ui-font-lighten-color: var(--el-text-color-secondary);
+
+  --vxe-ui-layout-background-color: var(--el-bg-color);
+
+  /* 表头 / 斑马纹 / hover 的层次比例保持 VXE 官方比例，基底换成 Element Plus 表面色 */
+  --vxe-ui-table-header-background-color: color-mix(
+    in srgb,
+    var(--el-bg-color),
+    var(--el-text-color-primary) 2.7%
+  );
+  --vxe-ui-table-row-hover-background-color: color-mix(
+    in srgb,
+    var(--el-color-primary) 10%,
+    var(--el-bg-color)
+  );
+  --vxe-ui-table-row-hover-striped-background-color: var(--vxe-ui-table-row-hover-background-color);
+  --vxe-ui-table-row-striped-background-color: color-mix(
+    in srgb,
+    var(--el-bg-color),
+    var(--el-text-color-primary) 2%
+  );
+
+  --vxe-ui-table-border-color: var(--el-border-color);
+  --vxe-ui-input-border-color: var(--el-border-color);
+
+  --vxe-ui-base-border-radius: var(--el-border-radius-base);
+  --vxe-ui-base-popup-border-color: var(--el-border-color-light);
+  --vxe-ui-base-popup-box-shadow: var(--el-box-shadow-light);
+  --vxe-ui-font-secondary-color: var(--el-text-color-secondary);
+  --vxe-ui-font-placeholder-color: var(--el-text-color-placeholder);
+  --vxe-ui-font-disabled-color: var(--el-text-color-disabled);
+  /* 各状态的基础、浅底、悬停、按下和禁用色统一使用 Element Plus 色阶。 */
+  --vxe-ui-status-success-color: var(--el-color-success);
+  --vxe-ui-status-success-tinge-color: var(--el-color-success-light-9);
+  --vxe-ui-status-success-lighten-color: var(--el-color-success-light-3);
+  --vxe-ui-status-success-darken-color: var(--el-color-success-dark-2);
+  --vxe-ui-status-success-disabled-color: var(--el-color-success-light-5);
+  --vxe-ui-status-info-color: var(--el-color-info);
+  --vxe-ui-status-info-tinge-color: var(--el-color-info-light-9);
+  --vxe-ui-status-info-lighten-color: var(--el-color-info-light-3);
+  --vxe-ui-status-info-darken-color: var(--el-color-info-dark-2);
+  --vxe-ui-status-info-disabled-color: var(--el-color-info-light-5);
+  --vxe-ui-status-warning-color: var(--el-color-warning);
+  --vxe-ui-status-warning-tinge-color: var(--el-color-warning-light-9);
+  --vxe-ui-status-warning-lighten-color: var(--el-color-warning-light-3);
+  --vxe-ui-status-warning-darken-color: var(--el-color-warning-dark-2);
+  --vxe-ui-status-warning-disabled-color: var(--el-color-warning-light-5);
+  --vxe-ui-status-danger-color: var(--el-color-danger);
+  --vxe-ui-status-danger-tinge-color: var(--el-color-danger-light-9);
+  --vxe-ui-status-danger-lighten-color: var(--el-color-danger-light-3);
+  --vxe-ui-status-danger-darken-color: var(--el-color-danger-dark-2);
+  --vxe-ui-status-danger-disabled-color: var(--el-color-danger-light-5);
+  --vxe-ui-status-error-color: var(--el-color-error);
+  --vxe-ui-status-error-tinge-color: var(--el-color-error-light-9);
+  --vxe-ui-status-error-lighten-color: var(--el-color-error-light-3);
+  --vxe-ui-status-error-darken-color: var(--el-color-error-dark-2);
+  --vxe-ui-status-error-disabled-color: var(--el-color-error-light-5);
+}

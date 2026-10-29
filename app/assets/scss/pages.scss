@@ -1,0 +1,57 @@
+/**
+ * 页面共享排版
+ *
+ * 这里放多个页面复用的页面级样式（.page 及其 BEM 修饰）。
+ * 属于 components 层，可以被 Tailwind utilities 覆盖。
+ *
+ * 注意：
+ * - 只被单个页面使用的样式，写在那个页面的 <style scoped> 里。
+ * - 基础重置、第三方主题映射不要放这里，它们在 base.scss。
+ */
+
+//@layer components {
+//  // 页签内页面的通用排版
+//  .page {
+//    max-width: 960px;
+//    margin: 0 auto;
+//    padding: 36px 32px 48px;
+//
+//    &__eyebrow {
+//      margin: 0 0 10px;
+//      color: var(--brand-primary-light);
+//      font-size: 12px;
+//      font-weight: 700;
+//      letter-spacing: 0.12em;
+//      text-transform: uppercase;
+//    }
+//
+//    h1 {
+//      margin: 0 0 12px;
+//      color: var(--fg-strong);
+//      font-size: 26px;
+//      line-height: 1.25;
+//    }
+//
+//    &__lead {
+//      max-width: 640px;
+//      margin: 0;
+//      color: var(--fg-muted);
+//      font-size: 14px;
+//      line-height: 1.75;
+//    }
+//
+//    &__grid {
+//      display: grid;
+//      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+//      gap: 14px;
+//      margin-top: 28px;
+//    }
+//
+//    &__actions {
+//      display: flex;
+//      flex-wrap: wrap;
+//      gap: 10px;
+//      margin-top: 24px;
+//    }
+//  }
+//}

@@ -1,0 +1,162 @@
+<div class="scene" role="status" aria-live="polite">
+  <span class="scene__sr">正在加载工作台…</span>
+  <div class="helix" aria-hidden="true">
+    <div style="--i: 1"><i></i><i></i></div>
+    <div style="--i: 2"><i></i><i></i></div>
+    <div style="--i: 3"><i></i><i></i></div>
+    <div style="--i: 4"><i></i><i></i></div>
+    <div style="--i: 5"><i></i><i></i></div>
+    <div style="--i: 6"><i></i><i></i></div>
+    <div style="--i: 7"><i></i><i></i></div>
+    <div style="--i: 8"><i></i><i></i></div>
+    <div style="--i: 9"><i></i><i></i></div>
+    <div style="--i: 10"><i></i><i></i></div>
+    <div style="--i: 11"><i></i><i></i></div>
+    <div style="--i: 12"><i></i><i></i></div>
+  </div>
+</div>
+<style>
+  /*
+   * SPA 首屏占位（Nuxt 会自动读取 app/spa-loading-templates/helix.html）。
+   *
+   * 这段模板会被 Nuxt 放进 <body> 里 Nuxt 自己生成的 <div id="__nuxt-loader">，
+   * 而它排在 <div id="__nuxt">（高度 100vh）之后、处于正常文档流中。
+   * 所以容器必须自己铺满视口并居中，否则动画会被推到首屏下方，看起来就是一片空白。
+   *
+   * 此时项目 CSS 还没执行：颜色直接写死在这里，不依赖 tokens.css。
+   * 深浅色由 head 里的外观引导脚本写下的 html.dark 决定。
+   */
+  #__nuxt-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* 浅色设计：亮青/亮粉在白底上对比不足，压深一档，发光收着用 */
+    --helix-from: #0d9488;
+    --helix-to: #db2777;
+    --helix-glow-from: rgb(13 148 136 / 0.16);
+    --helix-glow-to: rgb(219 39 119 / 0.16);
+
+    /*
+     * 背景：左上/右下两团品牌色光晕 + 四周轻微压暗，
+     * 中间留亮，视线自然落在 helix 上；底色与 app 的 --bg-page 一致，衔接不跳。
+     */
+    --loader-bg: #f4f6fb;
+    --loader-glow:
+      radial-gradient(52% 46% at 24% 18%, rgb(13 148 136 / 0.14), transparent),
+      radial-gradient(50% 46% at 78% 82%, rgb(219 39 119 / 0.12), transparent),
+      radial-gradient(120% 105% at 50% 50%, transparent 55%, rgb(15 23 42 / 0.05));
+    --loader-grid: rgb(15 23 42 / 0.05);
+
+    background-color: var(--loader-bg);
+    background-image: var(--loader-glow);
+  }
+
+  html.dark #__nuxt-loader {
+    /* 深色设计：同色相提亮，靠发光撑起层次 */
+    --helix-from: #2ee6d6;
+    --helix-to: #ff4d9d;
+    --helix-glow-from: #2ee6d6;
+    --helix-glow-to: #ff4d9d;
+
+    /* 深色背景：两团光晕更大更亮，底部补一层靛蓝，避免整块纯黑发闷 */
+    --loader-bg: #0b1120;
+    --loader-glow:
+      radial-gradient(55% 48% at 24% 18%, rgb(46 230 214 / 0.2), transparent),
+      radial-gradient(52% 48% at 78% 82%, rgb(255 77 157 / 0.18), transparent),
+      radial-gradient(90% 70% at 50% 118%, rgb(99 102 241 / 0.16), transparent);
+    --loader-grid: rgb(148 163 184 / 0.08);
+  }
+
+  /* 细网格：给大面积留白一点结构感，越靠边越淡，不抢 helix */
+  #__nuxt-loader::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--loader-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--loader-grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(70% 60% at 50% 48%, rgb(0 0 0) 10%, transparent 80%);
+    pointer-events: none;
+  }
+
+  .scene {
+    /* 一个基准单位：下面所有长度都是它的倍数，
+       这样在一张卡片、一个编辑器、整屏里比例都一致 */
+    --u: 0.29vmin;
+    position: relative;
+    z-index: 1;
+    perspective: calc(800 * var(--u));
+  }
+
+  .helix {
+    display: grid;
+    gap: calc(12 * var(--u));
+    transform-style: preserve-3d;
+    transform: rotateZ(-14deg);
+  }
+
+  .helix > div {
+    --delay: calc(var(--i) * -0.22s);
+    position: relative;
+    width: calc(120 * var(--u));
+    height: calc(3 * var(--u));
+    background: linear-gradient(90deg, var(--helix-from), transparent 35% 65%, var(--helix-to));
+    transform-style: preserve-3d;
+    animation: helix-spin 4s linear infinite;
+    animation-delay: var(--delay);
+  }
+
+  .helix i {
+    position: absolute;
+    top: calc(-6 * var(--u));
+    width: calc(15 * var(--u));
+    height: calc(15 * var(--u));
+    border-radius: 50%;
+    /* 同一段动画反向播放 → 圆点始终正面朝向镜头 */
+    animation: helix-spin 4s linear infinite reverse;
+    animation-delay: var(--delay);
+  }
+
+  .helix i:first-child {
+    left: calc(-7 * var(--u));
+    background: var(--helix-from);
+    box-shadow: 0 0 calc(10 * var(--u)) var(--helix-glow-from);
+  }
+
+  .helix i:last-child {
+    right: calc(-7 * var(--u));
+    background: var(--helix-to);
+    box-shadow: 0 0 calc(10 * var(--u)) var(--helix-glow-to);
+  }
+
+  /* 只给读屏软件的提示文字，不参与视觉 */
+  .scene__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    border: 0;
+    clip-path: inset(50%);
+  }
+
+  @keyframes helix-spin {
+    to {
+      transform: rotateY(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .helix > div,
+    .helix i {
+      animation-duration: 12s;
+    }
+  }
+</style>

@@ -1,0 +1,53 @@
+/**
+ * Tailwind 入口
+ *
+ * 层顺序：theme < base < components < utilities
+ * 必须显式声明，否则后出现的 @layer components（pages.scss）会排在 utilities 之后，
+ * 工具类就再也覆盖不了页面样式。
+ */
+@layer theme, base, components, utilities;
+
+/*
+ * 只引入 theme + utilities，跳过 Preflight：
+ * 避免重置 Element Plus / VXE Table 的基础样式，基础重置交给 modern-normalize。
+ */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/**
+ * 基础令牌 -> Tailwind 工具类映射。
+ *
+ * 只映射基础设计令牌，不映射布局/页面专用值。
+ * 用 inline：工具类直接引用 var(--brand-*)，不复制色值。
+ * 新增映射时，同步 docs/styling.md 的映射表。
+ */
+@theme inline {
+  --font-sans: var(--font-family-sans);
+
+  /* 品牌色：text-primary / bg-primary / border-primary / from-primary ... */
+  --color-primary: var(--brand-primary);
+  --color-primary-dark: var(--brand-primary-dark);
+  --color-primary-light: var(--brand-primary-light);
+  --color-primary-soft: var(--brand-primary-soft);
+  --color-primary-muted: var(--brand-primary-muted);
+  --color-primary-border: var(--brand-primary-border);
+  --color-primary-surface: var(--brand-primary-surface);
+
+  /* 通用语义：bg-surface / text-secondary / text-muted / border-line */
+  --color-surface: var(--bg-surface);
+  --color-page: var(--bg-page);
+  --color-secondary: var(--fg-secondary);
+  --color-muted: var(--fg-muted);
+  --color-strong: var(--fg-strong);
+  --color-line: var(--border-default);
+  --color-info: var(--info);
+
+  /* 圆角：rounded-base / rounded-panel / rounded-card */
+  --radius-base: var(--radius-md);
+  --radius-panel: var(--radius-lg);
+  --radius-card: var(--radius-lg);
+
+  /* 阴影：shadow-panel / shadow-modal */
+  --shadow-panel: var(--elevation-panel);
+  --shadow-modal: var(--elevation-modal);
+}

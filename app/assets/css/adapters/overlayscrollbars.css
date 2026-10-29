@@ -1,0 +1,51 @@
+/**
+ * OverlayScrollbars 适配层
+ *
+ * 只做「项目令牌 -> OS 变量」的映射，不在这里写尺寸或颜色字面值：
+ * - 条宽 / 内缩 / 手柄最小长度取自 tokens.css 的 --scrollbar-*；
+ * - 圆角沿用项目 --radius-md；
+ * - 颜色引用语义令牌，深浅色模式自动跟随。
+ *
+ * 主题通过 `scrollbars.theme` 指定为 `os-theme-podium`。自定义主题不会
+ * 继承 OS 内置主题的尺寸默认值，因此这里需要显式映射 padding 和圆角。
+ *
+ * --os-size 是滚动条容器的总宽度，会扣掉两侧 padding 才是可见条宽，
+ * 所以用条宽 + 两侧内缩计算，视觉上与 Element Plus 的 6px 条 + 2px 内缩一致。
+ *
+ * 过渡时间对齐 el-scrollbar：进入 0.34s ease-out，离开 0.12s ease-out；
+ * OS 的位置过渡（top/right/bottom/left）保持默认 0.15s。
+ */
+.os-theme-podium {
+  --os-size: calc(var(--scrollbar-size) + var(--scrollbar-offset) * 2);
+  --os-padding-perpendicular: var(--scrollbar-offset);
+  --os-padding-axis: var(--scrollbar-offset);
+  --os-handle-min-size: var(--scrollbar-handle-min-size);
+  --os-handle-border-radius: var(--radius-md);
+  --os-track-border-radius: var(--radius-md);
+  --os-handle-bg: color-mix(in srgb, var(--fg-muted) 35%, transparent);
+  --os-handle-bg-hover: color-mix(in srgb, var(--fg-muted) 55%, transparent);
+  --os-handle-bg-active: color-mix(in srgb, var(--fg-muted) 70%, transparent);
+  --os-track-bg: transparent;
+  --os-track-bg-hover: transparent;
+  --os-track-bg-active: transparent;
+}
+
+.os-scrollbar.os-theme-podium {
+  transition:
+    opacity 0.34s ease-out,
+    visibility 0.34s ease-out,
+    top 0.15s,
+    right 0.15s,
+    bottom 0.15s,
+    left 0.15s;
+}
+
+.os-scrollbar.os-theme-podium.os-scrollbar-auto-hide-hidden {
+  transition:
+    opacity 0.12s ease-out,
+    visibility 0.12s ease-out,
+    top 0.15s,
+    right 0.15s,
+    bottom 0.15s,
+    left 0.15s;
+}

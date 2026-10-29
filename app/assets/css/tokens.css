@@ -1,0 +1,174 @@
+/**
+ * 基础设计令牌（Single Source of Truth）
+ *
+ * 这里只放跨布局 / 页面 / 组件复用的基础值。
+ * 判定规则：
+ * - 只被某个布局使用 -> 定义在该布局根元素上（能引用全局令牌就不要新建色值）
+ * - 只被某个页面使用 -> 定义在该页面根元素上（如 pages/index.vue 的 --login-*）
+ * - 跨层复用或属于设计系统本身 -> 放这里
+ *
+ * 不要在组件里写裸色值；需要透明度用 color-mix()。
+ *
+ * 外观切换（见 composables/useAppearance.ts）写入主题、密度和明暗状态：
+ * 1. 在 <html> 上写内联的 --brand-seed（用户选中的主题色）
+ * 2. 在 <html> 上切换 .dark 类
+ * 3. 在 <html> 上切换 data-theme 和 data-density
+ * 其余色阶、背景、文字层级都由本文件派生，切换时自动跟随。
+ */
+:root {
+  /* ---------- 品牌色 ---------- */
+  /* 主题色的原始种子：外观切换器以内联变量覆盖它 */
+  --brand-seed: #409eff;
+  /*
+   * 色阶派生基底：浅色模式往白混、深色模式往表面色混（由 html.dark 覆盖）。
+   * 深色下不能往纯黑混：品牌色本身亮度不高，再稀释 90% 会让
+   * light-9（菜单 hover、tag 背景等）和深色背景几乎同色，hover 直接看不见。
+   */
+  --brand-tint: white;
+  --brand-shade: black;
+
+  --brand-primary: var(--el-color-primary);
+  --brand-primary-light: color-mix(in srgb, var(--brand-primary), var(--brand-tint) 12%);
+  --brand-primary-soft: color-mix(in srgb, var(--brand-primary), var(--brand-tint) 30%);
+  --brand-primary-muted: color-mix(in srgb, var(--brand-primary), var(--brand-tint) 50%);
+  --brand-primary-border: color-mix(in srgb, var(--brand-primary), var(--brand-tint) 70%);
+  --brand-primary-surface: color-mix(in srgb, var(--brand-primary), var(--brand-tint) 92%);
+
+  /* 默认主题完整沿用 Element Plus 的官方主色色阶。 */
+  --brand-primary-dark: var(--el-color-primary-dark-2);
+  --brand-primary-3: var(--el-color-primary-light-3);
+  --brand-primary-4: color-mix(
+    in srgb,
+    var(--el-color-primary-light-3),
+    var(--el-color-primary-light-5) 50%
+  );
+  --brand-primary-5: var(--el-color-primary-light-5);
+  --brand-primary-6: color-mix(
+    in srgb,
+    var(--el-color-primary-light-5),
+    var(--el-color-primary-light-7) 50%
+  );
+  --brand-primary-7: var(--el-color-primary-light-7);
+  --brand-primary-8: var(--el-color-primary-light-8);
+  --brand-primary-9: var(--el-color-primary-light-9);
+
+  /* ---------- 文本层级（设计系统调色板） ---------- */
+  --fg-strong: var(--el-text-color-primary);
+  --fg-default: var(--el-text-color-regular);
+  --fg-secondary: var(--el-text-color-secondary);
+  --fg-muted: var(--el-text-color-secondary);
+  --fg-subtle: var(--el-text-color-placeholder);
+  --fg-label: var(--el-text-color-regular);
+
+  /* ---------- 背景 ---------- */
+  --bg-page: var(--el-bg-color-page);
+  --bg-surface: var(--el-bg-color);
+  /* 浮层（下拉、弹窗、popover）：比卡片再高一层 */
+  --bg-elevated: var(--el-bg-color-overlay);
+  --bg-surface-translucent: color-mix(in srgb, var(--bg-surface) 97%, transparent);
+  /* 深色反色表面：认证布局、错误页等全屏场景共用 */
+  --bg-inverse: #0b1220;
+
+  /* ---------- 边框 ---------- */
+  --border-default: var(--el-border-color);
+
+  /* ---------- 状态色 ---------- */
+  --info: var(--el-color-info);
+
+  /* ---------- 圆角（全部派生自 Element Plus） ---------- */
+  --radius-xs: var(--el-border-radius-small);
+  --radius-md: var(--el-border-radius-base);
+  --radius-lg: var(--el-border-radius-base);
+  --radius-xl: var(--el-border-radius-base);
+
+  /* ---------- 滚动条（对齐 Element Plus 的条宽与内缩） ---------- */
+  --scrollbar-size: 6px;
+  --scrollbar-offset: 2px;
+  /* Element Plus 的 minSize 默认值 */
+  --scrollbar-handle-min-size: 20px;
+
+  /* ---------- 阴影（使用 Element Plus 的层级） ---------- */
+  --elevation-panel: var(--el-box-shadow-light);
+  --elevation-modal: var(--el-box-shadow);
+  --elevation-focus: 0 0 0 1px var(--el-color-primary) inset;
+
+  /* ---------- 动效 ---------- */
+  --transition-fast: 150ms ease;
+}
+
+/* ---------- 字体 ---------- */
+/*
+ * 拉丁字符优先使用自托管的 Inter（入口在 nuxt.config 的 css 数组），
+ * 与 Element Plus 官网保持一致；中文仍由后面的系统字体回退。
+ *
+ * 必须覆盖 --el-font-family，而不是只改 --font-family-sans：
+ * Element Plus 组件和项目适配层都直接引用 --el-font-family，
+ * 只改后者会让组件里的英文数字依旧落在 Arial 上。
+ *
+ * 用 :root:root 提高特异性：Element Plus 也在 :root 定义 --el-font-family，
+ * 且它的样式表排在 tokens.css 之后，同特异性会输给后加载的一方。
+ */
+:root:root {
+  --el-font-family:
+    'Inter', 'Helvetica Neue', 'Helvetica', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    '微软雅黑', 'Arial', sans-serif;
+
+  --font-family-sans: var(--el-font-family);
+}
+
+/* 默认主题也要切换混色基底；其余深色语义色由 Element Plus 提供。 */
+html.dark {
+  --brand-tint: var(--bg-surface);
+  --brand-shade: white;
+}
+
+/* 自定义主题在 Element Plus 深色基底上调整品牌色和语义色。 */
+html[data-theme]:not([data-theme='element']) {
+  --brand-primary: var(--brand-seed);
+  --brand-primary-dark: color-mix(in srgb, var(--brand-primary), black 18%);
+  --brand-primary-3: color-mix(in srgb, var(--brand-primary), var(--brand-tint) 30%);
+  --brand-primary-4: color-mix(in srgb, var(--brand-primary), var(--brand-tint) 40%);
+  --brand-primary-5: color-mix(in srgb, var(--brand-primary), var(--brand-tint) 50%);
+  --brand-primary-6: color-mix(in srgb, var(--brand-primary), var(--brand-tint) 60%);
+  --brand-primary-7: color-mix(in srgb, var(--brand-primary), var(--brand-tint) 70%);
+  --brand-primary-8: color-mix(in srgb, var(--brand-primary), var(--brand-tint) 80%);
+  --brand-primary-9: color-mix(in srgb, var(--brand-primary), var(--brand-tint) 90%);
+  --fg-strong: color-mix(in srgb, #303133 96%, var(--brand-seed));
+  --fg-default: color-mix(in srgb, #606266 96%, var(--brand-seed));
+  --fg-secondary: color-mix(in srgb, #909399 96%, var(--brand-seed));
+  --fg-muted: var(--fg-secondary);
+  --fg-subtle: color-mix(in srgb, #a8abb2 97%, var(--brand-seed));
+  --fg-label: var(--fg-default);
+  --bg-page: color-mix(in srgb, #f2f3f5 96%, var(--brand-seed));
+  --bg-surface: color-mix(in srgb, white 99%, var(--brand-seed));
+  --bg-elevated: white;
+  --border-default: color-mix(in srgb, #dcdfe6 94%, var(--brand-seed));
+  --info: var(--el-color-info);
+}
+
+html.dark[data-theme]:not([data-theme='element']) {
+  color-scheme: dark;
+
+  --brand-primary: color-mix(in srgb, var(--brand-seed), white 22%);
+  --brand-primary-dark: color-mix(in srgb, var(--brand-primary), white 20%);
+  /* 向表面色靠拢（对应 Element Plus 深色把 light-N 混进深色底的做法），
+     而不是向纯黑稀释，否则 light-9 会比菜单背景更黑 */
+  --brand-tint: var(--bg-surface);
+  --brand-shade: white;
+
+  --fg-strong: color-mix(in srgb, #e5eaf3 97%, var(--brand-seed));
+  --fg-default: color-mix(in srgb, #cfd3dc 97%, var(--brand-seed));
+  --fg-secondary: color-mix(in srgb, #a3a6ad 97%, var(--brand-seed));
+  --fg-muted: var(--fg-secondary);
+  --fg-subtle: color-mix(in srgb, #8d9095 97%, var(--brand-seed));
+  --fg-label: var(--fg-default);
+
+  --bg-page: color-mix(in srgb, #0a0a0a 91%, var(--brand-seed));
+  --bg-surface: color-mix(in srgb, #141414 95%, var(--brand-seed));
+  --bg-elevated: color-mix(in srgb, #1d1e1f 95%, var(--brand-seed));
+  --bg-inverse: #05080f;
+
+  --border-default: color-mix(in srgb, #4c4d4f 94%, var(--brand-seed));
+
+  --info: var(--el-color-info);
+}

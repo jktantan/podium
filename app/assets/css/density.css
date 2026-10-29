@@ -1,0 +1,49 @@
+/**
+ * 密度令牌
+ *
+ * 由 <html> 上的 data-density 控制，由 composables/useAppearance.ts 写入。
+ * 尺寸与字号全部派生自 Element Plus 的组件尺寸/字号档位，
+ * 项目不再维护自己的像素值和字号体系。
+ *
+ * 三档与组件库的对应关系见 config/appearance.ts 的 DENSITY_OPTIONS。
+ */
+:root {
+  --control-height: var(--el-component-size);
+  --control-height-sm: var(--el-component-size-small);
+  --control-height-lg: var(--el-component-size-large);
+
+  --ui-font-size: var(--el-font-size-base);
+  --ui-font-size-sm: var(--el-font-size-small);
+
+  --density-gap: 12px;
+  --table-cell-padding-y: 10px;
+}
+
+/*
+ * 密度使用 Element Plus 自带的尺寸档位：
+ * compact -> small、default -> default、comfortable -> large。
+ * 圆角、字体族、阴影仍使用 Element Plus 默认值，不在这里改。
+ */
+:root[data-density='compact'] {
+  --control-height: var(--el-component-size-small);
+  --control-height-sm: var(--el-component-size-small);
+  --control-height-lg: var(--el-component-size);
+
+  --ui-font-size: var(--el-font-size-small);
+  --ui-font-size-sm: var(--el-font-size-small);
+
+  --density-gap: 8px;
+  --table-cell-padding-y: 6px;
+}
+
+:root[data-density='comfortable'] {
+  --control-height: var(--el-component-size-large);
+  --control-height-sm: var(--el-component-size);
+  --control-height-lg: var(--el-component-size-large);
+
+  --ui-font-size: var(--el-font-size-medium);
+  --ui-font-size-sm: var(--el-font-size-small);
+
+  --density-gap: 16px;
+  --table-cell-padding-y: 14px;
+}

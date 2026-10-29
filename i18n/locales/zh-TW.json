@@ -1,0 +1,257 @@
+{
+  "app": {
+    "loading": "正在載入工作台…"
+  },
+  "nav": {
+    "home": "首頁",
+    "about": "關於",
+    "settings": "設定",
+    "iframe": "內嵌頁面",
+    "notFound": "404 範例",
+    "permissionDemo": "權限範例",
+    "tableDemo": "表格範例",
+    "elementPlusDemo": "Element Plus 範例",
+    "layerDemo": "彈層範例",
+    "logout": "登出"
+  },
+  "locale": {
+    "label": "語言"
+  },
+  "appearance": {
+    "label": "外觀設定",
+    "title": "外觀",
+    "reset": "恢復預設",
+    "scheme": "模式",
+    "theme": "主題色",
+    "density": "密度",
+    "schemes": {
+      "light": "淺色",
+      "dark": "深色"
+    },
+    "themes": {
+      "indigo": "靛藍",
+      "element": "Element Plus 預設",
+      "ocean": "海藍",
+      "teal": "青碧",
+      "forest": "松綠",
+      "amber": "琥珀",
+      "rose": "玫紅",
+      "violet": "紫羅蘭",
+      "slate": "石墨"
+    },
+    "densities": {
+      "compact": "緊湊",
+      "default": "標準",
+      "comfortable": "寬鬆"
+    }
+  },
+  "login": {
+    "title": "登入工作台",
+    "subtitle": "登入後可在一個視窗內用多頁籤處理任務。",
+    "username": "帳號",
+    "usernamePlaceholder": "請輸入帳號",
+    "usernameRequired": "請輸入帳號",
+    "password": "密碼",
+    "passwordPlaceholder": "請輸入密碼",
+    "passwordRequired": "請輸入密碼",
+    "submit": "登入",
+    "demoAccounts": "示範帳號：admin / admin123（全部權限）",
+    "demoViewer": "viewer / viewer123（受限權限）",
+    "invalidCredentials": "帳號或密碼不正確",
+    "failed": "登入失敗，請稍後再試"
+  },
+  "home": {
+    "greeting": "你好，{user}",
+    "lead": "目前頁面執行在 vue-stack-tabs 的「首頁」頁籤中。點擊下方卡片會開啟新的頁籤，每個頁籤都擁有獨立的元件實例、快取和頁內導覽堆疊。",
+    "aboutTitle": "關於頁籤",
+    "aboutDesc": "了解頁籤、快取與頁內前進 / 後退。",
+    "settingsTitle": "設定",
+    "settingsDesc": "查看目前登入帳號與版面資訊。",
+    "iframeTitle": "內嵌頁面",
+    "iframeDesc": "用 iframe 頁籤開啟一個靜態頁面。",
+    "reopenSettings": "再次開啟「設定」頁籤"
+  },
+  "about": {
+    "title": "關於頁籤",
+    "lead": "這個頁面是一個獨立的頁籤。關閉後再開啟，頁面狀態會重新建立；切換到其他頁籤時，頁面實例會被快取，回來時輸入框內容、捲動位置都會保留。",
+    "inputLabel": "輸入一些內容，然後切換到「首頁」再切回來試試：",
+    "inputPlaceholder": "頁籤快取示範",
+    "stackLead": "頁籤內部還可以維護自己的頁面堆疊：點擊下方按鈕會在目前頁籤內前進到「詳情」，在詳情頁點返回只會回到目前頁籤的上一個頁面，不會影響其他頁籤。",
+    "forward": "前進到詳情頁",
+    "openSettings": "在新頁籤開啟設定"
+  },
+  "settings": {
+    "title": "設定",
+    "lead": "這裡顯示目前登入狀態。登出後頁籤會被清空，並回到登入頁。",
+    "account": "目前帳號",
+    "layout": "版面",
+    "layoutDefault": "default（vue-stack-tabs）",
+    "loginLayout": "登入頁版面",
+    "layoutAuth": "auth（獨立版面）",
+    "logout": "登出"
+  },
+  "tableDemo": {
+    "title": "VXE Table 範例",
+    "lead": "目前已完整匯入 VXE Table，以下表格相關元件都可以直接使用。",
+    "columns": {
+      "name": "姓名",
+      "department": "部門",
+      "role": "角色",
+      "status": "狀態",
+      "createdAt": "建立時間"
+    },
+    "status": {
+      "enabled": "啟用",
+      "disabled": "停用"
+    },
+    "departments": {
+      "rnd": "研發中心",
+      "design": "產品設計部",
+      "operations": "營運部",
+      "finance": "財務部"
+    },
+    "roles": {
+      "frontend": "前端工程師",
+      "productManager": "產品經理",
+      "backend": "後端工程師",
+      "operations": "營運專員",
+      "financeManager": "財務主管"
+    }
+  },
+  "elementPlusDemo": {
+    "title": "Element Plus 範例",
+    "lead": "下面是 Element Plus 的常用元件。可以切換樣式來源，對比專案主題與 Element Plus 預設外觀；切換語言時元件內建文案也會同步變化。",
+    "themeLabel": "樣式來源",
+    "themeProject": "專案主題",
+    "themeNative": "Element Plus 預設",
+    "sections": {
+      "form": "表單與輸入",
+      "buttons": "按鈕",
+      "data": "資料展示",
+      "navigation": "導覽與分頁",
+      "feedback": "回饋"
+    },
+    "inputLabel": "輸入框",
+    "inputPlaceholder": "請輸入內容",
+    "numberLabel": "數字輸入",
+    "dateLabel": "日期選擇",
+    "datePlaceholder": "選擇日期",
+    "datetimeLabel": "日期時間選擇",
+    "datetimePlaceholder": "選擇日期時間",
+    "timeLabel": "時間選擇",
+    "timePlaceholder": "選擇時間",
+    "selectLabel": "下拉選擇",
+    "selectPlaceholder": "請選擇",
+    "switchLabel": "開關",
+    "sliderLabel": "滑桿",
+    "radioLabel": "單選",
+    "checkboxLabel": "複選",
+    "optionA": "選項 A",
+    "optionB": "選項 B",
+    "buttonPrimary": "主要按鈕",
+    "buttonDefault": "預設按鈕",
+    "buttonSuccess": "成功按鈕",
+    "buttonWarning": "警告按鈕",
+    "buttonDanger": "危險按鈕",
+    "buttonInfo": "資訊按鈕",
+    "buttonPlain": "樸素按鈕",
+    "buttonText": "文字按鈕",
+    "tableName": "姓名",
+    "tableRole": "角色",
+    "tableAlice": "張三",
+    "tableBob": "李四",
+    "tableRoleAdmin": "管理員",
+    "tableRoleViewer": "訪客",
+    "tabsFirst": "標籤一",
+    "tabsSecond": "標籤二",
+    "paginationLabel": "分頁",
+    "emptyLabel": "空狀態",
+    "dialogOpen": "開啟對話框",
+    "dialogTitle": "對話框",
+    "dialogContent": "這是 Element Plus 的對話框內容。",
+    "messageShow": "顯示訊息",
+    "messageText": "這是一則訊息",
+    "notificationShow": "顯示通知",
+    "notificationTitle": "通知",
+    "notificationContent": "這是一則通知內容。",
+    "loadingShow": "顯示載入",
+    "loadingText": "載入中…",
+    "alertTitle": "提示",
+    "alertDescription": "這段內容來自 Element Plus 的 Alert 元件。"
+  },
+  "permissionDemo": {
+    "title": "權限守衛範例",
+    "lead": "目前帳號擁有 {permission} 權限時才會看到這段內容。用 {admin} 登入可以看到；用 {viewer} 登入會在目前頁籤內看到 403。",
+    "alertTitle": "權限驗證通過",
+    "alertDescription": "這段內容被 PermissionGuard 包裹，權限不足時會直接在目前頁籤內渲染 403，不會改變 URL 或頁籤標題。"
+  },
+  "layerDemo": {
+    "title": "彈層範例",
+    "lead": "用 vue-lite-layer 以服務方式開啟彈層：顏色、圓角、字號跟隨 Element Plus 與主題色，按鈕文案跟隨介面語言。",
+    "openBasic": "基礎彈層",
+    "openForm": "表單彈層",
+    "openConfirm": "確認彈層",
+    "tip": "彈層內的 Element Plus 元件會繼承目前 ElConfigProvider 的語言；切換明暗或主題色後重新開啟即可看到最新外觀。",
+    "basic": {
+      "title": "基礎彈層",
+      "content": "這是一個以純文字內容開啟的彈層。可以拖曳標題列移動位置，也可以最小化或最大化。"
+    },
+    "confirm": {
+      "title": "確認操作",
+      "content": "確認後會關閉彈層並提示結果；底部按鈕由內容元件用 Element Plus 呈現。",
+      "ok": "確認",
+      "cancel": "取消",
+      "done": "已確認"
+    },
+    "form": {
+      "title": "表單彈層",
+      "name": "姓名",
+      "namePlaceholder": "請輸入姓名",
+      "department": "部門",
+      "departmentPlaceholder": "請選擇部門",
+      "departments": {
+        "product": "產品",
+        "engineering": "研發",
+        "design": "設計"
+      },
+      "date": "入職日期",
+      "datePlaceholder": "選擇日期",
+      "remark": "備註",
+      "remarkPlaceholder": "補充說明",
+      "saved": "已儲存"
+    }
+  },
+  "searchCard": {
+    "title": "查詢區",
+    "expand": "展開查詢區",
+    "collapse": "收合查詢區",
+    "expandRows": "展開",
+    "collapseRows": "收合",
+    "reset": "重設",
+    "search": "查詢"
+  },
+  "detail": {
+    "title": "詳情頁",
+    "lead": "這個頁面是透過 {code} 進入目前頁籤的頁面堆疊的。點返回會回到「關於」頁籤頁，而且「關於」頁裡的輸入內容仍然保留。",
+    "back": "返回上一頁"
+  },
+  "error": {
+    "unauthorizedTitle": "需要登入",
+    "unauthorizedSubtitle": "目前頁面需要登入後才能存取，請先登入。",
+    "forbiddenTitle": "沒有存取權限",
+    "forbiddenSubtitle": "目前帳號無權存取此頁面，請聯絡管理員或切換帳號。",
+    "notFoundTitle": "頁面不存在",
+    "notFoundSubtitle": "你存取的頁面不存在或已被移除，請檢查網址是否正確。",
+    "serverTitle": "服務異常",
+    "serverSubtitle": "頁面載入失敗，請稍後再試。",
+    "code": "錯誤碼 {code}",
+    "backHome": "返回首頁",
+    "switchAccount": "切換帳號",
+    "backToLogin": "返回登入頁面",
+    "refreshPage": "重新整理頁面",
+    "sessionExpired": "登入狀態已失效，",
+    "noPermission": "沒有存取權限",
+    "unauthorizedMessage": "目前頁面需要登入後才能存取",
+    "notFoundMessage": "頁面不存在"
+  }
+}

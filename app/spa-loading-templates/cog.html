@@ -1,0 +1,332 @@
+<div class="spa-cog" role="status" aria-live="polite">
+  <span class="spa-cog__sr">正在加载工作台…</span>
+  <div class="spa-cog__cogs" aria-hidden="true">
+    <div class="spa-cog__gear spa-cog__gear--top">
+      <i class="spa-cog__tooth"></i>
+      <i class="spa-cog__tooth"></i>
+      <i class="spa-cog__tooth"></i>
+      <i class="spa-cog__hub"></i>
+    </div>
+    <div class="spa-cog__gear spa-cog__gear--left">
+      <i class="spa-cog__tooth"></i>
+      <i class="spa-cog__tooth"></i>
+      <i class="spa-cog__tooth"></i>
+      <i class="spa-cog__hub"></i>
+    </div>
+    <div class="spa-cog__gear spa-cog__gear--bottom">
+      <i class="spa-cog__tooth"></i>
+      <i class="spa-cog__tooth"></i>
+      <i class="spa-cog__tooth"></i>
+      <i class="spa-cog__hub"></i>
+    </div>
+  </div>
+  <div class="spa-cog__dim" aria-hidden="true"></div>
+  <div class="spa-cog__veil" aria-hidden="true"></div>
+  <div class="spa-cog__aura" aria-hidden="true"></div>
+</div>
+<style>
+  /*
+   * SPA 首屏占位：cog（三枚咬合齿轮 + 磨砂圆盘）。
+   *
+   * 这段模板会被 Nuxt 原样放进 <body> 里的 <div id="__nuxt-loader">，
+   * 位置在 <div id="__nuxt"> 之后、正常文档流中，而且此时项目 CSS 还没执行。
+   * 因此：
+   * - 容器自己 fixed 铺满视口，否则动画会被推到首屏下方；
+   * - 颜色、尺寸全部写死／用本文件的变量，不依赖 tokens.css；
+   * - 类名带 spa-cog 前缀，去掉原稿的 body/标题选择器，样式不会漏到应用里。
+   *
+   * 视觉沿用原稿：齿轮组压在磨砂圆盘后面，圆盘外被半透明蒙层遮住，
+   * 只有圆盘内的齿轮清晰 —— 这是这套动画的层次来源，不要拆掉 veil。
+   *
+   * 深浅色由 head 里的外观引导脚本写下的 html.dark 决定。
+   */
+  #__nuxt-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    /* 浅色：原稿配色在浅底上刚好，孔洞与背景同色 */
+    --cog-bg: #eef2f8;
+    --cog-top: #f98db9;
+    --cog-left: #97ddff;
+    --cog-bottom: #ffcd66;
+    --cog-hole: #eef2f8;
+    /* 圆盘外的磨砂蒙层 + 圆盘边缘的内阴影 */
+    --cog-veil: rgb(255 255 255 / 0.67);
+    --cog-veil-inset: rgb(0 0 0 / 0.16);
+
+    --cog-aura-a: rgb(249 141 185 / 0.18);
+    --cog-aura-b: rgb(151 221 255 / 0.18);
+    --cog-aura-c: rgb(255 205 102 / 0.16);
+
+    /* 背景：只铺在四角／底部，中心留给圆盘，避免和齿轮孔打架 */
+    --cog-glow:
+      radial-gradient(58% 52% at 4% 2%, rgb(249 141 185 / 0.3), transparent 68%),
+      radial-gradient(52% 48% at 98% 8%, rgb(151 221 255 / 0.32), transparent 68%),
+      radial-gradient(64% 58% at 50% 112%, rgb(255 205 102 / 0.28), transparent 72%);
+    --cog-grid: rgb(15 23 42 / 0.055);
+    --cog-vignette: rgb(15 23 42 / 0.06);
+
+    background-color: var(--cog-bg);
+    background-image: var(--cog-glow);
+  }
+
+  html.dark #__nuxt-loader {
+    /* 深色：齿轮保持原稿配色，靠光晕从暗底里跳出来 */
+    --cog-bg: #0b1120;
+    --cog-hole: #0b1120;
+    /* 与浅色保持同一个透明度，圆盘外才能看到齿轮的轮廓 */
+    --cog-veil: rgb(11 17 32 / 0.67);
+    --cog-veil-inset: rgb(148 163 184 / 0.3);
+
+    --cog-aura-a: rgb(249 141 185 / 0.26);
+    --cog-aura-b: rgb(151 221 255 / 0.24);
+    --cog-aura-c: rgb(255 205 102 / 0.22);
+
+    --cog-glow:
+      radial-gradient(58% 52% at 4% 2%, rgb(249 141 185 / 0.22), transparent 68%),
+      radial-gradient(52% 48% at 98% 8%, rgb(151 221 255 / 0.2), transparent 68%),
+      radial-gradient(64% 58% at 50% 112%, rgb(255 205 102 / 0.18), transparent 72%),
+      radial-gradient(90% 70% at 50% 118%, rgb(99 102 241 / 0.16), transparent);
+    --cog-grid: rgb(148 163 184 / 0.07);
+    --cog-vignette: rgb(0 0 0 / 0.45);
+
+    background-color: var(--cog-bg);
+    background-image: var(--cog-glow);
+  }
+
+  /* 细网格：给大面积留白一点纹理，中心淡出，不抢齿轮 */
+  #__nuxt-loader::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(var(--cog-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--cog-grid) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: radial-gradient(76% 66% at 50% 46%, rgb(0 0 0) 6%, transparent 84%);
+    pointer-events: none;
+  }
+
+  /* 四周压暗，把视线收进圆盘；中心保持透明不挡齿轮 */
+  #__nuxt-loader::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: radial-gradient(120% 105% at 50% 50%, transparent 58%, var(--cog-vignette));
+    pointer-events: none;
+  }
+
+  .spa-cog {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /*
+   * 齿轮组：与圆盘共用一套居中逻辑，整体上移 60px，
+   * 让大齿轮落在圆盘上半部，两个小齿轮从下方探出。
+   */
+  .spa-cog__cogs {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -120px;
+    bottom: 0;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+  }
+
+  /*
+   * 磨砂蒙层：铺满整个视口，中心用 mask 挖出圆盘。
+   * 原稿用 box-shadow 扩散 1000px 做蒙层，视口一大四角就会露出圆形边界，
+   * 这里改成全屏元素 + mask，任何分辨率都铺满。
+   */
+  .spa-cog__dim {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: var(--cog-veil);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 74px, #000 76px);
+    mask-image: radial-gradient(circle at 50% 50%, transparent 74px, #000 76px);
+    pointer-events: none;
+  }
+
+  /* 磨砂圆盘：透明圆 + 边缘内阴影 */
+  .spa-cog__veil {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 150px;
+    height: 150px;
+    margin: auto;
+    z-index: 3;
+    border-radius: 100%;
+    background: transparent;
+    box-shadow: inset 0 0 19px var(--cog-veil-inset);
+  }
+
+  /* 深色下给圆盘一层极淡的亮面，让圆形边界浮出来 */
+  html.dark .spa-cog__veil {
+    background: rgb(255 255 255 / 0.02);
+  }
+
+  /*
+   * 圆盘外的彩雾：压在磨砂蒙层之上补背景层次；
+   * 中心圆盘区域被 mask 挖空，所以不会改变齿轮本身的颜色。
+   */
+  .spa-cog__aura {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    background:
+      radial-gradient(42% 38% at 12% 8%, var(--cog-aura-a), transparent 70%),
+      radial-gradient(38% 34% at 88% 12%, var(--cog-aura-b), transparent 70%),
+      radial-gradient(46% 40% at 50% 98%, var(--cog-aura-c), transparent 72%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 78px, #000 84px);
+    mask-image: radial-gradient(circle at 50% 50%, transparent 78px, #000 84px);
+    pointer-events: none;
+  }
+
+  .spa-cog__gear {
+    position: relative;
+    transform-origin: 50% 50%;
+  }
+
+  .spa-cog__gear--top {
+    width: 100px;
+    height: 100px;
+    animation: spa-cog-spin 10s infinite linear;
+  }
+
+  .spa-cog__gear--left {
+    width: 80px;
+    height: 80px;
+    top: 28px;
+    left: -24px;
+    transform-origin: 40px 40px;
+    animation: spa-cog-spin-reverse 10s 0.1s infinite reverse linear;
+  }
+
+  .spa-cog__gear--bottom {
+    width: 60px;
+    height: 60px;
+    top: -65px;
+    left: 79px;
+    transform-origin: 30px 30px;
+    animation: spa-cog-spin-reverse 10.2s 0.4s infinite linear;
+  }
+
+  /*
+   * 深色下按齿轮各自的颜色补光晕：一层贴边的亮描边 + 一层小范围柔光，
+   * 比单层大半径 drop-shadow 更集中，不会糊成一团。
+   * 圆盘内没有蒙层，光晕最清楚。
+   */
+  html.dark .spa-cog__gear--top {
+    filter: drop-shadow(0 0 3px rgb(249 141 185 / 0.95))
+      drop-shadow(0 0 9px rgb(249 141 185 / 0.45));
+  }
+
+  html.dark .spa-cog__gear--left {
+    filter: drop-shadow(0 0 3px rgb(151 221 255 / 0.95))
+      drop-shadow(0 0 8px rgb(151 221 255 / 0.45));
+  }
+
+  html.dark .spa-cog__gear--bottom {
+    filter: drop-shadow(0 0 2px rgb(255 205 102 / 0.95))
+      drop-shadow(0 0 7px rgb(255 205 102 / 0.45));
+  }
+
+  /* 三个旋转 30° 的圆角方块叠出齿盘外形，中心孔再“镂空” */
+  .spa-cog__tooth {
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background: var(--cog-top);
+  }
+
+  .spa-cog__gear--left .spa-cog__tooth {
+    border-radius: 6px;
+    background: var(--cog-left);
+  }
+
+  .spa-cog__gear--bottom .spa-cog__tooth {
+    border-radius: 5px;
+    background: var(--cog-bottom);
+  }
+
+  .spa-cog__tooth:nth-of-type(1) {
+    transform: rotate(30deg);
+  }
+
+  .spa-cog__tooth:nth-of-type(2) {
+    transform: rotate(60deg);
+  }
+
+  .spa-cog__tooth:nth-of-type(3) {
+    transform: rotate(90deg);
+  }
+
+  .spa-cog__hub {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 50%;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: var(--cog-hole);
+  }
+
+  /* 只给读屏软件的提示文字，不参与视觉 */
+  .spa-cog__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    border: 0;
+    clip-path: inset(50%);
+  }
+
+  @keyframes spa-cog-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* 与主齿轮错开 16°，两个反/正转叠在一起才像咬合 */
+  @keyframes spa-cog-spin-reverse {
+    from {
+      transform: rotate(16deg);
+    }
+    to {
+      transform: rotate(376deg);
+    }
+  }
+
+  /* 减弱动效时不直接停住，否则看起来像卡死；放慢三倍 */
+  @media (prefers-reduced-motion: reduce) {
+    .spa-cog__gear--top {
+      animation-duration: 30s;
+    }
+
+    .spa-cog__gear--left {
+      animation-duration: 30s;
+    }
+
+    .spa-cog__gear--bottom {
+      animation-duration: 30.6s;
+    }
+  }
+</style>

@@ -1,0 +1,46 @@
+// SCSS 只承载 CSS 变量表达不了的东西：断点、mixin、循环。
+// 设计令牌（颜色 / 字体 / 圆角 / 阴影）统一在 app/assets/css/tokens.css 中定义，
+// 组件里请直接使用 var(--brand-primary) 这类 CSS 变量。
+@use 'sass:map';
+
+$breakpoints: (
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px
+);
+
+/// 移动优先：在指定断点及以上生效
+/// @example
+///   .card { padding: 16px; @include media-up(md) { padding: 24px; } }
+@mixin media-up($name) {
+  $width: map.get($breakpoints, $name);
+
+  @if not $width {
+    @error '未知断点 `#{$name}`，可用值：#{map.keys($breakpoints)}';
+  }
+
+  @media (min-width: $width) {
+    @content;
+  }
+}
+
+/// 向下覆盖：在指定断点以下生效
+@mixin media-down($name) {
+  $width: map.get($breakpoints, $name);
+
+  @if not $width {
+    @error '未知断点 `#{$name}`，可用值：#{map.keys($breakpoints)}';
+  }
+
+  @media (max-width: ($width - 0.02px)) {
+    @content;
+  }
+}
+
+/// 单行文本省略
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

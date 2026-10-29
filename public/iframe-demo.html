@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>内嵌页面示例</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      :root {
+        color-scheme: light;
+        font-family: 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+      }
+
+      body {
+        display: grid;
+        min-height: 100vh;
+        margin: 0;
+        padding: 32px;
+        place-items: center;
+        background: linear-gradient(135deg, #eef2ff, #e0f2fe);
+        color: #1e293b;
+      }
+
+      main {
+        max-width: 520px;
+        padding: 32px;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 22px;
+      }
+
+      p {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.75;
+      }
+
+      code {
+        padding: 2px 5px;
+        border-radius: 5px;
+        background: #eef2ff;
+        color: #4338ca;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>这是一个 iframe 页签</h1>
+      <p>
+        该页面来自 <code>public/iframe-demo.html</code>，由 vue-stack-tabs 以 iframe 方式嵌入。
+        页签的标题、刷新、关闭等操作都由外层工作台统一管理。
+      </p>
+    </main>
+  </body>
+</html>

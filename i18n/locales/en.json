@@ -1,0 +1,257 @@
+{
+  "app": {
+    "loading": "Loading workspace…"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "settings": "Settings",
+    "iframe": "Embedded Page",
+    "notFound": "404 Demo",
+    "permissionDemo": "Permissions",
+    "tableDemo": "Table Demo",
+    "elementPlusDemo": "Element Plus Demo",
+    "layerDemo": "Layer Demo",
+    "logout": "Sign out"
+  },
+  "locale": {
+    "label": "Language"
+  },
+  "appearance": {
+    "label": "Appearance settings",
+    "title": "Appearance",
+    "reset": "Reset to defaults",
+    "scheme": "Mode",
+    "theme": "Theme color",
+    "density": "Density",
+    "schemes": {
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "themes": {
+      "indigo": "Indigo",
+      "element": "Element Plus Default",
+      "ocean": "Ocean",
+      "teal": "Teal",
+      "forest": "Forest",
+      "amber": "Amber",
+      "rose": "Rose",
+      "violet": "Violet",
+      "slate": "Slate"
+    },
+    "densities": {
+      "compact": "Small",
+      "default": "Default",
+      "comfortable": "Large"
+    }
+  },
+  "login": {
+    "title": "Sign in to the workspace",
+    "subtitle": "Handle tasks in multiple tabs within one window after signing in.",
+    "username": "Account",
+    "usernamePlaceholder": "Enter account",
+    "usernameRequired": "Please enter your account",
+    "password": "Password",
+    "passwordPlaceholder": "Enter password",
+    "passwordRequired": "Please enter your password",
+    "submit": "Sign in",
+    "demoAccounts": "Demo accounts: admin / admin123 (full access)",
+    "demoViewer": "viewer / viewer123 (limited access)",
+    "invalidCredentials": "Incorrect account or password",
+    "failed": "Sign-in failed, please try again later"
+  },
+  "home": {
+    "greeting": "Hello, {user}",
+    "lead": "This page runs in the “Home” tab of vue-stack-tabs. Cards below open new tabs, and each tab keeps its own component instance, cache, and in-tab navigation stack.",
+    "aboutTitle": "About tab",
+    "aboutDesc": "Learn about tabs, caching, and in-tab forward/back navigation.",
+    "settingsTitle": "Settings",
+    "settingsDesc": "View the current account and layout information.",
+    "iframeTitle": "Embedded page",
+    "iframeDesc": "Open a static page in an iframe tab.",
+    "reopenSettings": "Open the “Settings” tab again"
+  },
+  "about": {
+    "title": "About tab",
+    "lead": "This page is an independent tab. Closing and reopening it recreates the page; switching to another tab keeps this page instance cached, so the input and scroll position are preserved when you return.",
+    "inputLabel": "Type something, switch to “Home”, then come back:",
+    "inputPlaceholder": "Tab cache demo",
+    "stackLead": "A tab can also maintain its own page stack: the button below moves forward to “Detail” inside the current tab. Going back from Detail only returns within this tab and does not affect other tabs.",
+    "forward": "Go to detail page",
+    "openSettings": "Open settings in a new tab"
+  },
+  "settings": {
+    "title": "Settings",
+    "lead": "This shows the current sign-in state. Signing out clears the tabs and returns to the sign-in page.",
+    "account": "Current account",
+    "layout": "Layout",
+    "layoutDefault": "default (vue-stack-tabs)",
+    "loginLayout": "Sign-in layout",
+    "layoutAuth": "auth (standalone layout)",
+    "logout": "Sign out"
+  },
+  "tableDemo": {
+    "title": "VXE Table demo",
+    "lead": "VXE Table is fully imported; the table-related components below can be used directly.",
+    "columns": {
+      "name": "Name",
+      "department": "Department",
+      "role": "Role",
+      "status": "Status",
+      "createdAt": "Created at"
+    },
+    "status": {
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "departments": {
+      "rnd": "R&D Center",
+      "design": "Product Design",
+      "operations": "Operations",
+      "finance": "Finance"
+    },
+    "roles": {
+      "frontend": "Frontend Engineer",
+      "productManager": "Product Manager",
+      "backend": "Backend Engineer",
+      "operations": "Operations Specialist",
+      "financeManager": "Finance Manager"
+    }
+  },
+  "elementPlusDemo": {
+    "title": "Element Plus demo",
+    "lead": "Common Element Plus components are shown below. Switch the style source to compare the project theme with the Element Plus default look; built-in text follows the language too.",
+    "themeLabel": "Style source",
+    "themeProject": "Project theme",
+    "themeNative": "Element Plus default",
+    "sections": {
+      "form": "Forms and inputs",
+      "buttons": "Buttons",
+      "data": "Data display",
+      "navigation": "Navigation and pagination",
+      "feedback": "Feedback"
+    },
+    "inputLabel": "Input",
+    "inputPlaceholder": "Enter something",
+    "numberLabel": "Input number",
+    "dateLabel": "Date picker",
+    "datePlaceholder": "Select date",
+    "datetimeLabel": "Date-time picker",
+    "datetimePlaceholder": "Select date and time",
+    "timeLabel": "Time picker",
+    "timePlaceholder": "Select time",
+    "selectLabel": "Select",
+    "selectPlaceholder": "Please select",
+    "switchLabel": "Switch",
+    "sliderLabel": "Slider",
+    "radioLabel": "Radio",
+    "checkboxLabel": "Checkbox",
+    "optionA": "Option A",
+    "optionB": "Option B",
+    "buttonPrimary": "Primary",
+    "buttonDefault": "Default",
+    "buttonSuccess": "Success",
+    "buttonWarning": "Warning",
+    "buttonDanger": "Danger",
+    "buttonInfo": "Info",
+    "buttonPlain": "Plain",
+    "buttonText": "Text",
+    "tableName": "Name",
+    "tableRole": "Role",
+    "tableAlice": "Alice",
+    "tableBob": "Bob",
+    "tableRoleAdmin": "Administrator",
+    "tableRoleViewer": "Viewer",
+    "tabsFirst": "Tab one",
+    "tabsSecond": "Tab two",
+    "paginationLabel": "Pagination",
+    "emptyLabel": "Empty state",
+    "dialogOpen": "Open dialog",
+    "dialogTitle": "Dialog",
+    "dialogContent": "This is an Element Plus dialog.",
+    "messageShow": "Show message",
+    "messageText": "This is a message",
+    "notificationShow": "Show notification",
+    "notificationTitle": "Notification",
+    "notificationContent": "This is a notification.",
+    "loadingShow": "Show loading",
+    "loadingText": "Loading…",
+    "alertTitle": "Notice",
+    "alertDescription": "This content comes from the Element Plus Alert component."
+  },
+  "permissionDemo": {
+    "title": "Permission guard demo",
+    "lead": "This content is visible only when the current account has the {permission} permission. Sign in as {admin} to see it; signing in as {viewer} renders a 403 inside the current tab.",
+    "alertTitle": "Permission check passed",
+    "alertDescription": "This content is wrapped by PermissionGuard. Without permission, a 403 is rendered inside the current tab without changing the URL or tab title."
+  },
+  "layerDemo": {
+    "title": "Layer demo",
+    "lead": "Open layers programmatically with vue-lite-layer. Colors, radii and font sizes follow Element Plus and the selected theme; button labels follow the interface language.",
+    "openBasic": "Basic layer",
+    "openForm": "Form layer",
+    "openConfirm": "Confirm layer",
+    "tip": "Element Plus components inside a layer inherit the current ElConfigProvider locale. Reopen the layer after switching theme or color scheme to see the latest appearance.",
+    "basic": {
+      "title": "Basic layer",
+      "content": "A layer opened with plain text content. Drag the title bar to move it, or minimize and maximize it."
+    },
+    "confirm": {
+      "title": "Confirm action",
+      "content": "Confirming closes the layer and shows a message; the footer buttons are rendered with Element Plus inside the content component.",
+      "ok": "OK",
+      "cancel": "Cancel",
+      "done": "Confirmed"
+    },
+    "form": {
+      "title": "Form layer",
+      "name": "Name",
+      "namePlaceholder": "Enter a name",
+      "department": "Department",
+      "departmentPlaceholder": "Select a department",
+      "departments": {
+        "product": "Product",
+        "engineering": "Engineering",
+        "design": "Design"
+      },
+      "date": "Start date",
+      "datePlaceholder": "Pick a date",
+      "remark": "Notes",
+      "remarkPlaceholder": "Additional notes",
+      "saved": "Saved"
+    }
+  },
+  "searchCard": {
+    "title": "Search area",
+    "expand": "Expand search area",
+    "collapse": "Collapse search area",
+    "expandRows": "Expand",
+    "collapseRows": "Collapse",
+    "reset": "Reset",
+    "search": "Search"
+  },
+  "detail": {
+    "title": "Detail page",
+    "lead": "This page entered the current tab's page stack via {code}. Going back returns to the “About” tab page, and the input there is preserved.",
+    "back": "Go back"
+  },
+  "error": {
+    "unauthorizedTitle": "Sign-in required",
+    "unauthorizedSubtitle": "This page requires sign-in. Please sign in first.",
+    "forbiddenTitle": "Access denied",
+    "forbiddenSubtitle": "The current account cannot access this page. Contact an administrator or switch accounts.",
+    "notFoundTitle": "Page not found",
+    "notFoundSubtitle": "The page you visited does not exist or has been removed. Check the address.",
+    "serverTitle": "Service error",
+    "serverSubtitle": "The page failed to load. Please try again later.",
+    "code": "Error code {code}",
+    "backHome": "Back to home",
+    "switchAccount": "Switch account",
+    "backToLogin": "Back to sign-in",
+    "refreshPage": "Refresh page",
+    "sessionExpired": "Your session has expired. ",
+    "noPermission": "Access denied",
+    "unauthorizedMessage": "This page requires sign-in",
+    "notFoundMessage": "Page not found"
+  }
+}

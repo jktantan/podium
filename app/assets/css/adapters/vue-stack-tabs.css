@@ -1,0 +1,69 @@
+/**
+ * vue-stack-tabs 适配层
+ *
+ * 项目约定：页签的外观以 Element Plus 的变量为基础覆盖。
+ * 颜色与菜单外框圆角引用 --el-*；尺寸优先使用库的原生三档。
+ *
+ * 库的主题选择器用 :where() 归零了特异性，普通 :root 即可覆盖；
+ * 圆角是库写死的选择器，这里单独补几条与 Element Plus 对齐。
+ */
+:root {
+  /* 颜色 */
+  --stack-tab-accent: var(--el-color-primary);
+  --stack-tab-accent-active: var(--el-color-primary-dark-2);
+  --stack-tab-accent-contrast: var(--el-color-white);
+  --stack-tab-accent-shadow: color-mix(in srgb, var(--el-color-primary) 80%, transparent);
+  --stack-tab-badge-primary: var(--el-color-primary);
+  /* 库的默认角标是红色提醒，保留 danger 语义，不要降级成 info 灰 */
+  --stack-tab-badge-default: var(--el-color-danger);
+
+  --stack-tab-surface: var(--el-bg-color);
+  --stack-tab-surface-muted: var(--el-fill-color-light);
+  --stack-tab-overlay: var(--el-bg-color-overlay);
+  --stack-tab-border: var(--el-border-color);
+  --stack-tab-divider: var(--el-border-color);
+  --stack-tab-text: var(--el-text-color-regular);
+  --stack-tab-text-strong: var(--el-text-color-primary);
+  --stack-tab-text-disabled: var(--el-text-color-disabled);
+  --stack-tab-mask: var(--el-text-color-secondary);
+  --stack-tab-scrollbar: color-mix(in srgb, var(--el-text-color-secondary) 25%, transparent);
+  --stack-tab-iframe-loading-bg: var(--el-bg-color-page);
+  --stack-tab-iframe-loading-color: var(--el-text-color-secondary);
+  --stack-tab-iframe-error-bg: var(--el-bg-color-overlay);
+  --stack-tab-iframe-error-color: var(--el-text-color-regular);
+  --stack-tab-menu-hover-bg: var(--el-color-primary-light-9);
+  --stack-tab-menu-hover-text: var(--el-color-primary);
+
+  /* 阴影 */
+  --stack-tab-shadow-menu: var(--el-box-shadow-light);
+  --stack-tab-shadow-tab: var(--el-box-shadow-light);
+}
+
+/* 大档原生字号是 16px；Element Plus 大档控件仍是 14px。 */
+:root[data-stack-tab-size='large'] {
+  --stack-tab-font-size: var(--el-font-size-base);
+}
+
+/* 库把圆角写死在选择器里，这里统一到 Element Plus 的圆角 */
+.stack-tab__item {
+  border-radius: var(--el-border-radius-base) var(--el-border-radius-base) 0 0;
+}
+
+.stack-tab__context-menu {
+  border-radius: var(--el-border-radius-base);
+}
+
+/* Element Plus 下拉菜单项使用方形悬停面，圆角留给菜单外框。 */
+.stack-tab__context-menu-item {
+  border-radius: 0;
+}
+
+.stack-tab__iframe-error-retry,
+.stack-tab__iframe-error-open {
+  border-radius: var(--el-border-radius-base);
+}
+
+.stack-tab__scrollbar,
+.stack-tab__scrollbar-thumb {
+  border-radius: var(--el-border-radius-base);
+}

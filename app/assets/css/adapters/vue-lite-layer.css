@@ -1,0 +1,139 @@
+/**
+ * vue-lite-layer 适配层
+ *
+ * 项目约定：弹层外观以 Element Plus 为基准，颜色全部映射到 --el-*，
+ * 不在这里写业务色值。库的 --lite-layer-* 令牌本身就是 Element Plus 色板，
+ * 映射后自定义主题色、深浅模式、状态色都会自动跟随项目。
+ *
+ * 尺寸：保留库的 small / default / large 三档高度与间距，
+ * 字号和圆角统一到 Element Plus 的对应档位。
+ *
+ * 特异性：库的暗色令牌定义在
+ * `.lite-layer[data-lite-layer-theme='dark'], html.dark .lite-layer:not([data-lite-layer-theme])`，
+ * 后者 (0,2,1) 会压过普通 `.lite-layer`。所以浅色和暗色都要写同特异性选择器，
+ * 靠 nuxt.config.ts 中的加载顺序（适配层在库样式之后）覆盖。
+ */
+.lite-layer,
+html.dark .lite-layer:not([data-lite-layer-theme]) {
+  /* ---------- 语义色 ---------- */
+  --lite-layer-color-white: var(--el-color-white);
+  --lite-layer-color-black: var(--el-color-black);
+
+  --lite-layer-color-primary: var(--el-color-primary);
+  --lite-layer-color-primary-light-3: var(--el-color-primary-light-3);
+  --lite-layer-color-primary-light-5: var(--el-color-primary-light-5);
+  --lite-layer-color-primary-light-7: var(--el-color-primary-light-7);
+  --lite-layer-color-primary-light-8: var(--el-color-primary-light-8);
+  --lite-layer-color-primary-light-9: var(--el-color-primary-light-9);
+  --lite-layer-color-primary-dark-2: var(--el-color-primary-dark-2);
+
+  --lite-layer-color-success: var(--el-color-success);
+  --lite-layer-color-success-light-3: var(--el-color-success-light-3);
+  --lite-layer-color-success-light-5: var(--el-color-success-light-5);
+  --lite-layer-color-success-light-7: var(--el-color-success-light-7);
+  --lite-layer-color-success-light-8: var(--el-color-success-light-8);
+  --lite-layer-color-success-light-9: var(--el-color-success-light-9);
+  --lite-layer-color-success-dark-2: var(--el-color-success-dark-2);
+
+  --lite-layer-color-warning: var(--el-color-warning);
+  --lite-layer-color-warning-light-3: var(--el-color-warning-light-3);
+  --lite-layer-color-warning-light-5: var(--el-color-warning-light-5);
+  --lite-layer-color-warning-light-7: var(--el-color-warning-light-7);
+  --lite-layer-color-warning-light-8: var(--el-color-warning-light-8);
+  --lite-layer-color-warning-light-9: var(--el-color-warning-light-9);
+  --lite-layer-color-warning-dark-2: var(--el-color-warning-dark-2);
+
+  --lite-layer-color-danger: var(--el-color-danger);
+  --lite-layer-color-danger-light-3: var(--el-color-danger-light-3);
+  --lite-layer-color-danger-light-5: var(--el-color-danger-light-5);
+  --lite-layer-color-danger-light-7: var(--el-color-danger-light-7);
+  --lite-layer-color-danger-light-8: var(--el-color-danger-light-8);
+  --lite-layer-color-danger-light-9: var(--el-color-danger-light-9);
+  --lite-layer-color-danger-dark-2: var(--el-color-danger-dark-2);
+
+  --lite-layer-color-error: var(--el-color-error);
+  --lite-layer-color-error-light-3: var(--el-color-error-light-3);
+  --lite-layer-color-error-light-5: var(--el-color-error-light-5);
+  --lite-layer-color-error-light-7: var(--el-color-error-light-7);
+  --lite-layer-color-error-light-8: var(--el-color-error-light-8);
+  --lite-layer-color-error-light-9: var(--el-color-error-light-9);
+  --lite-layer-color-error-dark-2: var(--el-color-error-dark-2);
+
+  --lite-layer-color-info: var(--el-color-info);
+  --lite-layer-color-info-light-3: var(--el-color-info-light-3);
+  --lite-layer-color-info-light-5: var(--el-color-info-light-5);
+  --lite-layer-color-info-light-7: var(--el-color-info-light-7);
+  --lite-layer-color-info-light-8: var(--el-color-info-light-8);
+  --lite-layer-color-info-light-9: var(--el-color-info-light-9);
+  --lite-layer-color-info-dark-2: var(--el-color-info-dark-2);
+
+  /* ---------- 文本 ---------- */
+  --lite-layer-text-color-primary: var(--el-text-color-primary);
+  --lite-layer-text-color-regular: var(--el-text-color-regular);
+  --lite-layer-text-color-secondary: var(--el-text-color-secondary);
+  --lite-layer-text-color-placeholder: var(--el-text-color-placeholder);
+  --lite-layer-text-color-disabled: var(--el-text-color-disabled);
+
+  /* ---------- 边框 / 填充 / 背景 ---------- */
+  --lite-layer-border-color: var(--el-border-color);
+  --lite-layer-border-color-light: var(--el-border-color-light);
+  --lite-layer-border-color-lighter: var(--el-border-color-lighter);
+  --lite-layer-fill-color: var(--el-fill-color);
+  --lite-layer-fill-color-light: var(--el-fill-color-light);
+  --lite-layer-fill-color-lighter: var(--el-fill-color-lighter);
+  --lite-layer-bg-color: var(--el-bg-color);
+  --lite-layer-bg-color-page: var(--el-bg-color-page);
+  --lite-layer-bg-color-overlay: var(--el-bg-color-overlay);
+
+  /* ---------- 遮罩与窗口阴影 ---------- */
+  --lite-layer-shade-bg-color: var(--el-overlay-color-lighter);
+  --lite-layer-shade-opacity: 1;
+  --lite-layer-box-shadow: var(--el-box-shadow);
+  --lite-layer-box-shadow-light: var(--el-box-shadow-light);
+
+  /* ---------- 滚动条 ---------- */
+  --lite-layer-scrollbar-thumb-bg: color-mix(
+    in srgb,
+    var(--el-text-color-secondary) 30%,
+    transparent
+  );
+  --lite-layer-scrollbar-track-bg: var(--el-fill-color-lighter);
+
+  /* ---------- 加载态 ---------- */
+  --lite-layer-loading-mask-bg: color-mix(in srgb, var(--el-bg-color) 80%, transparent);
+  --lite-layer-loading-track-color: var(--el-border-color-light);
+}
+
+/*
+ * 字号、字体与圆角统一到 Element Plus。
+ * data-lite-layer-size 由 useLayer() 按外观密度传入：
+ * compact -> small、default -> default、comfortable -> large。
+ * 弹层正文继承根字号；标题栏与按钮由 --lite-layer-* 单独控制。
+ *
+ * 标题栏：small 用 14px 字号，但高度与 default 一致（40px）；
+ * default / large 统一 16px，不再随档位放大。
+ */
+.lite-layer {
+  font-family: var(--el-font-family);
+  font-size: var(--el-font-size-base);
+  --lite-layer-font-size: var(--el-font-size-medium);
+  --lite-layer-button-font-size: var(--el-font-size-base);
+  --lite-layer-border-radius: var(--el-border-radius-base);
+  --lite-layer-button-radius: var(--el-border-radius-base);
+}
+
+.lite-layer[data-lite-layer-size='small'] {
+  --lite-layer-font-size: var(--el-font-size-base);
+  /* 库的 small 档标题高度是 32px，这里跟 default 档保持一致 */
+  --lite-layer-header-height: 40px;
+  --lite-layer-button-font-size: var(--el-font-size-small);
+  --lite-layer-border-radius: var(--el-border-radius-small);
+  --lite-layer-button-radius: var(--el-border-radius-small);
+}
+
+.lite-layer[data-lite-layer-size='large'] {
+  --lite-layer-font-size: var(--el-font-size-medium);
+  --lite-layer-button-font-size: var(--el-font-size-base);
+  --lite-layer-border-radius: var(--el-border-radius-base);
+  --lite-layer-button-radius: var(--el-border-radius-base);
+}
