@@ -6,6 +6,9 @@
 .cache
 dist
 
+# 由 scripts/build-icons.mjs 从 app/assets/icons 生成的 sprite 输入
+.icons
+
 # Node dependencies
 node_modules
 

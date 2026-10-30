@@ -1,17 +1,21 @@
 # SVG 图标
 
-图标源文件在 `app/assets/icons/`，构建期由 `vite-plugin-svg-icons-ng` 合成一张 sprite，运行时由 `app/plugins/svg-icons.client.ts` 导入 `virtual:svg-icons/register` 注入 `<body>` 末尾的隐藏 `<svg id="__svg__icons__dom__">`。
+图标分两个目录：`app/assets/icons/` 是源目录，入库，保持设计稿 / 上游图标包原样；`.icons/` 是 `pnpm icons:build` 生成的目录，已被 gitignore，只作为 sprite 输入，不要手工修改。构建期由 `vite-plugin-svg-icons-ng` 把 `.icons/` 合成一张 sprite，运行时由 `app/plugins/svg-icons.client.ts` 导入 `virtual:svg-icons/register` 注入 `<body>` 末尾的隐藏 `<svg id="__svg__icons__dom__">`。
 
 ## 目录与命名
 
+源目录与生成目录同构，`.icons/` 由 `pnpm icons:build` 生成：
+
 ```
-app/assets/icons/
+app/assets/icons/          # 源目录，入库，保持原始 SVG
 ├── color/
 │   ├── cms-b/    34 个多色业务图标
 │   └── files/    78 个文件类型图标
 └── mono/
     ├── ant/      599 个 Ant Design 线性图标
     └── opt/      541 个项目补充线性图标
+
+.icons/                    # 生成目录，gitignore，结构与上面一致
 ```
 
 `symbolId` 规则是 `icon-[dir]-[name]`，目录层级会保留：
@@ -48,7 +52,7 @@ app/assets/icons/
 ```
 
 - `AppIcon` 默认 `1em`，`fill: currentcolor`，尺寸和颜色都由 CSS 控制。
-- 源文件已经统一处理过：移除根节点的 `width` / `height` / `class` / `style`，`viewBox` 收缩到图形实际边界。
+- 生成目录里的文件已经统一处理过：移除根节点的 `width` / `height` / `class` / `style`，`viewBox` 收缩到图形实际边界；源目录保持原样。
 - 多色图标（`color/`）保留原始颜色，`fill` 写在 path 上，不受 `currentColor` 影响。
 - 单色图标（`mono/`）的 `fill` / `stroke` 颜色已全部移除，颜色继承外层 CSS 的 `fill`（AppIcon 默认 `currentcolor`），因此自动跟随文字色和明暗模式。
 
@@ -78,29 +82,30 @@ const form = reactive({ icon: 'mono-ant-Gitlab' })
 
 ## 新增图标
 
-1. 把 SVG 放进对应目录，文件名即 symbolId 的 `[name]` 片段（大小写敏感）。
+1. 把原始 SVG 放进 `app/assets/icons/` 的对应目录，文件名即 symbolId 的 `[name]` 片段（大小写敏感）。不要手工处理源文件，也不要直接改 `.icons/`。
 2. 确保文件里有 `viewBox`。
-3. 运行 `pnpm icons:optimize`，把新图标按同一套规则处理。
-4. 插件会在 dev 下监听文件变化；如果新增目录后没有生效，重启 dev server。
+3. dev 下保存后会自动同步到 `.icons/`；也可以手动跑 `pnpm icons:build`。
+4. dev / build 启动时会先全量同步一次；新增目录后需要重启 dev server。
 
-## 图标优化
+## 构建处理
 
-`pnpm icons:optimize` 会递归处理 `app/assets/icons` 下的所有 `.svg`，直接写回源文件：
+`pnpm icons:build` 递归读取 `app/assets/icons` 下的所有 `.svg`，处理结果写到 `.icons/`，源文件不会被改动：
 
-| 规则         | 实现                                                                                     |
-| ------------ | ---------------------------------------------------------------------------------------- |
-| 删除无用内容 | svgo `preset-default` + `removeTitle`（元数据、注释、空容器、无用属性）                  |
-| 尺寸交给 CSS | `removeDimensions` 移除 `width` / `height`，`removeAttrs` 移除根节点的 `class` / `style` |
-| 去除空白     | 用 `svg-path-bbox` 计算所有 path 的实际包围盒，取长边作为正方形边长、内容居中            |
-| 收缩 viewBox | `viewBox` 始终是 1:1 正方形，长方形图形在画布内居中，不会被拉伸                          |
-| 颜色         | `color/` 保留颜色；`mono/` 的 `fill` / `stroke` 统一转成 `currentColor`                  |
+| 规则         | 实现                                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| 删除无用内容 | svgo `preset-default` + `removeTitle`（元数据、注释、空容器、无用属性）                                 |
+| 尺寸交给 CSS | `removeDimensions` 移除 `width` / `height`，自定义 `removeRootStyle` 插件移除根节点的 `class` / `style` |
+| 去除空白     | 用 `svg-path-bbox` 计算所有 path 的实际包围盒，取长边作为正方形边长、内容居中                           |
+| 收缩 viewBox | `viewBox` 始终是 1:1 正方形，长方形图形在画布内居中，不会被拉伸                                         |
+| 颜色         | `color/` 保留颜色；`mono/` 的 `fill` / `stroke` 统一转成 `currentColor`                                 |
 
 ```bash
-pnpm icons:optimize            # 写回源文件
-pnpm icons:optimize --dry-run  # 只统计，不写文件
+pnpm icons:build            # 生成到 .icons
+pnpm icons:build --dry-run  # 只统计，不写文件
 ```
 
-- 脚本是幂等的：处理过的图标再跑一次不会再变化。
+- 生成是幂等的：内容没变化的图标不会重写；源目录删掉的图标，下次构建会从 `.icons/` 清理掉。
+- dev 和 build 都会通过 `nuxt.config.ts` 的 `iconsBuildPlugin` 自动构建：启动时全量同步，dev 运行中监听源目录做增量同步。
 - 构建期 `svg-icon-baker` 还会用 svgo 4 安全预设再压一次，保留 `viewBox`，并禁用 `cleanupIds` / `removeUnknownsAndDefaults` 等会破坏 sprite 引用的插件；需要自定义时用 `nuxt.config.ts` 的 `bakerOptions.svgoOptions`。
 - `viewBox` 始终是正方形：文件、横线这类长方形图形会在正方形画布内居中，保留必要的留白，不会被拉伸。尺寸仍由 `AppIcon` / CSS 控制。
 
@@ -108,5 +113,5 @@ pnpm icons:optimize --dry-run  # 只统计，不写文件
 
 当前 1252 个图标会全部进入 sprite，并通过注册模块打进客户端入口。图标数量继续增长时，有两个方向：
 
-- 只把实际用到的目录加入 `nuxt.config.ts` 的 `iconDirs`；
+- 只把实际用到的目录加入 `iconDirs`（需要同时调整 `scripts/build-icons.mjs` 的输出目录）；
 - 按目录拆多个 sprite（需要自行处理虚拟模块 id 冲突，`vite-plugin-svg-icons-ng` 的 `virtual:svg-icons/register` 是固定 id，多个实例只有第一个生效）。
