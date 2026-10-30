@@ -427,8 +427,8 @@ watch(currentLocale, () => {
       position: relative;
       isolation: isolate;
       overflow: hidden;
-      border: 1px solid color-mix(in srgb, var(--border-default) 72%, transparent);
-      border-radius: var(--radius-md);
+      //border: 1px solid color-mix(in srgb, var(--border-default) 72%, transparent);
+      //border-radius: var(--radius-md);
       box-shadow: var(--el-box-shadow-lighter);
       background: color-mix(in srgb, var(--bg-surface) 58%, transparent);
 
