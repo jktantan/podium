@@ -17,6 +17,9 @@ importers:
       '@nuxtjs/i18n':
         specifier: ^10.6.0
         version: 10.6.0(@nuxt/schema@4.6.2)(@vue/compiler-dom@3.5.44)(db0@0.3.4)(dotenv@17.4.2)(esbuild@0.28.2)(giget@3.3.1)(ioredis@5.11.1(supports-color@10.2.2))(jiti@2.7.0)(rolldown@1.2.15)(rollup@4.65.1)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.106.1)(sass@1.106.1)(terser@5.51.2)(yaml@2.9.1))(vue@3.5.44(typescript@6.0.3))
+      '@pqina/flip':
+        specifier: ^1.8.4
+        version: 1.8.4
       '@vxe-ui/core':
         specifier: ^4.5.0
         version: 4.5.0(vue@3.5.44(typescript@6.0.3))
@@ -1476,6 +1479,9 @@ packages:
 
   '@poppinss/exception@1.2.3':
     resolution: {integrity: sha512-dCED+QRChTVatE9ibtoaxc+WkdzOSjYTKi/+uacHWIsfodVfpsueo3+DKpgU5Px8qXjgmXkSvhXvSCz3fnP9lw==}
+
+  '@pqina/flip@1.8.4':
+    resolution: {integrity: sha512-vOOGo23t0egDHOhnNeDwHdSQVT1p8l+MetwpZPd+5xEYjvZR6FNUaWYqLki3XFfMijro9YpYuljInCaLhO62dQ==}
 
   '@rolldown/binding-android-arm-eabi@1.2.15':
     resolution: {integrity: sha512-aLcgK9gIJ3YRvrrtfSBbRa27F5WrpiTaPulnFpsHPxpUHgFlSgnU4854MHwoRGEBhfRJDWCS2WQ7lIjskE9Olw==}
@@ -7080,6 +7086,8 @@ snapshots:
       supports-color: 10.2.2
 
   '@poppinss/exception@1.2.3': {}
+
+  '@pqina/flip@1.8.4': {}
 
   '@rolldown/binding-android-arm-eabi@1.2.15':
     optional: true
