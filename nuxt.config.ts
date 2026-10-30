@@ -228,6 +228,8 @@ export default defineNuxtConfig({
     'vue-stack-tabs/dist/style.css',
     'vue-lite-layer/style.css',
     'vxe-table/lib/style.css',
+    // VXE 渲染 Element Plus 组件时的单元格内控件样式，必须排在 vxe-table 之后
+    '@vxe-ui/plugin-render-element/dist/style.css',
     'overlayscrollbars/overlayscrollbars.css',
     // Element Plus 深色变量，由 <html> 的 .dark 类激活
     'element-plus/theme-chalk/dark/css-vars.css',

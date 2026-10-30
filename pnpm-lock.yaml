@@ -20,6 +20,9 @@ importers:
       '@vxe-ui/core':
         specifier: ^4.5.0
         version: 4.5.0(vue@3.5.44(typescript@6.0.3))
+      '@vxe-ui/plugin-render-element':
+        specifier: ^4.4.4
+        version: 4.4.4
       dayjs:
         specifier: ^1.11.23
         version: 1.11.23
@@ -2266,6 +2269,9 @@ packages:
     resolution: {integrity: sha512-gk7xLIxFCe2TbZHjCWNeoa52er36OAtEjf/nqZ/cNP+PyKHOws7DECPDG2LWx4xiPlM8T1KKTFb8Gh5tmJ6N7g==}
     peerDependencies:
       vue: ^3.2.0
+
+  '@vxe-ui/plugin-render-element@4.4.4':
+    resolution: {integrity: sha512-u/1ldvzgOo1Kelpgwv4YDuvwKV1y0nA2+kEenJqj2YgYUKALfRxBDIRR9fN04JOdlo1L+AdPEQA6pSly6cPxeA==}
 
   abbrev@3.0.1:
     resolution: {integrity: sha512-AO2ac6pjRB3SJmGJo+v5/aK6Omggp6fsLrs6wN9bd35ulu4cCwaAU9+7ZhXjeqHVkaHThLuzH0nZr0YpCDhygg==}
@@ -7757,6 +7763,8 @@ snapshots:
       dom-zindex: 1.0.8
       vue: 3.5.44(typescript@6.0.3)
       xe-utils: 4.1.3
+
+  '@vxe-ui/plugin-render-element@4.4.4': {}
 
   abbrev@3.0.1: {}
 
