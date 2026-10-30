@@ -52,6 +52,30 @@ app/assets/icons/
 - 多色图标（`color/`）保留原始颜色，`fill` 写在 path 上，不受 `currentColor` 影响。
 - 单色图标（`mono/`）的 `fill` / `stroke` 颜色已全部移除，颜色继承外层 CSS 的 `fill`（AppIcon 默认 `currentcolor`），因此自动跟随文字色和明暗模式。
 
+## 下拉选择
+
+`AppIconPicker` 把图标清单做成下拉选择器，适合表单里挑图标（菜单图标、业务标识等）：
+
+```vue
+<script setup lang="ts">
+const form = reactive({ icon: 'mono-ant-Gitlab' })
+</script>
+
+<template>
+  <AppIconPicker v-model="form.icon" />
+</template>
+```
+
+- `v-model` 的值是 `AppIcon` 的 `name`（symbolId 去掉 `icon-` 前缀），可直接传给 `<AppIcon :name="form.icon" />`。
+- 输入框左侧预览当前图标，右侧显示图标代码；在输入框里输入即可按代码过滤，支持带 `icon-` 前缀的完整 symbolId。
+- 打开后点击输入框、tab 或面板任意位置都不会收起；只有选中图标、点击组件外部或按 `Esc` 才关闭。
+- 关闭（失焦）时输入框立即恢复显示当前图标代码，搜索词不会残留。
+- 单色（`mono-`）和彩色（`color-`）分 tab 显示，一次渲染一行多列；列表是虚拟滚动，只挂载可视区域附近的图标。
+- 选中项统一使用主色边框 + 浅主色背景；单色图标再变为主色，彩色图标保留原色。
+- 搜索时当前 tab 没有结果、另一个 tab 有时会自动切换过去。
+- 输入框尺寸、tabs 高度和网格格宽都跟随项目的全局密度（`ElConfigProvider` 的 size）。
+- 可选属性：`placeholder`、`disabled`、`clearable`、`size`、`panel-width`、`panel-height`、`teleported`；选择后额外触发 `change` 事件。
+
 ## 新增图标
 
 1. 把 SVG 放进对应目录，文件名即 symbolId 的 `[name]` 片段（大小写敏感）。

@@ -39,6 +39,15 @@
             </el-select>
           </el-form-item>
 
+          <el-form-item :label="t('elementPlusDemo.iconPickerLabel')">
+            <div class="ep-demo__picker">
+              <AppIconPicker v-model="form.icon" />
+            </div>
+            <p v-if="form.icon" class="ep-demo__hint">
+              {{ t('elementPlusDemo.iconPickerHint', { icon: form.icon }) }}
+            </p>
+          </el-form-item>
+
           <el-form-item :label="t('elementPlusDemo.dateLabel')">
             <el-date-picker
               v-model="form.date"
@@ -180,6 +189,7 @@ const form = reactive({
   text: '',
   number: 1,
   option: '',
+  icon: 'mono-ant-Gitlab',
   date: null as Date | null,
   datetime: null as Date | null,
   time: null as Date | null,
@@ -252,6 +262,17 @@ useHead({
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
+  }
+
+  &__picker {
+    width: 360px;
+    max-width: 100%;
+  }
+
+  &__hint {
+    margin: 8px 0 0;
+    color: var(--fg-muted);
+    font-size: 12px;
   }
 }
 
