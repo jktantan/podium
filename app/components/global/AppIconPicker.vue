@@ -1,7 +1,7 @@
 <template>
   <el-popover
     :visible="open"
-    trigger="manual"
+    trigger="click"
     placement="bottom-start"
     :width="panelWidth"
     :disabled="disabled"
@@ -123,11 +123,13 @@ const panelRef = ref<HTMLElement>()
 const triggerEl = computed(() => inputRef.value?.$el as HTMLElement | undefined)
 
 /**
- * 下拉由手动控制，不用 trigger="click"：
- * click 触发器会 toggle，点击输入框时把已经打开的面板关掉。
- * el-popover 用完全受控的 :visible（不提供 update 回调），
- * 这样它内部的「点击触发器即关闭」也不会生效；
- * 关闭只由「选中图标 / 点击外部 / Esc」触发。
+ * 下拉由手动控制打开/关闭。
+ *
+ * el-popover 的 trigger 没有 manual，合法值只有 hover / click / focus / contextmenu。
+ * 这里用完全受控的 :visible（只传 visible，不给 update 回调）：
+ * Element Plus 判定为 controlled 后，trigger 不再生效
+ * （源码注释：not valid in controlled mode），内部的点击 toggle 和
+ * onClickOutside 都不会执行，打开/关闭只由本组件的 openPicker / closePicker 决定。
  */
 function openPicker() {
   if (props.disabled || open.value) {
