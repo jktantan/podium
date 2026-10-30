@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons-ng'
 import {
   APPEARANCE_STORAGE_KEY,
   DEFAULT_DENSITY,
@@ -41,6 +43,37 @@ const SPA_LOADING_TEMPLATES = {
   gegga: 'spa-loading-templates/gegga.html',
   helix: 'spa-loading-templates/helix.html'
 } as const
+
+/**
+ * SVG 图标源目录。
+ *
+ * symbolId 规则为 icon-[dir]-[name]，目录层级会保留：
+ *   app/assets/icons/color/cms-b/SEO.svg -> #icon-color-cms-b-SEO
+ *   app/assets/icons/mono/ant/close.svg   -> #icon-mono-ant-close
+ *
+ * 必须保留目录层级：mono/ant 与 mono/opt 有大量同名文件（如 close.svg）。
+ */
+const ICON_DIR = fileURLToPath(new URL('./app/assets/icons', import.meta.url))
+
+/**
+ * SVG sprite：构建期把 app/assets/icons 下的所有 .svg 转成 <symbol>，
+ * 运行时由 app/plugins/svg-icons.client.ts 注入到 <body> 末尾。
+ *
+ * - htmlMode: 'none'：Nuxt 的 index.html 由 Nitro 生成，插件的 transformIndexHtml
+ *   不可靠，改为在客户端入口显式 import virtual:svg-icons/register。
+ * - 源文件先由 scripts/optimize-icons.mjs 统一处理（移除尺寸、收缩 viewBox、
+ *   mono 颜色转 currentColor）；构建期 svg-icon-baker 再用 svgo 4 安全预设压一次，
+ *   默认保留 viewBox。需要自定义时用 bakerOptions.svgoOptions，
+ *   不要重新打开 cleanupIds / removeUnknownsAndDefaults。
+ * - failOnError: 损坏的 SVG 直接让构建失败，避免图标静默缺失。
+ */
+const svgIconsPlugin = createSvgIconsPlugin({
+  iconDirs: [ICON_DIR],
+  symbolId: 'icon-[dir]-[name]',
+  inject: 'body-last',
+  htmlMode: 'none',
+  failOnError: true
+})
 
 // 手动指定使用哪一个模板
 const spaLoadingTemplate = SPA_LOADING_TEMPLATES.cog
@@ -117,7 +150,7 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss(), svgIconsPlugin]
   },
 
   css: [
