@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus'
+import type { VxeGridPropTypes } from 'vxe-table'
 import { useTabRouter } from 'vue-stack-tabs'
 
 const { forward } = useTabRouter()
@@ -111,7 +112,7 @@ const pagerConfig = computed(() => ({
   className: 'vxe-background-transparent'
 }))
 
-const columns = computed(() => [
+const columns = computed<VxeGridPropTypes.Columns>(() => [
   { type: 'seq', title: '#', width: 50, align: 'center' },
   { field: 'name', title: t('tableDemo.columns.name'), minWidth: 90, sortable: true },
   { field: 'department', title: t('tableDemo.columns.department'), minWidth: 110 },
