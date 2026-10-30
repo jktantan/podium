@@ -133,7 +133,7 @@ const visibleItems = computed(() => {
     const column = index % columns
 
     items.push({
-      name: props.icons[index],
+      name: props.icons[index]!,
       style: {
         width: `${cellWidth.value}px`,
         height: `${cellWidth.value}px`,
