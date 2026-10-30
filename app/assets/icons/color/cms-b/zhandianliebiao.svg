@@ -1,0 +1,25 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg class="icon" style="width: 1em;height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;"
+     viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M0 0m217.6 0l588.8 0q217.6 0 217.6 217.6l0 588.8q0 217.6-217.6 217.6l-588.8 0q-217.6 0-217.6-217.6l0-588.8q0-217.6 217.6-217.6Z"
+    fill="#FF6F58"/>
+  <path
+    d="M192 230.4m76.8 0l102.4 0q76.8 0 76.8 76.8l0 102.4q0 76.8-76.8 76.8l-102.4 0q-76.8 0-76.8-76.8l0-102.4q0-76.8 76.8-76.8Z"
+    fill="#FFFFFF"/>
+  <path
+    d="M192 537.6m76.8 0l102.4 0q76.8 0 76.8 76.8l0 102.4q0 76.8-76.8 76.8l-102.4 0q-76.8 0-76.8-76.8l0-102.4q0-76.8 76.8-76.8Z"
+    fill="#FFFFFF"/>
+  <path
+    d="M499.2 256m38.4 0l179.2 0q38.4 0 38.4 38.4l0 0q0 38.4-38.4 38.4l-179.2 0q-38.4 0-38.4-38.4l0 0q0-38.4 38.4-38.4Z"
+    fill="#FFFFFF"/>
+  <path
+    d="M499.2 563.2m38.4 0l179.2 0q38.4 0 38.4 38.4l0 0q0 38.4-38.4 38.4l-179.2 0q-38.4 0-38.4-38.4l0 0q0-38.4 38.4-38.4Z"
+    fill="#FFFFFF"/>
+  <path d="M499.2 384m38.4 0l256 0q38.4 0 38.4 38.4l0 0q0 38.4-38.4 38.4l-256 0q-38.4 0-38.4-38.4l0 0q0-38.4 38.4-38.4Z"
+        fill="#FFFFFF"/>
+  <path
+    d="M499.2 691.2m38.4 0l256 0q38.4 0 38.4 38.4l0 0q0 38.4-38.4 38.4l-256 0q-38.4 0-38.4-38.4l0 0q0-38.4 38.4-38.4Z"
+    fill="#FFFFFF"/>
+</svg>

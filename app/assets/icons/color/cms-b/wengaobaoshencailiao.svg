@@ -1,0 +1,16 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg class="icon" style="width: 1em;height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;"
+     viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M0 0m217.6 0l588.8 0q217.6 0 217.6 217.6l0 588.8q0 217.6-217.6 217.6l-588.8 0q-217.6 0-217.6-217.6l0-588.8q0-217.6 217.6-217.6Z"
+    fill="#01A2FF"/>
+  <path d="M358.3872 243.2A127.4368 127.4368 0 0 0 332.8 320v256h-102.4V371.2c0-70.6944 57.3056-128 127.9872-128z"
+        fill="#B5E4FF"/>
+  <path d="M358.4 320c0-70.6944 57.3056-128 128-128h179.2c70.6944 0 128 57.3056 128 128v256H358.4V320z" fill="#B2E3FF"/>
+  <path
+    d="M780.8 601.6a51.2 51.2 0 0 1 51.2 51.2v128a51.2 51.2 0 0 1-51.2 51.2H243.2a51.2 51.2 0 0 1-51.2-51.2V652.8a51.2 51.2 0 0 1 51.2-51.2h204.8a64 64 0 0 0 128 0h204.8z"
+    fill="#FFFFFF"/>
+  <path d="M435.2 281.6m32 0l217.6 0q32 0 32 32l0 0q0 32-32 32l-217.6 0q-32 0-32-32l0 0q0-32 32-32Z" fill="#FFFFFF"/>
+  <path d="M435.2 422.4m32 0l217.6 0q32 0 32 32l0 0q0 32-32 32l-217.6 0q-32 0-32-32l0 0q0-32 32-32Z" fill="#FFFFFF"/>
+</svg>

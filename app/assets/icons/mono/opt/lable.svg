@@ -1,0 +1,7 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg class="icon" style="width: 1em;height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;"
+     viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M780.190476 97.52381a73.142857 73.142857 0 0 1 73.142857 73.142857v755.809523l-341.333333-152.380952L170.666667 926.47619V170.666667a73.142857 73.142857 0 0 1 73.142857-73.142857h536.380952z m0 73.142857H243.809524v643.047619l268.190476-119.710476 268.190476 119.710476V170.666667z m-121.904762 292.571428v73.142857H365.714286v-73.142857h292.571428z m0-170.666666v73.142857H365.714286v-73.142857h292.571428z"/>
+</svg>

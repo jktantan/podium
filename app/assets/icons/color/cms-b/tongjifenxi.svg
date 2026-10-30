@@ -1,0 +1,22 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg class="icon" style="width: 1.099609375em;height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;"
+     viewBox="0 0 1126 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M0 0m217.6 0l588.8 0q217.6 0 217.6 217.6l0 588.8q0 217.6-217.6 217.6l-588.8 0q-217.6 0-217.6-217.6l0-588.8q0-217.6 217.6-217.6Z"
+    fill="#DB81F0"/>
+  <path
+    d="M192 729.6m51.2 0l537.6 0q51.2 0 51.2 51.2l0 0q0 51.2-51.2 51.2l-537.6 0q-51.2 0-51.2-51.2l0 0q0-51.2 51.2-51.2Z"
+    fill="#FFFFFF"/>
+  <path
+    d="M294.4 396.8m0 51.2l0 153.6q0 51.2-51.2 51.2l0 0q-51.2 0-51.2-51.2l0-153.6q0-51.2 51.2-51.2l0 0q51.2 0 51.2 51.2Z"
+    fill="#FFFFFF"/>
+  <path
+    d="M473.6 192m0 51.2l0 358.4q0 51.2-51.2 51.2l0 0q-51.2 0-51.2-51.2l0-358.4q0-51.2 51.2-51.2l0 0q51.2 0 51.2 51.2Z"
+    fill="#FFFFFF"/>
+  <path
+    d="M652.8 294.4m0 51.2l0 256q0 51.2-51.2 51.2l0 0q-51.2 0-51.2-51.2l0-256q0-51.2 51.2-51.2l0 0q51.2 0 51.2 51.2Z"
+    fill="#FFFFFF"/>
+  <path d="M832 358.4m0 51.2l0 192q0 51.2-51.2 51.2l0 0q-51.2 0-51.2-51.2l0-192q0-51.2 51.2-51.2l0 0q51.2 0 51.2 51.2Z"
+        fill="#FFFFFF"/>
+</svg>
