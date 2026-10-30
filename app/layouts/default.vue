@@ -263,11 +263,38 @@ watch(currentLocale, () => {
     --main-glow-b: color-mix(in srgb, var(--info) 20%, transparent);
     --main-sheen: rgb(255 255 255 / 0.72);
     --main-glow-opacity: 0.32;
+    /*
+     * 细网格：尺寸沿用 SPA 占位（spa-loading-templates/cog.html），
+     * 但线色和线宽都再淡一档 —— 这里是大面积工作区，只能若有若无。
+     */
+    --main-grid: rgb(15 23 42 / 0.03);
+    --main-grid-size: 36px;
 
     background:
       radial-gradient(circle at 15% 18%, var(--main-glow-a), transparent 45%),
       radial-gradient(circle at 85% 82%, var(--main-glow-b), transparent 45%),
       radial-gradient(120% 90% at 50% 0%, var(--main-sheen), transparent 62%), var(--main-base);
+
+    /*
+     * 网格单独一层：mask 在四周淡出，避免整块工作区变成方格纸。
+     * 要单独成层就不能写进 background 简写里 —— mask 会连底色和光斑一起裁掉。
+     *
+     * 线用带一点模糊的细描边，不用硬边实线：1px 落在半透明底上
+     * 仍然是一条清晰可见的线，blur 之后才真正是"纹理"而不是"表格"。
+     */
+    &::before {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--main-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--main-grid) 1px, transparent 1px);
+      background-size: var(--main-grid-size) var(--main-grid-size);
+      mask-image: radial-gradient(72% 62% at 50% 46%, rgb(0 0 0) 0%, transparent 78%);
+      filter: blur(0.6px);
+      pointer-events: none;
+      content: '';
+    }
 
     html.dark & {
       --main-base: var(--bg-inverse);
@@ -276,6 +303,7 @@ watch(currentLocale, () => {
       /* 深色下不需要白光，换成顶部一层冷色氛围 */
       --main-sheen: color-mix(in srgb, var(--brand-primary) 10%, transparent);
       --main-glow-opacity: 0.5;
+      --main-grid: rgb(148 163 184 / 0.05);
     }
 
     /*
@@ -285,8 +313,12 @@ watch(currentLocale, () => {
      * 毛玻璃必须放在伪元素上：backdrop-filter 会让元素成为 position: fixed
      * 后代的包含块，而库的右键菜单就是 fixed + clientX/clientY，
      * 直接写在 .stack-tab 上会让菜单相对卡片定位而整体偏移。
+     *
+     * 这些样式只作用于普通卡片态：最大化时库靠 .stack-tab--maximum
+     * 把元素改成 position: fixed + inset: 0，若这里仍命中 .stack-tab，
+     * 高特异性的 position: relative 会压过库规则，最大化会塌成一张小卡片。
      */
-    :deep(.stack-tab) {
+    :deep(.stack-tab:not(.stack-tab--maximum)) {
       position: relative;
       isolation: isolate;
       overflow: hidden;
@@ -300,6 +332,27 @@ watch(currentLocale, () => {
         z-index: -1;
         inset: 0;
         backdrop-filter: blur(10px);
+        content: '';
+        pointer-events: none;
+      }
+
+      /*
+       * 卡片占满主区域，网格得再画一次：只画在主区域那层，
+       * 会被卡片的半透明底色和上面的 backdrop-filter 糊成一片雾。
+       * 网格另起 ::after 而不是塞进上面的 ::before，是为了让 mask
+       * 只淡出网格本身，不至于把毛玻璃一起裁掉。
+       */
+      &::after {
+        position: absolute;
+        z-index: -1;
+        inset: 0;
+        background-image:
+          linear-gradient(var(--main-grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--main-grid) 1px, transparent 1px);
+        background-size: var(--main-grid-size) var(--main-grid-size);
+        mask-image: radial-gradient(94% 90% at 50% 42%, rgb(0 0 0) 0%, transparent 88%);
+        filter: blur(0.6px);
+        pointer-events: none;
         content: '';
       }
     }
