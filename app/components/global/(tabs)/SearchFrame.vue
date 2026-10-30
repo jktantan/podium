@@ -38,7 +38,7 @@ try {
     <div>
       <slot name="search"></slot>
     </div>
-    <div class="flex-auto">
+    <div class="flex-auto overflow-hidden">
       <slot name="table"></slot>
     </div>
     <div class="hidden">

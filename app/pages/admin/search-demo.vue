@@ -3,7 +3,9 @@ import type { FormRules } from 'element-plus'
 import { useTabRouter } from 'vue-stack-tabs'
 
 const { forward } = useTabRouter()
-
+type DepartmentKey = 'rnd' | 'design' | 'operations' | 'finance'
+type RoleKey = 'frontend' | 'productManager' | 'backend' | 'operations' | 'financeManager'
+type StatusKey = 'enabled' | 'disabled'
 /** 三个 CommonFrame 演示场景：在当前页签内前进导航，页面内容都足够长以产生滚动条 */
 const frameDemos = [
   { id: 'common-frame-full', title: '有头有尾', path: '/admin/common-frame/full' },
@@ -36,6 +38,98 @@ function handleSearch() {
 function handleReset() {
   // 表单字段已由 SearchCard 重置，这里可以重新请求列表
 }
+
+interface SourceRow {
+  id: number
+  name: string
+  department: DepartmentKey
+  role: RoleKey
+  status: StatusKey
+  createdAt: string
+}
+
+const sourceRows: SourceRow[] = [
+  {
+    id: 1,
+    name: '张伟',
+    department: 'rnd',
+    role: 'frontend',
+    status: 'enabled',
+    createdAt: '2026-01-12'
+  },
+  {
+    id: 2,
+    name: '李娜',
+    department: 'design',
+    role: 'productManager',
+    status: 'enabled',
+    createdAt: '2026-02-03'
+  },
+  {
+    id: 3,
+    name: '王强',
+    department: 'rnd',
+    role: 'backend',
+    status: 'enabled',
+    createdAt: '2026-02-18'
+  },
+  {
+    id: 4,
+    name: '赵敏',
+    department: 'operations',
+    role: 'operations',
+    status: 'disabled',
+    createdAt: '2026-03-06'
+  },
+  {
+    id: 5,
+    name: '陈晨',
+    department: 'finance',
+    role: 'financeManager',
+    status: 'enabled',
+    createdAt: '2026-03-21'
+  }
+]
+
+const { t } = useI18n()
+
+// 示例数据里的部门 / 角色 / 状态属于界面展示文案，跟随语言切换
+const rows = computed(() =>
+  sourceRows.map((row) => ({
+    ...row,
+    enabled: row.status === 'enabled',
+    department: t(`tableDemo.departments.${row.department}`),
+    role: t(`tableDemo.roles.${row.role}`),
+    status: t(`tableDemo.status.${row.status}`)
+  }))
+)
+
+const pagerConfig = computed(() => ({
+  total: sourceRows.length,
+  pageSize: 10,
+  pageSizes: [10, 30, 50],
+  className: 'vxe-background-transparent'
+}))
+
+const columns = computed(() => [
+  { type: 'seq', title: '#', width: 50, align: 'center' },
+  { field: 'name', title: t('tableDemo.columns.name'), minWidth: 90, sortable: true },
+  { field: 'department', title: t('tableDemo.columns.department'), minWidth: 110 },
+  { field: 'role', title: t('tableDemo.columns.role'), minWidth: 110 },
+  {
+    field: 'status',
+    title: t('tableDemo.columns.status'),
+    width: 90,
+    align: 'center',
+    slots: { default: 'status' }
+  },
+  {
+    field: 'createdAt',
+    title: t('tableDemo.columns.createdAt'),
+    minWidth: 110,
+    sortable: true
+  }
+])
 </script>
 
 <template>
@@ -104,6 +198,37 @@ function handleReset() {
       </search-card>
     </template>
     <template #table>
+      <vxe-grid
+        :data="rows"
+        :columns="columns"
+        :pager-config="pagerConfig"
+        height="auto"
+        border
+        round
+        stripe
+        :row-config="{ isHover: true }"
+        :column-config="{ resizable: true }"
+        :toolbar-config="{
+          zoom: true,
+          refresh: true,
+          custom: true,
+          className: 'vxe-background-transparent',
+          slots: {
+            buttons: 'toolbarButtons'
+          }
+        }"
+      >
+        <template #status="{ row }">
+          <el-tag :type="row.enabled ? 'success' : 'info'">{{ row.status }}</el-tag>
+        </template>
+        <template #toolbarButtons>
+          <el-button v-for="demo in frameDemos" :key="demo.id" plain @click="openFrameDemo(demo)">
+            {{ demo.title }}
+          </el-button>
+        </template>
+      </vxe-grid>
+    </template>
+    <template #other>
       <div class="flex flex-wrap gap-2">
         <el-button v-for="demo in frameDemos" :key="demo.id" plain @click="openFrameDemo(demo)">
           {{ demo.title }}
