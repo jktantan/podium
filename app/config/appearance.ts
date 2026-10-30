@@ -13,8 +13,8 @@ export type Density = 'compact' | 'default' | 'comfortable'
 
 /** Element Plus 的尺寸档位，与密度一一对应 */
 export type ElementSize = 'small' | 'default' | 'large'
-/** VXE 原生尺寸：small / medium / default 对应 Element Plus 小 / 默认 / 大 */
-export type VxeSize = 'small' | 'medium' | 'default'
+/** VXE 原生尺寸：mini / small / medium 对应 Element Plus 小 / 默认 / 大 */
+export type VxeSize = 'mini' | 'small' | 'medium'
 /** vue-stack-tabs 的 data-stack-tab-size 预设 */
 export type StackTabSize = 'small' | 'normal' | 'large'
 
@@ -72,21 +72,21 @@ export const DENSITY_OPTIONS: readonly DensityOption[] = [
     value: 'compact',
     labelKey: 'appearance.densities.compact',
     elSize: 'small',
-    vxeSize: 'small',
+    vxeSize: 'mini',
     stackTabSize: 'small'
   },
   {
     value: 'default',
     labelKey: 'appearance.densities.default',
     elSize: 'default',
-    vxeSize: 'medium',
+    vxeSize: 'small',
     stackTabSize: 'normal'
   },
   {
     value: 'comfortable',
     labelKey: 'appearance.densities.comfortable',
     elSize: 'large',
-    vxeSize: 'default',
+    vxeSize: 'medium',
     stackTabSize: 'large'
   }
 ]

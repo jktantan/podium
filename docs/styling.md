@@ -255,7 +255,7 @@ export const THEME_PRESETS = [
 
 **VXE 尺寸为什么不用 `VxeUI.setConfig({ size })`**：它的全局 size 只在组件创建时被读成 `props.size` 的默认值，之后切换不会作用到已挂载的表格。`useSize` 优先读 `props.size`，再读 `inject('xeSizeInfo')`，所以根组件 provide 一个 `computed` 是唯一能实时生效的方式。不要再往 `setConfig` 里写 size。
 
-VXE 原生有六档：`mini / small / medium / default / large / xlarge`，表格行高依次为 36 / 40 / 44 / 48 / 52 / 54px。项目的紧凑 / 标准 / 宽松对应 `small / medium / default`，分别匹配 Element Plus 的小 / 默认 / 大档。分页、输入和按钮跟随同一 VXE 档位，保留原生尺寸关系。
+VXE 原生有六档：`mini / small / medium / default / large / xlarge`，表格行高依次为 36 / 40 / 44 / 48 / 52 / 54px。项目的紧凑 / 标准 / 宽松对应 `mini / small / medium`（行高 36 / 40 / 44px）。标准档落在 VXE 的 small 档上，适配层因此把 `--vxe-ui-font-size-small` 提到 14px，与 Element Plus 的默认字号一致；紧凑档保持 mini 的 12px。分页、输入和按钮跟随同一 VXE 档位，保留原生尺寸关系。
 
 ### 新增一个组件库
 

@@ -15,6 +15,9 @@
 :root:root {
   --vxe-ui-font-family: var(--el-font-family);
 
+  /* 标准密度使用 VXE 的 small 档，字号对齐 Element Plus 的 14px */
+  --vxe-ui-font-size-small: var(--el-font-size-base);
+
   --vxe-ui-font-primary-color: var(--el-color-primary);
   --vxe-ui-font-primary-hover-color: var(--el-color-primary-light-9);
   --vxe-ui-font-primary-tinge-color: var(--el-color-primary-light-9);
