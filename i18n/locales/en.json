@@ -1,6 +1,8 @@
 {
   "app": {
-    "loading": "Loading workspace…"
+    "loading": "Loading workspace…",
+    "collapseSidebar": "Collapse menu",
+    "expandSidebar": "Expand menu"
   },
   "nav": {
     "home": "Home",

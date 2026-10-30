@@ -15,49 +15,79 @@
     </el-header>
 
     <el-container class="app-layout__body">
-      <el-aside class="app-layout__aside" width="192px">
+      <el-aside id="app-layout-aside" class="app-layout__aside" :width="asideWidth">
         <!-- 菜单滚动交给 OverlayScrollbars，避免 el-aside 原生滚动条与外层滚动条叠加 -->
         <AppScrollbar class="app-layout__aside-scroll">
-          <el-menu class="app-layout__menu" :default-active="activeMenu" @select="handleMenuSelect">
-            <el-menu-item index="/admin">
+          <!--
+            收缩时交给 el-menu 原生 collapse 模式：只留图标，激活态与点击导航不变。
+            每项用 #title 插槽提供文字，折叠后该插槽会作为悬浮提示显示。
+          -->
+          <el-menu
+            class="app-layout__menu"
+            :collapse="asideCollapsed"
+            :collapse-transition="false"
+            :default-active="activeMenu"
+            @select="handleMenuSelect"
+          >
+            <el-menu-item index="home">
               <el-icon><ElIconHomeFilled /></el-icon>
-              <span>{{ t('nav.home') }}</span>
+              <template #title>
+                <span>{{ t('nav.home') }}</span>
+              </template>
             </el-menu-item>
-            <el-menu-item index="/admin/about">
+            <el-menu-item index="about">
               <el-icon><ElIconInfoFilled /></el-icon>
-              <span>{{ t('nav.about') }}</span>
+              <template #title>
+                <span>{{ t('nav.about') }}</span>
+              </template>
             </el-menu-item>
-            <el-menu-item index="/admin/settings">
+            <el-menu-item index="settings">
               <el-icon><ElIconSetting /></el-icon>
-              <span>{{ t('nav.settings') }}</span>
+              <template #title>
+                <span>{{ t('nav.settings') }}</span>
+              </template>
             </el-menu-item>
-            <el-menu-item index="/admin/iframe">
+            <el-menu-item index="iframe">
               <el-icon><ElIconMonitor /></el-icon>
-              <span>{{ t('nav.iframe') }}</span>
+              <template #title>
+                <span>{{ t('nav.iframe') }}</span>
+              </template>
             </el-menu-item>
-            <el-menu-item index="/admin/404-demo">
+            <el-menu-item index="404-demo">
               <el-icon><ElIconWarningFilled /></el-icon>
-              <span>{{ t('nav.notFound') }}</span>
+              <template #title>
+                <span>{{ t('nav.notFound') }}</span>
+              </template>
             </el-menu-item>
-            <el-menu-item index="/admin/permission-demo">
+            <el-menu-item index="permission-demo">
               <el-icon><ElIconLock /></el-icon>
-              <span>{{ t('nav.permissionDemo') }}</span>
+              <template #title>
+                <span>{{ t('nav.permissionDemo') }}</span>
+              </template>
             </el-menu-item>
-            <el-menu-item index="/admin/table-demo">
+            <el-menu-item index="table-demo">
               <el-icon><ElIconGrid /></el-icon>
-              <span>{{ t('nav.tableDemo') }}</span>
+              <template #title>
+                <span>{{ t('nav.tableDemo') }}</span>
+              </template>
             </el-menu-item>
-            <el-menu-item index="/admin/element-plus-demo">
+            <el-menu-item index="element-plus-demo">
               <el-icon><ElIconMouse /></el-icon>
-              <span>{{ t('nav.elementPlusDemo') }}</span>
+              <template #title>
+                <span>{{ t('nav.elementPlusDemo') }}</span>
+              </template>
             </el-menu-item>
-            <el-menu-item index="/admin/layer-demo">
+            <el-menu-item index="layer-demo">
               <el-icon><ElIconCopyDocument /></el-icon>
-              <span>{{ t('nav.layerDemo') }}</span>
+              <template #title>
+                <span>{{ t('nav.layerDemo') }}</span>
+              </template>
             </el-menu-item>
-            <el-menu-item index="/admin/search-demo">
+            <el-menu-item index="search-demo">
               <el-icon><ElIconCopyDocument /></el-icon>
-              <span>查询柜架</span>
+              <template #title>
+                <span>查询柜架</span>
+              </template>
             </el-menu-item>
           </el-menu>
         </AppScrollbar>
@@ -82,7 +112,25 @@
             :page-scroll="PageScroll"
             height="100%"
             style="padding: 5px"
-          />
+          >
+            <!-- 缩展按钮放在标签栏左侧，复用库的 header 按钮尺寸与外观 -->
+            <template #leftButton>
+              <button
+                type="button"
+                class="stack-tab__header-button app-layout__aside-toggle"
+                :class="{ 'is-collapsed': asideCollapsed }"
+                :title="asideToggleLabel"
+                :aria-label="asideToggleLabel"
+                :aria-expanded="!asideCollapsed"
+                aria-controls="app-layout-aside"
+                @click="toggleAside"
+              >
+                <span class="stack-tab__button">
+                  <ElIconFold class="app-layout__aside-toggle-icon" />
+                </span>
+              </button>
+            </template>
+          </VueStackTabs>
 
           <template #fallback>
             <div class="grid h-full place-items-center text-sm text-muted">
@@ -116,13 +164,22 @@ const TAB_TITLE_KEYS: Record<string, string> = {
   'layer-demo': 'nav.layerDemo'
 }
 
-const route = useRoute()
 const { user } = useAuth()
 const { openTab, updateTabTitle, tabs } = useTabActions()
 const logoutToLogin = useLogout()
 const { t, currentLocale, stackTabsLocale } = useLocale()
 
-const activeMenu = computed(() => route.path)
+/** 左侧菜单是否收起为图标模式 */
+const asideCollapsed = ref(false)
+/** el-aside 宽度：收起时与 el-menu collapse 的图标宽度（24 + 20 * 2）对齐 */
+const asideWidth = computed(() => (asideCollapsed.value ? '64px' : '192px'))
+const asideToggleLabel = computed(() =>
+  asideCollapsed.value ? t('app.expandSidebar') : t('app.collapseSidebar')
+)
+
+function toggleAside() {
+  asideCollapsed.value = !asideCollapsed.value
+}
 
 const homeTab = computed<ITabData>(() => ({
   // 固定 id，避免刷新时 sessionStorage 恢复的首页与默认首页生成两个页签
@@ -133,39 +190,54 @@ const homeTab = computed<ITabData>(() => ({
   refreshable: true
 }))
 
+/**
+ * 菜单 index → 页签数据。
+ * 菜单 item 的 index 与页签 id 保持一致，激活态可以直接用页签 id 驱动。
+ */
 const menuTabs = computed<Record<string, ITabData>>(() => ({
-  '/admin': { ...homeTab.value },
-  '/admin/about': { id: 'about', title: t('nav.about'), path: '/admin/about' },
-  '/admin/settings': { id: 'settings', title: t('nav.settings'), path: '/admin/settings' },
-  '/admin/iframe': {
+  home: { ...homeTab.value },
+  about: { id: 'about', title: t('nav.about'), path: '/admin/about' },
+  settings: { id: 'settings', title: t('nav.settings'), path: '/admin/settings' },
+  iframe: {
     id: 'iframe',
     title: t('nav.iframe'),
     path: '/iframe-demo.html',
     iframe: true
   },
-  '/admin/404-demo': { id: '404-demo', title: t('nav.notFound'), path: '/admin/404-demo' },
-  '/admin/permission-demo': {
+  '404-demo': { id: '404-demo', title: t('nav.notFound'), path: '/admin/404-demo' },
+  'permission-demo': {
     id: 'permission-demo',
     title: t('nav.permissionDemo'),
     path: '/admin/permission-demo'
   },
-  '/admin/table-demo': { id: 'table-demo', title: t('nav.tableDemo'), path: '/admin/table-demo' },
-  '/admin/element-plus-demo': {
+  'table-demo': { id: 'table-demo', title: t('nav.tableDemo'), path: '/admin/table-demo' },
+  'element-plus-demo': {
     id: 'element-plus-demo',
     title: t('nav.elementPlusDemo'),
     path: '/admin/element-plus-demo'
   },
-  '/admin/layer-demo': {
+  'layer-demo': {
     id: 'layer-demo',
     title: t('nav.layerDemo'),
     path: '/admin/layer-demo'
   },
-  '/admin/search-demo': {
+  'search-demo': {
     id: 'search-demo',
     title: '查询框架',
     path: '/admin/search-demo'
   }
 }))
+
+/**
+ * 左侧菜单的激活项跟着当前页签走。
+ *
+ * 不能用 route.path：vue-stack-tabs 的页签切换（含页签内前进 / 后退）
+ * 由库内部维护页面栈，布局层拿到的 route 不会跟着变，
+ * 只有 tabs 里的 active 视图对象是可靠的。
+ * 菜单 item 的 index 就是页签 id，直接用它驱动 default-active
+ * （el-menu 内部通过 updateActiveIndex 落地）。
+ */
+const activeMenu = computed(() => tabs.value.find((tab) => tab.active)?.id ?? '')
 
 function handleMenuSelect(index: string) {
   const tab = menuTabs.value[index]
@@ -215,11 +287,44 @@ watch(currentLocale, () => {
     overflow: hidden;
     border-right: 1px solid var(--border-default);
     background: var(--bg-surface);
+    // 收缩 / 展开时宽度跟着图标栏一起过渡，菜单内容由 overflow 裁切
+    transition: width 300ms ease;
   }
 
   &__aside-scroll {
     // OverlayScrollbars 的宿主不会像 el-scrollbar 那样自带 height: 100%
     height: 100%;
+  }
+
+  &__aside-toggle {
+    color: var(--fg-muted);
+    // 图标在两个状态之间旋转，过渡时长与 aside 宽度一致
+    transition: color var(--transition-fast);
+
+    &:hover {
+      color: var(--brand-primary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--brand-primary);
+      outline-offset: -4px;
+    }
+
+    .stack-tab__button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &__aside-toggle-icon {
+    width: 16px;
+    height: 16px;
+    transition: transform 300ms ease;
+  }
+
+  &__aside-toggle.is-collapsed &__aside-toggle-icon {
+    transform: rotate(180deg);
   }
 
   &__menu {

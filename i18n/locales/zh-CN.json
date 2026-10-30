@@ -1,6 +1,8 @@
 {
   "app": {
-    "loading": "正在加载工作台…"
+    "loading": "正在加载工作台…",
+    "collapseSidebar": "收起菜单",
+    "expandSidebar": "展开菜单"
   },
   "nav": {
     "home": "首页",

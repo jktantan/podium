@@ -1,6 +1,8 @@
 {
   "app": {
-    "loading": "正在載入工作台…"
+    "loading": "正在載入工作台…",
+    "collapseSidebar": "收合選單",
+    "expandSidebar": "展開選單"
   },
   "nav": {
     "home": "首頁",
