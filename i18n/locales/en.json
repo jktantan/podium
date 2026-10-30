@@ -35,11 +35,12 @@
       "element": "Element Plus Default",
       "ocean": "Ocean",
       "teal": "Teal",
-      "forest": "Forest",
-      "amber": "Amber",
-      "rose": "Rose",
       "violet": "Violet",
-      "slate": "Slate"
+      "magenta": "Magenta",
+      "navy": "Navy",
+      "cyan": "Deep Cyan",
+      "plum": "Deep Purple",
+      "grape": "Berry"
     },
     "densities": {
       "compact": "Small",

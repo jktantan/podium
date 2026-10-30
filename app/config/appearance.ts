@@ -42,16 +42,29 @@ export const DEFAULT_THEME_ID = 'element'
 export const DEFAULT_DENSITY: Density = 'default'
 export const DEFAULT_SCHEME: ColorScheme = 'light'
 
+/**
+ * 主题色预设。
+ *
+ * 只使用蓝 / 青 / 紫 / 品红这几个非语义色相：
+ * 绿、橙、红、灰分别被 success / warning / danger / info 占用，
+ * 品牌色一旦落在这些色相上，用户会把普通主色误读成状态反馈。
+ *
+ * 后四套是同一安全色域内的深色档：色相与前面几套错开，
+ * 再靠明度差拉开距离；浅色模式下白字对比度都在 7:1 以上，
+ * 深色模式下主色提亮后与表面色对比度也高于 3:1。
+ */
 export const THEME_PRESETS: readonly ThemePreset[] = [
   { id: 'element', labelKey: 'appearance.themes.element', color: '#409eff' },
   { id: 'indigo', labelKey: 'appearance.themes.indigo', color: '#4f46e5' },
   { id: 'ocean', labelKey: 'appearance.themes.ocean', color: '#0284c7' },
   { id: 'teal', labelKey: 'appearance.themes.teal', color: '#0d9488' },
-  { id: 'forest', labelKey: 'appearance.themes.forest', color: '#16a34a' },
-  { id: 'amber', labelKey: 'appearance.themes.amber', color: '#d97706' },
-  { id: 'rose', labelKey: 'appearance.themes.rose', color: '#e11d48' },
   { id: 'violet', labelKey: 'appearance.themes.violet', color: '#7c3aed' },
-  { id: 'slate', labelKey: 'appearance.themes.slate', color: '#475569' }
+  { id: 'magenta', labelKey: 'appearance.themes.magenta', color: '#c026d3' },
+
+  { id: 'navy', labelKey: 'appearance.themes.navy', color: '#1e3a8a' },
+  { id: 'cyan', labelKey: 'appearance.themes.cyan', color: '#155e75' },
+  { id: 'plum', labelKey: 'appearance.themes.plum', color: '#581c87' },
+  { id: 'grape', labelKey: 'appearance.themes.grape', color: '#86198f' }
 ]
 
 export const DENSITY_OPTIONS: readonly DensityOption[] = [

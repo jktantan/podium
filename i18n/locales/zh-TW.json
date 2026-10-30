@@ -35,11 +35,12 @@
       "element": "Element Plus 預設",
       "ocean": "海藍",
       "teal": "青碧",
-      "forest": "松綠",
-      "amber": "琥珀",
-      "rose": "玫紅",
       "violet": "紫羅蘭",
-      "slate": "石墨"
+      "magenta": "品紅",
+      "navy": "海軍藍",
+      "cyan": "黛青",
+      "plum": "深紫",
+      "grape": "莓紫"
     },
     "densities": {
       "compact": "緊湊",

@@ -197,7 +197,7 @@ background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
 
 ## 4. 外观切换（主题色 / 明暗 / 密度）
 
-header 右侧的 `AppearanceSwitcher` 提供三组切换：主题色（8 套预设）、明暗、密度（紧凑 / 标准 / 宽松）。状态在 `app/composables/useAppearance.ts`，配置在 `app/config/appearance.ts`。
+header 右侧的 `AppearanceSwitcher` 提供三组切换：主题色（10 套预设）、明暗、密度（紧凑 / 标准 / 宽松）。状态在 `app/composables/useAppearance.ts`，配置在 `app/config/appearance.ts`。
 
 ### 数据流
 
@@ -227,6 +227,10 @@ export const THEME_PRESETS = [
   { id: 'cyan', label: '青蓝', color: '#0891b2' }
 ]
 ```
+
+主题色只能使用**非状态语义色相**（蓝 / 青 / 紫 / 品红）。绿、橙、红、灰分别被 `success` / `warning` / `danger` / `info` 占用，品牌色落在这些色相上会和状态反馈混淆。
+
+安全色域内的色相位置已经不多，新增预设优先用**明度差**（深色档）与现有预设拉开距离；挑选时核对两点：浅色模式下种子色与白字对比度不低于 4.5:1，深色模式下提亮后的主色与 `#141414` 对比度不低于 3:1。
 
 深色模式下的提亮由 `tokens.css` 的 `html.dark` 规则统一处理。
 
