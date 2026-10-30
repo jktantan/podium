@@ -202,9 +202,9 @@ onActivated(attachScrollTarget)
     z-index: 2;
     flex: none;
     //padding: calc(var(--density-gap) / 2) 0;
-    padding: var(--density-gap);
+    padding: calc(var(--density-gap) / 2);
     background: var(--bg-surface);
-
+    border-radius: var(--radius-md);
     // 阴影样式与页签一致：颜色 / 模糊 / 扩散都取自 vue-stack-tabs
     &--shadow {
       box-shadow: 0 5px 5px -5px var(--stack-tab-shadow-color);
@@ -228,9 +228,9 @@ onActivated(attachScrollTarget)
     justify-content: center;
     //gap: var(--density-gap);
     margin-top: auto;
-    padding: var(--density-gap);
+    padding: calc(var(--density-gap) / 2);
     background: var(--bg-surface);
-
+    border-radius: var(--radius-md);
     &--shadow {
       box-shadow: 0 -5px 5px -5px var(--stack-tab-shadow-color);
     }
