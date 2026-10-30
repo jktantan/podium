@@ -4,6 +4,10 @@
     <h1>{{ t('home.greeting', { user }) }}</h1>
     <p class="page__lead">{{ t('home.lead') }}</p>
 
+    <div class="page-clock">
+      <FlipClock />
+    </div>
+
     <div class="page__grid">
       <button
         type="button"
@@ -62,6 +66,18 @@ function openIframe() {
 </script>
 
 <style scoped lang="scss">
+.page-clock {
+  display: flex;
+  justify-content: center;
+  max-width: 420px;
+  margin: 24px auto;
+  padding: 24px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--elevation-panel);
+}
+
 // 首页卡片：重复三次的块，按规范抽成 BEM + 令牌，而不是复制长串工具类。
 .page-card {
   display: flex;
