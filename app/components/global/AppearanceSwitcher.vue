@@ -117,7 +117,7 @@ function handleDensityChange(value: string | number | boolean) {
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-fast);
-
+  cursor: pointer;
   &:hover {
     transform: scale(1.08);
   }
