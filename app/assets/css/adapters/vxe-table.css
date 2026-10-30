@@ -83,3 +83,32 @@
   --vxe-ui-status-error-darken-color: var(--el-color-error-dark-2);
   --vxe-ui-status-error-disabled-color: var(--el-color-error-light-5);
 }
+
+/**
+ * 背景透明：去掉 VXE 组件自带的表面底色，让它融入页面背景。
+ *
+ * 用法：在 vxe-grid 的 toolbar-config / pager-config 里传
+ * className: 'vxe-background-transparent'，VXE 会把类名加到
+ * .vxe-toolbar / .vxe-pager 根节点上。
+ *
+ * 命名带 vxe- 前缀：这是给 VXE 组件的 className 用的类，
+ * 和 Tailwind 的 bg-transparent 区分开，避免误以为它能当通用工具类使用。
+ *
+ * 为什么不用 Tailwind 的 bg-transparent：utilities 在 @layer utilities 里，
+ * 而 vxe-table/lib/style.css 是该库的未分层样式，未分层声明优先于任何 @layer，
+ * 工具类会被 .vxe-toolbar / .vxe-pager 的 background-color 覆盖。
+ * 所以这个类必须写在未分层的适配层，且排在库样式之后。
+ *
+ * 只清 background-color 不够：分页的页码按钮、工具栏按钮同样用
+ * --vxe-ui-layout-background-color 铺底，会在透明的条上留下白块。
+ * 在子树内把该变量置为 transparent 后按钮随之透明；
+ * teleport 到 body 的下拉面板不在子树内，仍是正常表面色，不受影响。
+ *
+ * 注意：*.is--perfect 变体自带边框和底色（与表格连成一体的形态），
+ * 需要保留背景，不要在上面叠加这个类。
+ */
+.vxe-background-transparent {
+  --vxe-ui-layout-background-color: transparent;
+
+  background-color: transparent;
+}
