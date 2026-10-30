@@ -118,6 +118,12 @@
       "financeManager": "财务主管"
     }
   },
+  "iconPicker": {
+    "placeholder": "选择图标",
+    "mono": "单色",
+    "color": "彩色",
+    "empty": "没有匹配的图标"
+  },
   "elementPlusDemo": {
     "title": "Element Plus 示例",
     "lead": "下面是 Element Plus 的常用组件。可以切换样式来源，对比项目主题与 Element Plus 默认外观；切换语言时组件内置文案也会同步变化。",
@@ -129,7 +135,8 @@
       "buttons": "按钮",
       "data": "数据展示",
       "navigation": "导航与分页",
-      "feedback": "反馈"
+      "feedback": "反馈",
+      "iconPicker": "图标选择"
     },
     "inputLabel": "输入框",
     "inputPlaceholder": "请输入内容",
@@ -177,7 +184,9 @@
     "loadingShow": "显示加载",
     "loadingText": "加载中…",
     "alertTitle": "提示",
-    "alertDescription": "这段内容来自 Element Plus 的 Alert 组件。"
+    "alertDescription": "这段内容来自 Element Plus 的 Alert 组件。",
+    "iconPickerLabel": "图标",
+    "iconPickerHint": "当前值：{icon}"
   },
   "permissionDemo": {
     "title": "权限守卫示例",

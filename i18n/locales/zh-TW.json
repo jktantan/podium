@@ -118,6 +118,12 @@
       "financeManager": "財務主管"
     }
   },
+  "iconPicker": {
+    "placeholder": "選擇圖示",
+    "mono": "單色",
+    "color": "彩色",
+    "empty": "沒有符合的圖示"
+  },
   "elementPlusDemo": {
     "title": "Element Plus 範例",
     "lead": "下面是 Element Plus 的常用元件。可以切換樣式來源，對比專案主題與 Element Plus 預設外觀；切換語言時元件內建文案也會同步變化。",
@@ -129,7 +135,8 @@
       "buttons": "按鈕",
       "data": "資料展示",
       "navigation": "導覽與分頁",
-      "feedback": "回饋"
+      "feedback": "回饋",
+      "iconPicker": "圖示選擇"
     },
     "inputLabel": "輸入框",
     "inputPlaceholder": "請輸入內容",
@@ -177,7 +184,9 @@
     "loadingShow": "顯示載入",
     "loadingText": "載入中…",
     "alertTitle": "提示",
-    "alertDescription": "這段內容來自 Element Plus 的 Alert 元件。"
+    "alertDescription": "這段內容來自 Element Plus 的 Alert 元件。",
+    "iconPickerLabel": "圖示",
+    "iconPickerHint": "目前值：{icon}"
   },
   "permissionDemo": {
     "title": "權限守衛範例",

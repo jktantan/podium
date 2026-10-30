@@ -118,6 +118,12 @@
       "financeManager": "Finance Manager"
     }
   },
+  "iconPicker": {
+    "placeholder": "Select an icon",
+    "mono": "Monochrome",
+    "color": "Color",
+    "empty": "No matching icons"
+  },
   "elementPlusDemo": {
     "title": "Element Plus demo",
     "lead": "Common Element Plus components are shown below. Switch the style source to compare the project theme with the Element Plus default look; built-in text follows the language too.",
@@ -129,7 +135,8 @@
       "buttons": "Buttons",
       "data": "Data display",
       "navigation": "Navigation and pagination",
-      "feedback": "Feedback"
+      "feedback": "Feedback",
+      "iconPicker": "Icon picker"
     },
     "inputLabel": "Input",
     "inputPlaceholder": "Enter something",
@@ -177,7 +184,9 @@
     "loadingShow": "Show loading",
     "loadingText": "Loading…",
     "alertTitle": "Notice",
-    "alertDescription": "This content comes from the Element Plus Alert component."
+    "alertDescription": "This content comes from the Element Plus Alert component.",
+    "iconPickerLabel": "Icon",
+    "iconPickerHint": "Current value: {icon}"
   },
   "permissionDemo": {
     "title": "Permission guard demo",
