@@ -231,6 +231,7 @@ onActivated(attachScrollTarget)
     padding: calc(var(--density-gap) / 2);
     background: var(--bg-surface);
     border-radius: var(--radius-md);
+
     &--shadow {
       box-shadow: 0 -5px 5px -5px var(--stack-tab-shadow-color);
     }

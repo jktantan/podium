@@ -150,7 +150,9 @@ export default defineNuxtConfig({
     '@element-plus/nuxt',
     '@nuxt/eslint',
     'vue-stack-tabs/nuxt',
-    'vue-lite-layer/nuxt'
+    'vue-lite-layer/nuxt',
+    // 必须排在 @element-plus/nuxt 之后：组件复用 Element Plus 的 CSS 变量
+    'ep-field-view/nuxt'
   ],
 
   /**
@@ -188,6 +190,19 @@ export default defineNuxtConfig({
   vueStackTabs: {
     locale: STACK_TABS_LOCALES[DEFAULT_LOCALE],
     messages: getStackTabsExtraLocales()
+  },
+
+  /**
+   * ep-field-view 模块：表单文本态组件（TextFormItem / JsonPreview）。
+   * - 模块自动注册组件并把 style.css 追加到 css 末尾，无需手动 import；
+   * - 组件样式全部取自 --el-* 变量，主题色 / 暗色 / 密度跟随宿主，
+   *   因此不要在 adapters/ 下再写一套「对齐 Element Plus」的覆盖；
+   * - 这里只覆盖中文后台的文案习惯，其余保持库默认。
+   */
+  epFieldView: {
+    emptyText: '-',
+    separator: '、',
+    rangeSeparator: ' 至 '
   },
 
   /**
@@ -231,6 +246,12 @@ export default defineNuxtConfig({
     // VXE 渲染 Element Plus 组件时的单元格内控件样式，必须排在 vxe-table 之后
     '@vxe-ui/plugin-render-element/dist/style.css',
     'overlayscrollbars/overlayscrollbars.css',
+    // ep-field-view 内部直接 import ElFormItem，不经过 @element-plus/nuxt 的模板扫描，
+    // 按需样式不会自动补上；这里显式引入表单容器与 form-item 的样式，
+    // 否则 .el-form-item 缺少 display:flex，label 与内容会竖排。
+    // 若使用 rateMode="rate" / imageMode="image"，还需保证 el-rate / el-image 样式存在。
+    'element-plus/es/components/form/style/css',
+    'element-plus/es/components/form-item/style/css',
     // Element Plus 深色变量，由 <html> 的 .dark 类激活
     'element-plus/theme-chalk/dark/css-vars.css',
     // 令牌 -> 密度 -> 各组件库适配层

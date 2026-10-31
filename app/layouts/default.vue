@@ -77,6 +77,12 @@
                 <span>{{ t('nav.elementPlusDemo') }}</span>
               </template>
             </el-menu-item>
+            <el-menu-item index="ep-field-view-demo">
+              <el-icon><ElIconDocument /></el-icon>
+              <template #title>
+                <span>{{ t('nav.epFieldViewDemo') }}</span>
+              </template>
+            </el-menu-item>
             <el-menu-item index="layer-demo">
               <el-icon><ElIconCopyDocument /></el-icon>
               <template #title>
@@ -161,6 +167,7 @@ const TAB_TITLE_KEYS: Record<string, string> = {
   'permission-demo': 'nav.permissionDemo',
   'table-demo': 'nav.tableDemo',
   'element-plus-demo': 'nav.elementPlusDemo',
+  'ep-field-view-demo': 'nav.epFieldViewDemo',
   'layer-demo': 'nav.layerDemo'
 }
 
@@ -215,6 +222,11 @@ const menuTabs = computed<Record<string, ITabData>>(() => ({
     id: 'element-plus-demo',
     title: t('nav.elementPlusDemo'),
     path: '/admin/element-plus-demo'
+  },
+  'ep-field-view-demo': {
+    id: 'ep-field-view-demo',
+    title: t('nav.epFieldViewDemo'),
+    path: '/admin/ep-field-view-demo'
   },
   'layer-demo': {
     id: 'layer-demo',
