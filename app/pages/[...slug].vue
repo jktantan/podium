@@ -1,5 +1,5 @@
 <template>
-  <AppErrorState :status-code="404" />
+  <Error404 />
 </template>
 
 <script setup lang="ts">

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt generate",
+    "build:prod": "node scripts/build-production.mjs",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",

@@ -9,9 +9,9 @@ type RoleKey = 'frontend' | 'productManager' | 'backend' | 'operations' | 'finan
 type StatusKey = 'enabled' | 'disabled'
 /** 三个 CommonFrame 演示场景：在当前页签内前进导航，页面内容都足够长以产生滚动条 */
 const frameDemos = [
-  { id: 'common-frame-full', title: '有头有尾', path: '/admin/common-frame/full' },
-  { id: 'common-frame-no-header', title: '无头有尾', path: '/admin/common-frame/no-header' },
-  { id: 'common-frame-bare', title: '无头无尾', path: '/admin/common-frame/bare' }
+  { id: 'common-frame-full', title: '有头有尾', path: '/demo/common-frame/full' },
+  { id: 'common-frame-no-header', title: '无头有尾', path: '/demo/common-frame/no-header' },
+  { id: 'common-frame-bare', title: '无头无尾', path: '/demo/common-frame/bare' }
 ] as const
 
 function openFrameDemo(demo: (typeof frameDemos)[number]) {

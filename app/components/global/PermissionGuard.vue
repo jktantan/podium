@@ -1,7 +1,7 @@
 <template>
   <slot v-if="allowed" />
   <slot v-else name="forbidden">
-    <AppErrorState :status-code="403" />
+    <Error403 />
   </slot>
 </template>
 

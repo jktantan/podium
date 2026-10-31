@@ -9,59 +9,36 @@
     </div>
 
     <div class="page__grid">
+      <!-- Demo 入口卡片：生产构建时 demoCards 为空，不渲染 -->
       <button
+        v-for="card in demoCards"
+        :key="card.id"
         type="button"
         class="page-card"
-        @click="openPage('/admin/about', 'about', 'home.aboutTitle')"
+        @click="openDemoCard(card)"
       >
-        <span class="page-card__icon">🧩</span>
-        <span class="page-card__title">{{ t('home.aboutTitle') }}</span>
-        <span class="page-card__desc">{{ t('home.aboutDesc') }}</span>
+        <span class="page-card__icon">{{ card.icon }}</span>
+        <span class="page-card__title">{{ card.title }}</span>
+        <span class="page-card__desc">{{ card.desc }}</span>
       </button>
-
-      <button
-        type="button"
-        class="page-card"
-        @click="openPage('/admin/settings', 'settings', 'home.settingsTitle')"
-      >
-        <span class="page-card__icon">⚙️</span>
-        <span class="page-card__title">{{ t('home.settingsTitle') }}</span>
-        <span class="page-card__desc">{{ t('home.settingsDesc') }}</span>
-      </button>
-
-      <button type="button" class="page-card" @click="openIframe">
-        <span class="page-card__icon">🌐</span>
-        <span class="page-card__title">{{ t('home.iframeTitle') }}</span>
-        <span class="page-card__desc">{{ t('home.iframeDesc') }}</span>
-      </button>
-    </div>
-
-    <div class="page__actions">
-      <el-button plain @click="openPage('/admin/settings', 'settings', 'home.settingsTitle')">
-        {{ t('home.reopenSettings') }}
-      </el-button>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import { useTabActions } from 'vue-stack-tabs'
+import { createDemoHomeCards } from '#podium-demo'
+import type { DemoHomeCard } from '#podium-demo'
 
 const { user } = useAuth()
 const { openTab } = useTabActions()
 const { t } = useI18n()
 
-function openPage(path: string, id: string, titleKey: string) {
-  void openTab({ id, title: t(titleKey), path })
-}
+/** Demo 首页入口；生产构建时由 '#podium-demo' 的空实现返回 [] */
+const demoCards = computed(() => createDemoHomeCards((key) => t(key)))
 
-function openIframe() {
-  void openTab({
-    id: 'iframe',
-    title: t('home.iframeTitle'),
-    path: '/iframe-demo.html',
-    iframe: true
-  })
+function openDemoCard(card: DemoHomeCard) {
+  void openTab({ id: card.id, title: card.title, path: card.path, iframe: card.iframe })
 }
 </script>
 

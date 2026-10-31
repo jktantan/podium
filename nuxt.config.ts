@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import type { Plugin } from 'vite'
 import font from 'vite-plugin-font'
@@ -139,6 +140,26 @@ const svgIconsPlugin = createSvgIconsPlugin({
 // 手动指定使用哪一个模板
 const spaLoadingTemplate = SPA_LOADING_TEMPLATES.cog
 
+/**
+ * Demo 内容开关（构建期）。
+ *
+ * - 默认开启：dev / pnpm build 都带 demo，方便查看与维护示例；
+ * - `PODIUM_DEMO=0` 关闭：pnpm build:prod 由 scripts/build-production.mjs 设置。
+ *   关闭后：
+ *     1. pages:extend 移除 /demo 路由（页面组件不会进入产物）；
+ *     2. '#podium-demo' 别名指向空实现（菜单 / 首页 demo 卡片不进产物）；
+ *     3. i18n 不再加载 i18n/locales/demo/*.json。
+ *
+ * 该值在构建期确定，改动后需要重启 dev 或重新 build。
+ */
+const demoEnabled = process.env.PODIUM_DEMO !== '0'
+
+/** app/pages/demo 的绝对路径（统一成 / 分隔，便于和 page.file 比较） */
+const demoPagesDir = fileURLToPath(new URL('./app/pages/demo/', import.meta.url)).replace(
+  /\\/g,
+  '/'
+)
+
 export default defineNuxtConfig({
   // 纯前端 SPA：构建产物是静态文件，可直接放到 nginx
   ssr: false,
@@ -157,16 +178,63 @@ export default defineNuxtConfig({
   ],
 
   /**
+   * Demo 模块入口。
+   *
+   * 布局 / 首页只 import '#podium-demo'，构建期决定真实实现还是空实现，
+   * 避免生产包里残留 demo 菜单与首页卡片代码。
+   */
+  alias: {
+    '#podium-demo': fileURLToPath(
+      new URL(demoEnabled ? './app/demo/index.ts' : './app/demo/stub.ts', import.meta.url)
+    )
+  },
+
+  /**
+   * 生产构建时移除 /demo 路由。
+   * 按页面文件路径过滤而不是 URL 前缀，目录改名后仍然有效。
+   */
+  hooks: {
+    'pages:extend'(pages) {
+      if (demoEnabled) {
+        return
+      }
+
+      for (let index = pages.length - 1; index >= 0; index -= 1) {
+        const file = pages[index]?.file?.replace(/\\/g, '/')
+
+        if (file?.startsWith(demoPagesDir)) {
+          pages.splice(index, 1)
+        }
+      }
+    }
+  },
+
+  /**
+   * 暴露给中间件：生产构建关闭 demo 时，/demo/* 按不存在处理。
+   */
+  runtimeConfig: {
+    public: {
+      demoEnabled
+    }
+  },
+
+  /**
    * 国际化：纯前端后台系统，不做语言前缀路由。
-   * - no_prefix：语言只影响界面文案，URL 保持 /admin/... 不变
+   * - no_prefix：语言只影响界面文案，URL 不带语言前缀
    * - 语言包放在项目根 i18n/locales/（@nuxtjs/i18n v10 的约定目录）
+   * - demo 专属文案在 i18n/locales/demo/，关闭 demo 时整个文件不加载；
+   *   locales[].files 支持数组，按顺序深度合并且后面的文件优先
    * - 选择语言后写 cookie，刷新/下次访问时由 detectBrowserLanguage 恢复
    * - Element Plus / VXE / vue-stack-tabs 的语言包映射在 i18n/vendors/ 下按库分文件
    */
   i18n: {
     defaultLocale: DEFAULT_LOCALE,
     strategy: 'no_prefix',
-    locales: LOCALE_OPTIONS.map(({ value: code, label: name, file }) => ({ code, name, file })),
+    locales: LOCALE_OPTIONS.map(({ value: code, label: name, file }) => ({
+      code,
+      name,
+      files: demoEnabled ? [file, `demo/${file}`] : [file]
+    })),
     langDir: 'locales',
     detectBrowserLanguage: {
       useCookie: true,
@@ -221,8 +289,26 @@ export default defineNuxtConfig({
     }
   },
 
+  /**
+   * Demo 静态资源。
+   *
+   * app/demo/public 只在 demo 开启时挂到 /demo-assets 下（当前是 iframe-demo.html）；
+   * 关闭 demo 时不注册，静态生成产物里不会出现该文件。
+   * 不能放 public/：Nuxt 会无条件把 public/ 拷进产物。
+   * 也不能挂在 /demo 下：Nitro 的静态中间件会先命中 /demo/*，
+   * 导致 /demo/settings 这类 SPA 路由返回 404。
+   */
   nitro: {
-    preset: 'static'
+    preset: 'static',
+    publicAssets: demoEnabled
+      ? [
+          {
+            dir: fileURLToPath(new URL('./app/demo/public', import.meta.url)),
+            baseURL: 'demo-assets',
+            maxAge: 0
+          }
+        ]
+      : []
   },
 
   vite: {

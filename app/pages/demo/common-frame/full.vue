@@ -1,16 +1,21 @@
 <template>
-  <common-frame :header="false" :footer="false">
+  <common-frame :header="{ title: '返回', content: '有头有尾' }" @back="goBack">
     <section class="frame-demo">
       <div class="frame-demo__toolbar">
         <el-button @click="goBack">返回查询框架</el-button>
       </div>
 
       <p class="frame-demo__lead">
-        无页头 + 无页脚：上下阴影都交还给页签自身的滚动阴影，逻辑与页签一致；内容区从页签顶部
-        一直滚到底部。内容足够长，会一直出现纵向滚动条。
+        默认页头 + 页脚：页头吸顶、页脚吸底，上下阴影样式与页签一致；滚到顶部时页头阴影消失，
+        滚到底部时页脚阴影消失。内容足够长，会一直出现纵向滚动条。
       </p>
       <p v-for="n in 100" :key="n" class="frame-demo__row">第 {{ n }} 行内容，用于撑出滚动条。</p>
     </section>
+
+    <template #footer>
+      <el-button>取消</el-button>
+      <el-button type="primary">确定</el-button>
+    </template>
   </common-frame>
 </template>
 
@@ -19,10 +24,10 @@ import { useTabRouter } from 'vue-stack-tabs'
 
 const { backward, forward } = useTabRouter()
 
-/** 无页头时没有 el-page-header 的返回箭头，靠这里回到查询框架 */
+/** 在当前页签内返回；没有页内导航栈（直接打开页面）时回到查询框架 */
 function goBack() {
   if (!backward(1)) {
-    forward({ path: '/admin/search-demo' })
+    forward({ path: '/demo/search-demo' })
   }
 }
 </script>

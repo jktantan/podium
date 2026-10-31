@@ -36,84 +36,11 @@
                   <span>{{ t('nav.home') }}</span>
                 </template>
               </el-menu-item>
-              <el-menu-item index="about">
-                <el-icon><ElIconInfoFilled /></el-icon>
-                <template #title>
-                  <span>{{ t('nav.about') }}</span>
-                </template>
-              </el-menu-item>
-              <el-menu-item index="settings">
-                <el-icon><ElIconSetting /></el-icon>
-                <template #title>
-                  <span>{{ t('nav.settings') }}</span>
-                </template>
-              </el-menu-item>
-              <el-menu-item index="iframe">
-                <el-icon><ElIconMonitor /></el-icon>
-                <template #title>
-                  <span>{{ t('nav.iframe') }}</span>
-                </template>
-              </el-menu-item>
-              <el-menu-item index="404-demo">
-                <el-icon><ElIconWarningFilled /></el-icon>
-                <template #title>
-                  <span>{{ t('nav.notFound') }}</span>
-                </template>
-              </el-menu-item>
-              <el-menu-item index="permission-demo">
-                <el-icon><ElIconLock /></el-icon>
-                <template #title>
-                  <span>{{ t('nav.permissionDemo') }}</span>
-                </template>
-              </el-menu-item>
-              <el-menu-item index="table-demo">
-                <el-icon><ElIconGrid /></el-icon>
-                <template #title>
-                  <span>{{ t('nav.tableDemo') }}</span>
-                </template>
-              </el-menu-item>
-              <el-menu-item index="element-plus-demo">
-                <el-icon><ElIconMouse /></el-icon>
-                <template #title>
-                  <span>{{ t('nav.elementPlusDemo') }}</span>
-                </template>
-              </el-menu-item>
-              <el-menu-item index="ep-field-view-demo">
-                <el-icon><ElIconDocument /></el-icon>
-                <template #title>
-                  <span>{{ t('nav.epFieldViewDemo') }}</span>
-                </template>
-              </el-menu-item>
-              <el-menu-item index="layer-demo">
-                <el-icon><ElIconCopyDocument /></el-icon>
-                <template #title>
-                  <span>{{ t('nav.layerDemo') }}</span>
-                </template>
-              </el-menu-item>
-              <el-menu-item index="search-demo">
-                <el-icon><ElIconCopyDocument /></el-icon>
-                <template #title>
-                  <span>查询柜架</span>
-                </template>
-              </el-menu-item>
-              <el-sub-menu index="error-pages">
-                <template #title>
-                  <el-icon><ElIconWarningFilled /></el-icon>
-                  <span>{{ t('nav.errorPages') }}</span>
-                </template>
-                <el-menu-item index="error-401">
-                  <span>{{ t('nav.error401') }}</span>
-                </el-menu-item>
-                <el-menu-item index="error-403">
-                  <span>{{ t('nav.error403') }}</span>
-                </el-menu-item>
-                <el-menu-item index="error-404">
-                  <span>{{ t('nav.error404') }}</span>
-                </el-menu-item>
-                <el-menu-item index="error-500">
-                  <span>{{ t('nav.error500') }}</span>
-                </el-menu-item>
-              </el-sub-menu>
+              <!--
+                Demo 菜单整体收在「示例」子菜单下。
+                构建期由 '#podium-demo' 决定渲染真实菜单还是空实现（生产包）。
+              -->
+              <DemoMenuItems />
             </el-menu>
           </AppScrollbar>
         </el-aside>
@@ -129,7 +56,7 @@
         -->
           <ClientOnly>
             <VueStackTabs
-              iframe-path="/admin/iframe"
+              iframe-path="/iframe"
               :home-tab="homeTab"
               :i18n="stackTabsLocale"
               :max="20"
@@ -172,27 +99,18 @@
 <script setup lang="ts">
 import type { ITabData } from 'vue-stack-tabs'
 import { useTabActions } from 'vue-stack-tabs'
+import { DemoMenuItems, DEMO_TAB_TITLE_KEYS, createDemoMenuTabs } from '#podium-demo'
 import PageScroll from '~/components/stackTabs/PageScroll.vue'
 
 /**
  * 菜单页签的 id 是稳定值，语言切换后按 id 回写标题。
  * （页签标题是打开时的快照，不会自动跟随语言包变化。）
+ *
+ * Demo 页签的标题键由 '#podium-demo' 提供：生产构建时为空对象。
  */
 const TAB_TITLE_KEYS: Record<string, string> = {
-  home: 'nav.home',
-  about: 'nav.about',
-  settings: 'nav.settings',
-  iframe: 'nav.iframe',
-  '404-demo': 'nav.notFound',
-  'permission-demo': 'nav.permissionDemo',
-  'table-demo': 'nav.tableDemo',
-  'element-plus-demo': 'nav.elementPlusDemo',
-  'ep-field-view-demo': 'nav.epFieldViewDemo',
-  'layer-demo': 'nav.layerDemo',
-  'error-401': 'nav.error401',
-  'error-403': 'nav.error403',
-  'error-404': 'nav.error404',
-  'error-500': 'nav.error500'
+  ...DEMO_TAB_TITLE_KEYS,
+  home: 'nav.home'
 }
 
 const { user } = useAuth()
@@ -226,46 +144,8 @@ const homeTab = computed<ITabData>(() => ({
  * 菜单 item 的 index 与页签 id 保持一致，激活态可以直接用页签 id 驱动。
  */
 const menuTabs = computed<Record<string, ITabData>>(() => ({
-  home: { ...homeTab.value },
-  about: { id: 'about', title: t('nav.about'), path: '/admin/about' },
-  settings: { id: 'settings', title: t('nav.settings'), path: '/admin/settings' },
-  iframe: {
-    id: 'iframe',
-    title: t('nav.iframe'),
-    path: '/iframe-demo.html',
-    iframe: true
-  },
-  '404-demo': { id: '404-demo', title: t('nav.notFound'), path: '/admin/404-demo' },
-  'permission-demo': {
-    id: 'permission-demo',
-    title: t('nav.permissionDemo'),
-    path: '/admin/permission-demo'
-  },
-  'table-demo': { id: 'table-demo', title: t('nav.tableDemo'), path: '/admin/table-demo' },
-  'element-plus-demo': {
-    id: 'element-plus-demo',
-    title: t('nav.elementPlusDemo'),
-    path: '/admin/element-plus-demo'
-  },
-  'ep-field-view-demo': {
-    id: 'ep-field-view-demo',
-    title: t('nav.epFieldViewDemo'),
-    path: '/admin/ep-field-view-demo'
-  },
-  'layer-demo': {
-    id: 'layer-demo',
-    title: t('nav.layerDemo'),
-    path: '/admin/layer-demo'
-  },
-  'search-demo': {
-    id: 'search-demo',
-    title: '查询框架',
-    path: '/admin/search-demo'
-  },
-  'error-401': { id: 'error-401', title: t('nav.error401'), path: '/admin/error-pages/401' },
-  'error-403': { id: 'error-403', title: t('nav.error403'), path: '/admin/error-pages/403' },
-  'error-404': { id: 'error-404', title: t('nav.error404'), path: '/admin/error-pages/404' },
-  'error-500': { id: 'error-500', title: t('nav.error500'), path: '/admin/error-pages/500' }
+  ...createDemoMenuTabs((key) => t(key)),
+  home: { ...homeTab.value }
 }))
 
 /**

@@ -27,11 +27,11 @@ const { openTab } = useTabActions()
 const { t } = useI18n()
 
 function openDetail() {
-  forward({ path: '/admin/detail', query: { from: 'about' } })
+  forward({ path: '/demo/detail', query: { from: 'about' } })
 }
 
 function openSettings() {
-  void openTab({ id: 'settings', title: t('nav.settings'), path: '/admin/settings' })
+  void openTab({ id: 'settings', title: t('nav.settings'), path: '/demo/settings' })
 }
 </script>
 
