@@ -2,6 +2,7 @@
 import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import type { Plugin } from 'vite'
+import font from 'vite-plugin-font'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons-ng'
 import {
   APPEARANCE_STORAGE_KEY,
@@ -225,7 +226,17 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    plugins: [tailwindcss(), iconsBuildPlugin(), svgIconsPlugin]
+    plugins: [
+      /*
+       * 本地字体交给 vite-plugin-font：
+       * import *.ttf 时自动切分、转 woff2 并注入 @font-face，
+       * 中文字体按字符范围分包，浏览器只下载实际用到的分片。
+       */
+      font.vite(),
+      tailwindcss(),
+      iconsBuildPlugin(),
+      svgIconsPlugin
+    ]
   },
 
   css: [

@@ -1,152 +1,172 @@
 <template>
-  <el-container class="app-layout">
-    <el-header
-      class="app-layout__header flex items-center justify-between border-b border-line bg-surface"
-      height="50px"
-    >
-      <span class="text-[15px] font-bold uppercase tracking-[0.12em] text-primary">Podium</span>
+  <WaterMark :content="['测试水印', '测试水印']">
+    <el-container class="app-layout">
+      <el-header
+        class="app-layout__header flex items-center justify-between border-b border-line bg-surface"
+        height="50px"
+      >
+        <span class="text-[15px] font-bold uppercase tracking-[0.12em] text-primary">Podium</span>
 
-      <div class="flex items-center gap-2">
-        <LanguageSwitcher />
-        <AppearanceSwitcher />
-        <span class="max-w-[180px] truncate text-[13px] text-secondary">{{ user }}</span>
-        <el-button @click="logoutToLogin">{{ t('nav.logout') }}</el-button>
-      </div>
-    </el-header>
+        <div class="flex items-center gap-2">
+          <LanguageSwitcher />
+          <AppearanceSwitcher />
+          <span class="max-w-[180px] truncate text-[13px] text-secondary">{{ user }}</span>
+          <el-button @click="logoutToLogin">{{ t('nav.logout') }}</el-button>
+        </div>
+      </el-header>
 
-    <el-container class="app-layout__body">
-      <el-aside id="app-layout-aside" class="app-layout__aside" :width="asideWidth">
-        <!-- 菜单滚动交给 OverlayScrollbars，避免 el-aside 原生滚动条与外层滚动条叠加 -->
-        <AppScrollbar class="app-layout__aside-scroll">
-          <!--
+      <el-container class="app-layout__body">
+        <el-aside id="app-layout-aside" class="app-layout__aside" :width="asideWidth">
+          <!-- 菜单滚动交给 OverlayScrollbars，避免 el-aside 原生滚动条与外层滚动条叠加 -->
+          <AppScrollbar class="app-layout__aside-scroll">
+            <!--
             收缩时交给 el-menu 原生 collapse 模式：只留图标，激活态与点击导航不变。
             每项用 #title 插槽提供文字，折叠后该插槽会作为悬浮提示显示。
           -->
-          <el-menu
-            class="app-layout__menu"
-            :collapse="asideCollapsed"
-            :collapse-transition="false"
-            :default-active="activeMenu"
-            @select="handleMenuSelect"
-          >
-            <el-menu-item index="home">
-              <el-icon><ElIconHomeFilled /></el-icon>
-              <template #title>
-                <span>{{ t('nav.home') }}</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="about">
-              <el-icon><ElIconInfoFilled /></el-icon>
-              <template #title>
-                <span>{{ t('nav.about') }}</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="settings">
-              <el-icon><ElIconSetting /></el-icon>
-              <template #title>
-                <span>{{ t('nav.settings') }}</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="iframe">
-              <el-icon><ElIconMonitor /></el-icon>
-              <template #title>
-                <span>{{ t('nav.iframe') }}</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="404-demo">
-              <el-icon><ElIconWarningFilled /></el-icon>
-              <template #title>
-                <span>{{ t('nav.notFound') }}</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="permission-demo">
-              <el-icon><ElIconLock /></el-icon>
-              <template #title>
-                <span>{{ t('nav.permissionDemo') }}</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="table-demo">
-              <el-icon><ElIconGrid /></el-icon>
-              <template #title>
-                <span>{{ t('nav.tableDemo') }}</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="element-plus-demo">
-              <el-icon><ElIconMouse /></el-icon>
-              <template #title>
-                <span>{{ t('nav.elementPlusDemo') }}</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="ep-field-view-demo">
-              <el-icon><ElIconDocument /></el-icon>
-              <template #title>
-                <span>{{ t('nav.epFieldViewDemo') }}</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="layer-demo">
-              <el-icon><ElIconCopyDocument /></el-icon>
-              <template #title>
-                <span>{{ t('nav.layerDemo') }}</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="search-demo">
-              <el-icon><ElIconCopyDocument /></el-icon>
-              <template #title>
-                <span>查询柜架</span>
-              </template>
-            </el-menu-item>
-          </el-menu>
-        </AppScrollbar>
-      </el-aside>
+            <el-menu
+              class="app-layout__menu"
+              :collapse="asideCollapsed"
+              :collapse-transition="false"
+              :default-active="activeMenu"
+              @select="handleMenuSelect"
+            >
+              <el-menu-item index="home">
+                <el-icon><ElIconHomeFilled /></el-icon>
+                <template #title>
+                  <span>{{ t('nav.home') }}</span>
+                </template>
+              </el-menu-item>
+              <el-menu-item index="about">
+                <el-icon><ElIconInfoFilled /></el-icon>
+                <template #title>
+                  <span>{{ t('nav.about') }}</span>
+                </template>
+              </el-menu-item>
+              <el-menu-item index="settings">
+                <el-icon><ElIconSetting /></el-icon>
+                <template #title>
+                  <span>{{ t('nav.settings') }}</span>
+                </template>
+              </el-menu-item>
+              <el-menu-item index="iframe">
+                <el-icon><ElIconMonitor /></el-icon>
+                <template #title>
+                  <span>{{ t('nav.iframe') }}</span>
+                </template>
+              </el-menu-item>
+              <el-menu-item index="404-demo">
+                <el-icon><ElIconWarningFilled /></el-icon>
+                <template #title>
+                  <span>{{ t('nav.notFound') }}</span>
+                </template>
+              </el-menu-item>
+              <el-menu-item index="permission-demo">
+                <el-icon><ElIconLock /></el-icon>
+                <template #title>
+                  <span>{{ t('nav.permissionDemo') }}</span>
+                </template>
+              </el-menu-item>
+              <el-menu-item index="table-demo">
+                <el-icon><ElIconGrid /></el-icon>
+                <template #title>
+                  <span>{{ t('nav.tableDemo') }}</span>
+                </template>
+              </el-menu-item>
+              <el-menu-item index="element-plus-demo">
+                <el-icon><ElIconMouse /></el-icon>
+                <template #title>
+                  <span>{{ t('nav.elementPlusDemo') }}</span>
+                </template>
+              </el-menu-item>
+              <el-menu-item index="ep-field-view-demo">
+                <el-icon><ElIconDocument /></el-icon>
+                <template #title>
+                  <span>{{ t('nav.epFieldViewDemo') }}</span>
+                </template>
+              </el-menu-item>
+              <el-menu-item index="layer-demo">
+                <el-icon><ElIconCopyDocument /></el-icon>
+                <template #title>
+                  <span>{{ t('nav.layerDemo') }}</span>
+                </template>
+              </el-menu-item>
+              <el-menu-item index="search-demo">
+                <el-icon><ElIconCopyDocument /></el-icon>
+                <template #title>
+                  <span>查询柜架</span>
+                </template>
+              </el-menu-item>
+              <el-sub-menu index="error-pages">
+                <template #title>
+                  <el-icon><ElIconWarningFilled /></el-icon>
+                  <span>{{ t('nav.errorPages') }}</span>
+                </template>
+                <el-menu-item index="error-401">
+                  <span>{{ t('nav.error401') }}</span>
+                </el-menu-item>
+                <el-menu-item index="error-403">
+                  <span>{{ t('nav.error403') }}</span>
+                </el-menu-item>
+                <el-menu-item index="error-404">
+                  <span>{{ t('nav.error404') }}</span>
+                </el-menu-item>
+                <el-menu-item index="error-500">
+                  <span>{{ t('nav.error500') }}</span>
+                </el-menu-item>
+              </el-sub-menu>
+            </el-menu>
+          </AppScrollbar>
+        </el-aside>
 
-      <el-main class="app-layout__main">
-        <!-- 与 auth 布局一致的浮层光斑，压在主区域背景之上、页签之下 -->
-        <div class="app-layout__glow app-layout__glow--top" aria-hidden="true"></div>
-        <div class="app-layout__glow app-layout__glow--bottom" aria-hidden="true"></div>
+        <el-main class="app-layout__main">
+          <!-- 与 auth 布局一致的浮层光斑，压在主区域背景之上、页签之下 -->
+          <div class="app-layout__glow app-layout__glow--top" aria-hidden="true"></div>
+          <div class="app-layout__glow app-layout__glow--bottom" aria-hidden="true"></div>
 
-        <!--
+          <!--
           页签容器在客户端挂载完成后再渲染：
           既提供首屏占位，也避免 vue-stack-tabs 直接使用 RouterView 时触发 Nuxt 的页面渲染诊断。
         -->
-        <ClientOnly>
-          <VueStackTabs
-            iframe-path="/admin/iframe"
-            :home-tab="homeTab"
-            :i18n="stackTabsLocale"
-            :max="20"
-            :contextmenu="true"
-            :page-scroll="PageScroll"
-            height="100%"
-            style="padding: 5px"
-          >
-            <!-- 缩展按钮放在标签栏左侧，复用库的 header 按钮尺寸与外观 -->
-            <template #leftButton>
-              <button
-                type="button"
-                class="stack-tab__header-button app-layout__aside-toggle"
-                :class="{ 'is-collapsed': asideCollapsed }"
-                :title="asideToggleLabel"
-                :aria-label="asideToggleLabel"
-                :aria-expanded="!asideCollapsed"
-                aria-controls="app-layout-aside"
-                @click="toggleAside"
-              >
-                <span class="stack-tab__button">
-                  <ElIconFold class="app-layout__aside-toggle-icon" />
-                </span>
-              </button>
-            </template>
-          </VueStackTabs>
+          <ClientOnly>
+            <VueStackTabs
+              iframe-path="/admin/iframe"
+              :home-tab="homeTab"
+              :i18n="stackTabsLocale"
+              :max="20"
+              :contextmenu="true"
+              :page-scroll="PageScroll"
+              height="100%"
+              style="padding: 5px"
+            >
+              <!-- 缩展按钮放在标签栏左侧，复用库的 header 按钮尺寸与外观 -->
+              <template #leftButton>
+                <button
+                  type="button"
+                  class="stack-tab__header-button app-layout__aside-toggle"
+                  :class="{ 'is-collapsed': asideCollapsed }"
+                  :title="asideToggleLabel"
+                  :aria-label="asideToggleLabel"
+                  :aria-expanded="!asideCollapsed"
+                  aria-controls="app-layout-aside"
+                  @click="toggleAside"
+                >
+                  <span class="stack-tab__button">
+                    <ElIconFold class="app-layout__aside-toggle-icon" />
+                  </span>
+                </button>
+              </template>
+            </VueStackTabs>
 
-          <template #fallback>
-            <div class="grid h-full place-items-center text-sm text-muted">
-              {{ t('app.loading') }}
-            </div>
-          </template>
-        </ClientOnly>
-      </el-main>
+            <template #fallback>
+              <div class="grid h-full place-items-center text-sm text-muted">
+                {{ t('app.loading') }}
+              </div>
+            </template>
+          </ClientOnly>
+        </el-main>
+      </el-container>
     </el-container>
-  </el-container>
+  </WaterMark>
 </template>
 
 <script setup lang="ts">
@@ -168,7 +188,11 @@ const TAB_TITLE_KEYS: Record<string, string> = {
   'table-demo': 'nav.tableDemo',
   'element-plus-demo': 'nav.elementPlusDemo',
   'ep-field-view-demo': 'nav.epFieldViewDemo',
-  'layer-demo': 'nav.layerDemo'
+  'layer-demo': 'nav.layerDemo',
+  'error-401': 'nav.error401',
+  'error-403': 'nav.error403',
+  'error-404': 'nav.error404',
+  'error-500': 'nav.error500'
 }
 
 const { user } = useAuth()
@@ -237,7 +261,11 @@ const menuTabs = computed<Record<string, ITabData>>(() => ({
     id: 'search-demo',
     title: '查询框架',
     path: '/admin/search-demo'
-  }
+  },
+  'error-401': { id: 'error-401', title: t('nav.error401'), path: '/admin/error-pages/401' },
+  'error-403': { id: 'error-403', title: t('nav.error403'), path: '/admin/error-pages/403' },
+  'error-404': { id: 'error-404', title: t('nav.error404'), path: '/admin/error-pages/404' },
+  'error-500': { id: 'error-500', title: t('nav.error500'), path: '/admin/error-pages/500' }
 }))
 
 /**

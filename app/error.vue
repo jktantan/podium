@@ -1,5 +1,7 @@
 <template>
-  <div class="error-page">
+  <Error401 v-if="statusCode === 401" fullscreen />
+
+  <div v-else class="error-page">
     <div class="error-page__glow error-page__glow--primary" aria-hidden="true" />
     <div class="error-page__glow error-page__glow--info" aria-hidden="true" />
 
@@ -45,7 +47,9 @@ const props = defineProps<{ error: AppErrorLike }>()
 const route = useRoute()
 const router = useRouter()
 const { isLoggedIn, logout } = useAuth()
-const { reset } = useTabActions()
+// 401 全屏错误页渲染在 <VueStackTabs> 之外，没有页签上下文；
+// 此时调用 useTabActions() 会在应用初始化阶段抛错。
+const tabActions = Number(props.error?.statusCode) === 401 ? null : useTabActions()
 const { t } = useI18n()
 
 const statusCode = computed(() => Number(props.error?.statusCode) || 500)
@@ -119,7 +123,7 @@ function reloadPage() {
 }
 
 async function goLogin() {
-  reset()
+  tabActions?.reset()
 
   if (import.meta.client) {
     sessionStorage.removeItem('stacktab-active-tab')

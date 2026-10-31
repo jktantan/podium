@@ -52,7 +52,7 @@ const DEFAULT_FONT_SIZE = 16
 /** 多行文字的行间距（CSS px） */
 const FONT_GAP = 3
 /** 文字描边颜色，让浅色水印在深色背景上仍可辨认 */
-const TEXT_STROKE_COLOR = 'rgba(255, 255, 255, 0.2)'
+const TEXT_STROKE_COLOR = 'rgba(255, 255, 255, 0.1)'
 
 const props = withDefaults(defineProps<WaterMarkProps>(), {
   show: true,
@@ -67,7 +67,7 @@ const props = withDefaults(defineProps<WaterMarkProps>(), {
   imageWidth: DEFAULT_MARK_WIDTH,
   imageHeight: DEFAULT_MARK_HEIGHT,
   content: '',
-  fontColor: 'rgba(0, 0, 0, 0.04)',
+  fontColor: 'rgba(0, 0, 0, 0.1)',
   fontStyle: 'normal',
   fontFamily: 'sans-serif',
   fontWeight: 'normal',

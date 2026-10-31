@@ -1,8 +1,11 @@
 allowBuilds:
   '@parcel/watcher': true
+  cn-font-split: true
   esbuild: true
+  koffi: true
+  protobufjs: true
   unrs-resolver: true
 minimumReleaseAgeExclude:
   - vue-lite-layer@1.3.1 || 1.3.2
   - vue-stack-tabs@2.5.0 || 2.5.1 || 2.6.0 || 2.6.1 || 2.6.2 || 2.6.3 || 2.6.4 || 3.0.0 || 3.0.1 || 3.0.2 || 3.1.0
-  - ep-field-view@0.3.0 || 0.5.0
+  - ep-field-view@0.3.0 || 0.5.0 || 0.5.2
