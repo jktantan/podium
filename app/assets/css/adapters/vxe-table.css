@@ -112,3 +112,32 @@
 
   background-color: transparent;
 }
+
+/**
+ * 空数据视图
+ *
+ * 由 app/plugins/vxe-table.ts 注册的 'PodiumEmpty' 渲染器输出：
+ * nodata.svg + 当前语言的空数据文案，纵向居中排列。
+ * 表格和 Grid 共用同一份全局 emptyRender 配置，样式只需要写一处。
+ */
+.vxe-table--empty-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 0;
+  line-height: 1.5;
+}
+
+.vxe-table--empty-image img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  user-select: none;
+}
+
+.vxe-table--empty-image-text {
+  color: var(--vxe-ui-font-lighten-color);
+  font-size: var(--vxe-ui-font-size-small);
+}

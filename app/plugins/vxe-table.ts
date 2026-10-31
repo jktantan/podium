@@ -2,6 +2,8 @@ import VxeUITable from 'vxe-table'
 import { VxeUI } from '@vxe-ui/core'
 import { VxeButton, VxeModal, VxePager } from 'vxe-pc-ui'
 import 'vxe-pc-ui/lib/style.css'
+import { h } from 'vue'
+import nodataImage from '~/assets/images/nodata.svg'
 import VxeUIPluginRenderElement from '@vxe-ui/plugin-render-element'
 import {
   ElAutocomplete,
@@ -100,6 +102,24 @@ export default defineNuxtPlugin((nuxtApp) => {
     VxeUIPluginRenderElement.component(component)
   })
   VxeUI.use(VxeUIPluginRenderElement)
+
+  /**
+   * 全局空数据视图：空表格 / 空 Grid 统一显示 nodata.svg + 当前语言的空数据文案。
+   *
+   * 为什么不直接配 emptyText：它只接受纯文本，渲染不了图片。
+   * 这里注册一个 renderer，再把 table.emptyRender 指向它；grid 内部用的
+   * 就是 vxe-table，所以表格和 Grid 都会命中同一份全局配置。
+   * 文案在渲染时读取，跟着 VXE 当前语言走，不需要在这里再维护一份。
+   */
+  VxeUI.renderer.add('PodiumEmpty', {
+    renderTableEmpty() {
+      return h('div', { class: 'vxe-table--empty-image' }, [
+        h('img', { src: nodataImage, alt: '', draggable: false }),
+        h('span', { class: 'vxe-table--empty-image-text' }, VxeUI.getI18n('vxe.table.emptyText'))
+      ])
+    }
+  })
+  VxeUI.setConfig({ table: { emptyRender: { name: 'PodiumEmpty' } } })
 
   registerVxeLocales()
 })
