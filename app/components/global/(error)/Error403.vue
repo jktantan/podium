@@ -4,8 +4,9 @@
  * 原样式按 384px 数字写死，页签高度较小时会溢出，这里改为跟随容器缩放。
  */
 import { useTabActions, useTabRouter } from 'vue-stack-tabs'
-import { css as poppins } from '~/assets/fonts/Poppins.ttf'
-import { css as titleFont } from '~/assets/fonts/PangMenZhengDao3.ttf'
+import { css as poppins } from '~/assets/fonts/Poppins.ttf?subsets'
+import { css as titleFont } from '~/assets/fonts/PangMenZhengDao3.ttf?subsets'
+import { css as titleFontTW } from '~/assets/fonts/NanoByongGyeHei-Regular.ttf?subsets'
 
 const props = withDefaults(
   defineProps<{
@@ -30,12 +31,11 @@ const hasPreviousPage = computed(() => (activeTab.value?.pages.size() ?? 0) > 1)
 
 /**
  * PangMenZhengDao 只有简体字形，繁体（務/異/權 等）会逐字回退到系统字体，
- * 标题会出现半截标题体、半截黑体的混排。繁体下整体换成系统字体。
+ * 标题会出现半截标题体、半截黑体的混排。繁体统一换成同样风格的
+ * NanoByongGyeHei，简体与英文仍用 PangMenZhengDao。
  */
 const titleFontFamily = computed(() =>
-  currentLocale.value === 'zh-TW'
-    ? "'Microsoft JhengHei', 'PingFang TC', 'Microsoft YaHei', sans-serif"
-    : titleFont.family
+  currentLocale.value === 'zh-TW' ? titleFontTW.family : titleFont.family
 )
 
 function goBack() {

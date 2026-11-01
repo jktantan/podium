@@ -9,8 +9,9 @@
  * - 文案改走 i18n，按钮提供刷新与返回首页。
  */
 import { useTabActions, useTabRouter } from 'vue-stack-tabs'
-import { css as inconsolata } from '~/assets/fonts/Inconsolata.ttf'
-import { css as titleFont } from '~/assets/fonts/PangMenZhengDao3.ttf'
+import { css as inconsolata } from '~/assets/fonts/Inconsolata.ttf?subsets'
+import { css as titleFont } from '~/assets/fonts/PangMenZhengDao3.ttf?subsets'
+import { css as titleFontTW } from '~/assets/fonts/NanoByongGyeHei-Regular.ttf?subsets'
 
 interface ErrorLike {
   statusCode?: number | string
@@ -41,12 +42,11 @@ const hasPreviousPage = computed(() => (activeTab.value?.pages.size() ?? 0) > 1)
 
 /**
  * PangMenZhengDao 只有简体字形，繁体（務/異 等）会逐字回退到系统字体，
- * 标题会出现半截标题体、半截黑体的混排。繁体下整体换成系统字体。
+ * 标题会出现半截标题体、半截黑体的混排。繁体统一换成同样风格的
+ * NanoByongGyeHei，简体与英文仍用 PangMenZhengDao。
  */
 const titleFontFamily = computed(() =>
-  currentLocale.value === 'zh-TW'
-    ? "'Microsoft JhengHei', 'PingFang TC', 'Microsoft YaHei', sans-serif"
-    : titleFont.family
+  currentLocale.value === 'zh-TW' ? titleFontTW.family : titleFont.family
 )
 
 const statusCode = computed(() => Number(props.error?.statusCode) || 500)
@@ -132,7 +132,7 @@ $green: rgb(128 255 128 / 0.8);
     0 0 2px rgb(255 255 255 / 0.8);
   background-color: #000;
   background-image: radial-gradient(#11581e, #041607);
-
+  font-weight: 400;
   &--fullscreen {
     height: 100dvh;
   }

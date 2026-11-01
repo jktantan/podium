@@ -10,7 +10,7 @@
  * 只保留纯 CSS 动效，避免新增运行时依赖。
  */
 import Parallax from 'parallax-js'
-import { css as barlowBold } from '~/assets/fonts/Barlow-Bold.ttf'
+import { css as barlowBold } from '~/assets/fonts/Barlow-Bold.ttf?subsets'
 
 const props = withDefaults(
   defineProps<{

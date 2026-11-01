@@ -154,6 +154,22 @@ const spaLoadingTemplate = SPA_LOADING_TEMPLATES.cog
  */
 const demoEnabled = process.env.PODIUM_DEMO !== '0'
 
+/**
+ * 错误页字体子集化的兜底字符表（见下方 font.vite 配置）。
+ *
+ * scanFiles 之外的字符不会进入子集，浏览器会逐字回退到系统字体，
+ * 表现为同一行里字体混排而不是缺字方块。这里保留 ASCII 可打印字符、
+ * 常用中英文标点，覆盖错误码、运行时 message、日期等动态文本。
+ */
+const FONT_SUBSET_WHITELIST = [
+  '0123456789',
+  'abcdefghijklmnopqrstuvwxyz',
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  ' .,:;!?()[]{}<>/\\|@#$%^&*_-+=~`\'"',
+  '，。！？、；：“”‘’（）【】《》〈〉…—～·「」『』',
+  '×÷±°'
+]
+
 /** app/pages/demo 的绝对路径（统一成 / 分隔，便于和 page.file 比较） */
 const demoPagesDir = fileURLToPath(new URL('./app/pages/demo/', import.meta.url)).replace(
   /\\/g,
@@ -317,8 +333,20 @@ export default defineNuxtConfig({
        * 本地字体交给 vite-plugin-font：
        * import *.ttf 时自动切分、转 woff2 并注入 @font-face，
        * 中文字体按字符范围分包，浏览器只下载实际用到的分片。
+       *
+       * 错误页字体以 ?subsets 引入，只保留下列 scanFiles 里出现过的字符。
+       * 扫描范围必须包含 i18n 的 JSON：错误页文案在语言包里，不在 .vue 中；
+       * 漏扫的字符不会缺字，而是逐字回退到系统字体，出现字体混排。
+       * 只扫语言包根目录（各语言文件），demo 文案与错误页字体无关，不必计入。
        */
-      font.vite(),
+      font.vite({
+        scanFiles: [
+          'app/**/*.{vue,ts,tsx,js,css,scss}',
+          'i18n/locales/*.json',
+          'i18n/vendors/**/*.ts'
+        ],
+        whiteList: FONT_SUBSET_WHITELIST
+      }),
       tailwindcss(),
       iconsBuildPlugin(),
       svgIconsPlugin
