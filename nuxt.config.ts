@@ -21,6 +21,7 @@ import {
   removeIcon,
   syncIcon
 } from './scripts/build-icons.mjs'
+import { loadAppEnv } from './scripts/env.mjs'
 
 /**
  * 首屏防闪脚本：
@@ -141,18 +142,55 @@ const svgIconsPlugin = createSvgIconsPlugin({
 const spaLoadingTemplate = SPA_LOADING_TEMPLATES.cog
 
 /**
+ * 应用环境：dev / test / staging / prod。
+ *
+ * 由 APP_ENV 决定（启动脚本已设置），并在这里加载对应的 .env.<环境>。
+ * 未指定时按 NODE_ENV 推断：开发服务器用 dev，构建用 prod。
+ * 环境文件与变量说明见 docs/env.md。
+ */
+const appEnv = loadAppEnv()
+
+/**
+ * 读取公开配置。
+ *
+ * 变量名保持 NUXT_PUBLIC_ 前缀，既作为 runtimeConfig 的默认值，
+ * 也允许 Nuxt 在部署时按同名环境变量覆盖，两套机制不会打架。
+ */
+const envValue = (key: string, fallback: string) => process.env[key]?.trim() || fallback
+
+const appName = envValue('NUXT_PUBLIC_APP_NAME', 'Podium')
+const apiBaseUrl = envValue('NUXT_PUBLIC_API_BASE_URL', '')
+
+/**
+ * 打包调试策略：
+ *
+ * - dev / test：产物保留 sourceMap 和 console / debugger，方便排查问题；
+ * - staging / prod：不产出 sourceMap，并在压缩时移除 console / debugger，
+ *   避免暴露源码位置和调试信息。
+ *
+ * 只影响打包产物，dev server 自身的热更新与调试能力不受影响。
+ */
+const isDebugEnv = appEnv === 'dev' || appEnv === 'test'
+const isReleaseEnv = appEnv === 'staging' || appEnv === 'prod'
+
+/**
  * Demo 内容开关（构建期）。
  *
- * - 默认开启：dev / pnpm build 都带 demo，方便查看与维护示例；
- * - `PODIUM_DEMO=0` 关闭：pnpm build:prod 由 scripts/build-production.mjs 设置。
- *   关闭后：
- *     1. pages:extend 移除 /demo 路由（页面组件不会进入产物）；
- *     2. '#podium-demo' 别名指向空实现（菜单 / 首页 demo 卡片不进产物）；
- *     3. i18n 不再加载 i18n/locales/demo/*.json。
+ * - dev / test 默认开启：方便查看与维护示例页面；
+ * - staging 打包强制关闭：staging 是预发布环境，产物必须与生产一致，
+ *   不能出现 demo 路由 / 菜单 / 文案（dev:staging 调试时仍可见）；
+ * - `PODIUM_DEMO=0` 显式关闭：pnpm build:prod / pnpm build:staging
+ *   由 scripts/build-production.mjs 设置。
+ *
+ * 关闭后：
+ *   1. pages:extend 移除 /demo 路由（页面组件不会进入产物）；
+ *   2. '#podium-demo' 别名指向空实现（菜单 / 首页 demo 卡片不进产物）；
+ *   3. i18n 不再加载 i18n/locales/demo/*.json。
  *
  * 该值在构建期确定，改动后需要重启 dev 或重新 build。
  */
-const demoEnabled = process.env.PODIUM_DEMO !== '0'
+const isProductionBuild = process.env.NODE_ENV === 'production'
+const demoEnabled = process.env.PODIUM_DEMO !== '0' && !(isProductionBuild && appEnv === 'staging')
 
 /**
  * 错误页字体子集化的兜底字符表（见下方 font.vite 配置）。
@@ -179,6 +217,11 @@ const demoPagesDir = fileURLToPath(new URL('./app/pages/demo/', import.meta.url)
 export default defineNuxtConfig({
   // 纯前端 SPA：构建产物是静态文件，可直接放到 nginx
   ssr: false,
+  // dev / test 的打包产物保留 sourceMap；staging / prod 不产出
+  sourcemap: {
+    client: isDebugEnv,
+    server: isDebugEnv
+  },
   spaLoadingTemplate,
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -226,11 +269,15 @@ export default defineNuxtConfig({
   },
 
   /**
-   * 暴露给中间件：生产构建关闭 demo 时，/demo/* 按不存在处理。
+   * 暴露给运行时：环境名、demo 开关和公开配置。
+   * 页面里通过 useRuntimeConfig().public 读取。
    */
   runtimeConfig: {
     public: {
-      demoEnabled
+      appEnv,
+      demoEnabled,
+      appName,
+      apiBaseUrl
     }
   },
 
@@ -264,6 +311,9 @@ export default defineNuxtConfig({
   elementPlus: {
     // 自动按需引入组件 / 样式 / 图标，方法类组件需要显式登记
     defaultLocale: 'zh-cn',
+    // @element-plus/nuxt 1.1.5 的 transform 会破坏 .vue 的 sourcemap；
+    // 关闭样式自动注入，改为下面的全量 CSS。
+    importStyle: false,
     installMethods: ['ElLoading', 'ElMessage', 'ElMessageBox', 'ElNotification']
   },
 
@@ -328,6 +378,38 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    build: {
+      /*
+       * staging / prod 用 terser 压缩，顺带移除 console / debugger。
+       * Vite 8 默认的 oxc 压缩器没有等价的 drop 选项，所以这里显式切到 terser。
+       * dev / test 不设置 minify，保持默认压缩并保留调试语句。
+       */
+      ...(isReleaseEnv
+        ? {
+            minify: 'terser' as const,
+            terserOptions: {
+              compress: {
+                drop_debugger: true,
+                /*
+                 * 不用 drop_console：它会连 console.error / warn 一起删掉。
+                 * 这里只把纯调试方法声明为无副作用，保留错误和警告作为线上线索。
+                 * window.console.* 不匹配普通 console.*，需要单独列出。
+                 */
+                pure_funcs: [
+                  'console.log',
+                  'console.info',
+                  'console.debug',
+                  'console.trace',
+                  'window.console.log',
+                  'window.console.info',
+                  'window.console.debug',
+                  'window.console.trace'
+                ]
+              }
+            }
+          }
+        : {})
+    },
     plugins: [
       /*
        * 本地字体交给 vite-plugin-font：
@@ -372,11 +454,9 @@ export default defineNuxtConfig({
     '@vxe-ui/plugin-render-element/dist/style.css',
     'overlayscrollbars/overlayscrollbars.css',
     // ep-field-view 内部直接 import ElFormItem，不经过 @element-plus/nuxt 的模板扫描，
-    // 按需样式不会自动补上；这里显式引入表单容器与 form-item 的样式，
-    // 否则 .el-form-item 缺少 display:flex，label 与内容会竖排。
-    // 若使用 rateMode="rate" / imageMode="image"，还需保证 el-rate / el-image 样式存在。
-    'element-plus/es/components/form/style/css',
-    'element-plus/es/components/form-item/style/css',
+    // 按需样式不会自动补上；这里统一引入 Element Plus 全量样式，
+    // 同时避免 @element-plus/nuxt 的样式注入 transform 破坏 .vue 的 sourcemap。
+    'element-plus/dist/index.css',
     // Element Plus 深色变量，由 <html> 的 .dark 类激活
     'element-plus/theme-chalk/dark/css-vars.css',
     // 令牌 -> 密度 -> 各组件库适配层
@@ -395,7 +475,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Podium',
+      title: appName,
       link: [
         // 关键：type 指定为 image/svg+xml
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }

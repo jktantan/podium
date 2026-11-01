@@ -3,6 +3,8 @@
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 > 样式规范（SCSS + Tailwind CSS 的分工、设计令牌与层叠顺序）见 [docs/styling.md](./docs/styling.md)。
+>
+> 环境配置（dev / test / staging / prod 四套 `.env`）见 [docs/env.md](./docs/env.md)。
 
 ## Setup
 
