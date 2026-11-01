@@ -17,15 +17,6 @@
     "settings": "Settings",
     "iframe": "Embedded Page"
   },
-  "home": {
-    "aboutTitle": "About tab",
-    "aboutDesc": "Learn about tabs, caching, and in-tab forward/back navigation.",
-    "settingsTitle": "Settings",
-    "settingsDesc": "View the current account and layout information.",
-    "iframeTitle": "Embedded page",
-    "iframeDesc": "Open a static page in an iframe tab.",
-    "reopenSettings": "Open the “Settings” tab again"
-  },
   "about": {
     "title": "About tab",
     "lead": "This page is an independent tab. Closing and reopening it recreates the page; switching to another tab keeps this page instance cached, so the input and scroll position are preserved when you return.",

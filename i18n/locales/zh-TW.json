@@ -55,10 +55,6 @@
     "invalidCredentials": "帳號或密碼不正確",
     "failed": "登入失敗，請稍後再試"
   },
-  "home": {
-    "greeting": "你好，{user}",
-    "lead": "目前頁面執行在 vue-stack-tabs 的「首頁」頁籤中，每個頁籤都擁有獨立的元件實例、快取和頁內導覽堆疊。"
-  },
   "iconPicker": {
     "placeholder": "選擇圖示",
     "mono": "單色",

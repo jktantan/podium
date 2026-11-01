@@ -4,9 +4,9 @@ import DemoMenuItems from './menu/DemoMenuItems.vue'
 /**
  * Demo 模块的统一出口。
  *
- * 布局 / 首页不直接 import 这里的子文件，而是 import '#podium-demo'。
+ * 布局不直接 import 这里的子文件，而是 import '#podium-demo'。
  * 该别名在 nuxt.config.ts 里按 PODIUM_DEMO 指向：
- * - 本文（demo 开启）：真实菜单、页签与首页卡片；
+ * - 本文（demo 开启）：真实菜单与页签；
  * - ./stub（demo 关闭）：空实现，生产包里不会留下 demo 组件代码。
  */
 
@@ -14,16 +14,6 @@ export { DemoMenuItems }
 
 /** 翻译函数的最小签名，避免把 vue-i18n 的完整重载类型泄漏到调用方 */
 export type DemoTranslate = (key: string) => string
-
-export interface DemoHomeCard {
-  id: string
-  path: string
-  icon: string
-  title: string
-  desc: string
-  /** 是否用 iframe 页签打开（内嵌页面示例） */
-  iframe?: boolean
-}
 
 /**
  * Demo 页签清单（id 同时是 el-menu 的 index，必须稳定）。
@@ -58,32 +48,4 @@ export function createDemoMenuTabs(t: DemoTranslate): Record<string, ITabData> {
       { id, title: t(titleKey), path, ...(isIframe ? { iframe: true } : {}) }
     ])
   )
-}
-
-/** 首页上的 demo 入口卡片 */
-export function createDemoHomeCards(t: DemoTranslate): DemoHomeCard[] {
-  return [
-    {
-      id: 'about',
-      path: '/demo/about',
-      icon: '🧩',
-      title: t('home.aboutTitle'),
-      desc: t('home.aboutDesc')
-    },
-    {
-      id: 'settings',
-      path: '/demo/settings',
-      icon: '⚙️',
-      title: t('home.settingsTitle'),
-      desc: t('home.settingsDesc')
-    },
-    {
-      id: 'iframe',
-      path: '/demo-assets/iframe-demo.html',
-      icon: '🌐',
-      title: t('home.iframeTitle'),
-      desc: t('home.iframeDesc'),
-      iframe: true
-    }
-  ]
 }

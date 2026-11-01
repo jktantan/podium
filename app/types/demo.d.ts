@@ -11,17 +11,7 @@ declare module '#podium-demo' {
 
   export type DemoTranslate = (key: string) => string
 
-  export interface DemoHomeCard {
-    id: string
-    path: string
-    icon: string
-    title: string
-    desc: string
-    iframe?: boolean
-  }
-
   export const DemoMenuItems: Component
   export const DEMO_TAB_TITLE_KEYS: Record<string, string>
   export function createDemoMenuTabs(t: DemoTranslate): Record<string, ITabData>
-  export function createDemoHomeCards(t: DemoTranslate): DemoHomeCard[]
 }

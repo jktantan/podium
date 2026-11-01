@@ -55,10 +55,6 @@
     "invalidCredentials": "Incorrect account or password",
     "failed": "Sign-in failed, please try again later"
   },
-  "home": {
-    "greeting": "Hello, {user}",
-    "lead": "This page runs in the “Home” tab of vue-stack-tabs. Each tab keeps its own component instance, cache, and in-tab navigation stack."
-  },
   "iconPicker": {
     "placeholder": "Select an icon",
     "mono": "Monochrome",

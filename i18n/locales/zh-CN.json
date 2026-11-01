@@ -55,10 +55,6 @@
     "invalidCredentials": "账号或密码不正确",
     "failed": "登录失败，请稍后重试"
   },
-  "home": {
-    "greeting": "你好，{user}",
-    "lead": "当前页面运行在 vue-stack-tabs 的「首页」页签中，每个页签都拥有独立的组件实例、缓存和页内导航栈。"
-  },
   "iconPicker": {
     "placeholder": "选择图标",
     "mono": "单色",

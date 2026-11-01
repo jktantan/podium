@@ -17,15 +17,6 @@
     "settings": "設定",
     "iframe": "內嵌頁面"
   },
-  "home": {
-    "aboutTitle": "關於頁籤",
-    "aboutDesc": "了解頁籤、快取與頁內前進 / 後退。",
-    "settingsTitle": "設定",
-    "settingsDesc": "查看目前登入帳號與版面資訊。",
-    "iframeTitle": "內嵌頁面",
-    "iframeDesc": "用 iframe 頁籤開啟一個靜態頁面。",
-    "reopenSettings": "再次開啟「設定」頁籤"
-  },
   "about": {
     "title": "關於頁籤",
     "lead": "這個頁面是一個獨立的頁籤。關閉後再開啟，頁面狀態會重新建立；切換到其他頁籤時，頁面實例會被快取，回來時輸入框內容、捲動位置都會保留。",
