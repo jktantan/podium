@@ -22,6 +22,7 @@
       :rules="rules"
       :text="textMode"
       :size="elSize"
+      label-suffix=":"
       label-width="120px"
     >
       <section class="ep-demo__section">

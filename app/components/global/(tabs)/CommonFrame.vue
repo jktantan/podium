@@ -24,7 +24,7 @@ interface CommonFrameProps {
    *
    * 需要完全自定义页头时使用 `#header` 插槽。
    */
-  header?: boolean | PageHeaderProps
+  header?: boolean | PageHeaderProps | HTMLElement
   /** 是否渲染页脚，默认渲染；页脚内容通过 `#footer` 插槽传入。 */
   footer?: boolean
 }
