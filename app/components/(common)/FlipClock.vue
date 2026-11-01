@@ -1,7 +1,33 @@
 <!-- 翻页时钟：展示本地时间的时 / 分 / 秒 -->
 <script lang="ts" setup>
 import Tick from '@pqina/flip'
+import { css as clockFont } from '~/assets/fonts/JetBrainsMono-Bold.ttf?subsets'
 import '@pqina/flip/dist/flip.min.css'
+
+const props = defineProps<{
+  /**
+   * 牌面字号：数字按 px 处理，也可以传任意 CSS 长度（如 '4rem'）。
+   * 不传时使用组件内置的响应式字号。
+   *
+   * flip 的牌面尺寸全部以 em 计算，因此这里控制的就是整体大小。
+   */
+  size?: number | string
+  /** 数字字体：传 CSS font-family；不传时使用组件内置的 JetBrains Mono */
+  font?: string
+}>()
+
+const clockStyle = computed(() => {
+  const style: Record<string, string> = {
+    // 字体由 vite-plugin-font 按需注入，props.font 可覆盖
+    '--flip-clock-font': props.font ?? clockFont.family
+  }
+
+  if (props.size !== undefined) {
+    style.fontSize = typeof props.size === 'number' ? `${props.size}px` : props.size
+  }
+
+  return style
+})
 
 /** flip 的 value 是按 data-key 取值的扁平对象，sep 两个冒号共用 */
 type FlipClockValue = {
@@ -101,7 +127,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="flip-clock" role="timer" :aria-label="timeText">
+  <div class="flip-clock" :style="clockStyle" role="timer" :aria-label="timeText">
     <!-- 翻页 DOM 由 flip 动态生成，读屏内容交给外层的 aria-label -->
     <div ref="root" class="tick" aria-hidden="true">
       <span data-key="hours" data-repeat="true" data-transform="pad(00) -> split -> delay">
@@ -136,26 +162,28 @@ onBeforeUnmount(() => {
   display: flex;
   justify-content: center;
   color: var(--fg-strong);
-  font-family: var(--font-family-sans);
+  /* 字体族由组件内联的 --flip-clock-font 提供，后接系统字体兜底 */
+  font-family: var(--flip-clock-font), var(--font-family-sans);
+  font-weight: 700;
   /* 6 位数字约 7.5em，clamp 保证窄屏下也不溢出卡片 */
   font-size: clamp(1.375rem, 8vw, 2rem);
-  line-height: 1.4;
+  /* flip 的 .tick 自带 line-height: 1.4，这里只需禁止冒号换行 */
   white-space: nowrap;
 
-  .tick {
-    white-space: nowrap;
-  }
-
   .tick-text-inline {
-    display: inline-block;
     color: var(--fg-strong);
-    font-weight: 600;
-    text-align: center;
+    font-weight: 700;
     transform: translateY(-0.05em);
   }
 
   // flip 动态创建的面板没有 scoped 属性，必须用 :deep() 覆盖
   :deep(.tick-flip) {
+    /*
+     * flip 只用 min-width: 1.125em 撑牌面，字体换成等宽的 JetBrains Mono
+     * 后各数字宽度一致；这里再固定牌面宽度，避免尺寸随字符变化。
+     */
+    width: 1.2em;
+    font-variant-numeric: tabular-nums;
     border-radius: 0.2em;
   }
 
