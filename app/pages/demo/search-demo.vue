@@ -107,8 +107,6 @@ const rows = computed(() =>
 
 const pagerConfig = computed(() => ({
   total: sourceRows.length,
-  pageSize: 10,
-  pageSizes: [10, 30, 50],
   className: 'vxe-background-transparent'
 }))
 

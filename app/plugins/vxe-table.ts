@@ -119,7 +119,26 @@ export default defineNuxtPlugin((nuxtApp) => {
       ])
     }
   })
-  VxeUI.setConfig({ table: { emptyRender: { name: 'PodiumEmpty' } } })
+
+  /**
+   * 全局默认配置：
+   * - 分页：每页条数候选 30 / 50 / 70 / 100，默认 30 条；
+   *   单个 Grid 的 pager-config 仍可覆盖这里的默认值。
+   * - 虚拟滚动：横向、纵向都启用，gt: 0 表示不按数据量判断、始终使用虚拟滚动。
+   *   纵向虚拟滚动要求行高固定（统一由 cell-config.height / row-config.height 决定），
+   *   不支持动态行高。
+   */
+  VxeUI.setConfig({
+    table: {
+      emptyRender: { name: 'PodiumEmpty' },
+      virtualXConfig: { enabled: true, gt: 12 },
+      virtualYConfig: { enabled: true, gt: 70 }
+    },
+    pager: {
+      pageSize: 30,
+      pageSizes: [30, 50, 70, 100]
+    }
+  })
 
   registerVxeLocales()
 })
