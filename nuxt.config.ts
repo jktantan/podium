@@ -1,34 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import font from 'vite-plugin-font'
-import {
-  APPEARANCE_STORAGE_KEY,
-  DEFAULT_DENSITY,
-  DENSITY_OPTIONS,
-  getDensityOption
-} from './app/config/appearance'
+import { appearanceBootstrap } from './config/appearance'
+import { demoAliasEntry, demoPublicAssets, extendPages } from './config/demo'
 import { createPublicRuntimeConfig, demoEnabled, isDebugEnv, isReleaseEnv } from './config/env'
 import { iconsBuildPlugin, svgIconsPlugin } from './config/icons'
 import { DEFAULT_LOCALE, LOCALE_COOKIE_KEY, LOCALE_OPTIONS } from './i18n/config'
 import { STACK_TABS_LOCALES, getStackTabsExtraLocales } from './i18n/vendors/vue-stack-tabs'
 import { LITE_LAYER_LOCALES, getLiteLayerExtraMessages } from './i18n/vendors/vue-lite-layer'
-
-/**
- * 首屏防闪脚本：
- * 在任何 DOM 渲染前把外观状态写到 <html> 上，避免刷新时先闪一下默认主题。
- *
- * 这段脚本必须在 <head> 内联执行，不能等到 app.vue 的 useHead，
- * 也不能放进 app/spa-loading-templates/（那在 <body> 里，且晚于样式表）。
- *
- * 键名和密度映射都从 app/config/appearance.ts 生成，不在两处维护。
- */
-const densityMap = Object.fromEntries(
-  DENSITY_OPTIONS.map((option) => [option.value, option.stackTabSize])
-)
-const defaultStackTabSize = getDensityOption(DEFAULT_DENSITY).stackTabSize
-
-const appearanceBootstrap = `(function(){try{var s=JSON.parse(localStorage.getItem(${JSON.stringify(APPEARANCE_STORAGE_KEY)})||'{}');var d=document.documentElement;if(s.scheme==='dark')d.classList.add('dark');if(s.themeId)d.setAttribute('data-theme',s.themeId);if(s.density)d.setAttribute('data-density',s.density);if(s.color)d.style.setProperty('--brand-seed',s.color);var m=${JSON.stringify(densityMap)};if(s.density)d.setAttribute('data-stack-tab-size',m[s.density]||${JSON.stringify(defaultStackTabSize)});d.setAttribute('data-vxe-ui-theme',s.scheme==='dark'?'dark':'light')}catch(e){}})()`
 
 /**
  * SPA 首屏 loading 模板清单。
@@ -73,12 +52,6 @@ const FONT_SUBSET_WHITELIST = [
   '×÷±°'
 ]
 
-/** app/pages/demo 的绝对路径（统一成 / 分隔，便于和 page.file 比较） */
-const demoPagesDir = fileURLToPath(new URL('./app/pages/demo/', import.meta.url)).replace(
-  /\\/g,
-  '/'
-)
-
 export default defineNuxtConfig({
   // 纯前端 SPA：构建产物是静态文件，可直接放到 nginx
   ssr: false,
@@ -118,9 +91,7 @@ export default defineNuxtConfig({
    * 避免生产包里残留 demo 菜单与首页卡片代码。
    */
   alias: {
-    '#podium-demo': fileURLToPath(
-      new URL(demoEnabled ? './app/demo/index.ts' : './app/demo/stub.ts', import.meta.url)
-    )
+    '#podium-demo': demoAliasEntry
   },
 
   /**
@@ -128,19 +99,7 @@ export default defineNuxtConfig({
    * 按页面文件路径过滤而不是 URL 前缀，目录改名后仍然有效。
    */
   hooks: {
-    'pages:extend'(pages) {
-      if (demoEnabled) {
-        return
-      }
-
-      for (let index = pages.length - 1; index >= 0; index -= 1) {
-        const file = pages[index]?.file?.replace(/\\/g, '/')
-
-        if (file?.startsWith(demoPagesDir)) {
-          pages.splice(index, 1)
-        }
-      }
-    }
+    'pages:extend': extendPages
   },
 
   /**
@@ -236,15 +195,7 @@ export default defineNuxtConfig({
    */
   nitro: {
     preset: 'static',
-    publicAssets: demoEnabled
-      ? [
-          {
-            dir: fileURLToPath(new URL('./app/demo/public', import.meta.url)),
-            baseURL: 'demo-assets',
-            maxAge: 0
-          }
-        ]
-      : []
+    publicAssets: demoPublicAssets
   },
 
   vite: {
