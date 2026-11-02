@@ -40,22 +40,32 @@ dev server 的调试能力不受影响。
 
 ## 变量
 
-| 变量                       | 说明                                   | runtimeConfig        |
-| -------------------------- | -------------------------------------- | -------------------- |
-| `NUXT_PUBLIC_APP_NAME`     | 应用名，构建期写入 `index.html` 的标题 | `public.appName`     |
-| `NUXT_PUBLIC_API_BASE_URL` | 接口基础地址                           | `public.apiBaseUrl`  |
-| `PODIUM_DEMO`              | `0` 关闭 demo 路由 / 菜单 / 文案       | `public.demoEnabled` |
-| `APP_ENV`                  | 当前环境，由脚本写入                   | `public.appEnv`      |
+| 变量                                | 说明                                   | runtimeConfig                 |
+| ----------------------------------- | -------------------------------------- | ----------------------------- |
+| `NUXT_PUBLIC_APP_NAME`              | 应用名，构建期写入 `index.html` 的标题 | `public.appName`              |
+| `NUXT_PUBLIC_API_BASE_URL`          | 接口基础地址                           | `public.apiBaseUrl`           |
+| `NUXT_PUBLIC_STOMP_URL`             | 原生 WebSocket STOMP 地址，留空不连接  | `public.stomp.url`            |
+| `NUXT_PUBLIC_STOMP_RECONNECT_DELAY` | 断线重连间隔（毫秒），`0` 关闭重连     | `public.stomp.reconnectDelay` |
+| `NUXT_PUBLIC_STOMP_AUTH_HEADER`     | CONNECT 帧里放 token 的 header 名      | `public.stomp.authHeader`     |
+| `NUXT_PUBLIC_STOMP_DEBUG`           | `1` 输出 stompjs 调试日志              | `public.stomp.debug`          |
+| `PODIUM_DEMO`                       | `0` 关闭 demo 路由 / 菜单 / 文案       | `public.demoEnabled`          |
+| `APP_ENV`                           | 当前环境，由脚本写入                   | `public.appEnv`               |
+
+STOMP 的使用方式见 [docs/stomp.md](./stomp.md)。
 
 页面里读取：
 
 ```ts
-const { appEnv, appName, apiBaseUrl } = useRuntimeConfig().public
+const { appEnv, appName, apiBaseUrl, stomp } = useRuntimeConfig().public
 ```
 
 新增配置项：在 `.env.example` 和四份 `.env.*` 里补上变量，并在
 `nuxt.config.ts` 的 `runtimeConfig.public` 中登记同名键（去掉 `NUXT_PUBLIC_` 前缀），
 Nuxt 会按 `NUXT_PUBLIC_<KEY>` 自动覆盖。
+
+STOMP 的四个变量是例外：它们由 `modules/stomp.ts` 读取后写入
+`runtimeConfig.public.stomp`，不需要在 `nuxt.config.ts` 里重复登记，
+变量说明见 [docs/stomp.md](./stomp.md)。
 
 ## 注意
 

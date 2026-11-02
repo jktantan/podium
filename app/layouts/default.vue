@@ -113,10 +113,26 @@ const TAB_TITLE_KEYS: Record<string, string> = {
   home: 'nav.home'
 }
 
-const { user } = useAuth()
+const { user, isLoggedIn } = useAuth()
 const { openTab, updateTabTitle, tabs } = useTabActions()
+const { connect, destroy } = useStomp()
 const logoutToLogin = useLogout()
 const { t, currentLocale, stackTabsLocale } = useLocale()
+
+/**
+ * STOMP 连接跟随登录后的 default 布局：
+ * - 进入布局时建立唯一连接；
+ * - 离开布局时彻底销毁，重新登录会创建全新连接。
+ */
+onMounted(() => {
+  if (isLoggedIn.value) {
+    void connect()
+  }
+})
+
+onBeforeUnmount(() => {
+  void destroy()
+})
 
 /** 左侧菜单是否收起为图标模式 */
 const asideCollapsed = ref(false)
