@@ -133,6 +133,7 @@ $green: rgb(128 255 128 / 0.8);
   background-color: #000;
   background-image: radial-gradient(#11581e, #041607);
   font-weight: 400;
+
   &--fullscreen {
     height: 100dvh;
   }
