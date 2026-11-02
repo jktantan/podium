@@ -69,6 +69,18 @@
   /* 深色反色表面：认证布局、错误页等全屏场景共用 */
   --bg-inverse: #0b1220;
 
+  /*
+   * 动态氛围背景（auth 布局与工作区主区共用）：
+   * 浅色是冷调雾蓝，深色是深海微光。只由品牌色派生，
+   * 切换主题色 / 明暗时不需要改组件。
+   */
+  --ambient-base: var(--bg-page);
+  --ambient-color-a: color-mix(in srgb, var(--brand-primary) 24%, #8aa3d6);
+  --ambient-color-b: color-mix(in srgb, var(--brand-primary) 8%, #fff);
+  /* 细网格：登录页与工作区共用同一套尺寸和线色 */
+  --ambient-grid: rgb(15 23 42 / 0.03);
+  --ambient-grid-size: 36px;
+
   /* ---------- 边框 ---------- */
   --border-default: var(--el-border-color);
 
@@ -120,6 +132,12 @@
 html.dark {
   --brand-tint: var(--bg-surface);
   --brand-shade: white;
+
+  /* 深海微光：云层压暗、降低对比，避免整块工作区发亮 */
+  --ambient-base: var(--bg-inverse);
+  --ambient-color-a: color-mix(in srgb, var(--brand-primary) 30%, #16345c);
+  --ambient-color-b: color-mix(in srgb, var(--brand-primary) 10%, #0c1b2e);
+  --ambient-grid: rgb(148 163 184 / 0.05);
 }
 
 /* 自定义主题在 Element Plus 深色基底上调整品牌色和语义色。 */

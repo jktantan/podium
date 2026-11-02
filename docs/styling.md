@@ -108,6 +108,7 @@ SFC 里的 `scoped` 样式默认是未分层的，优先级最高。这是有意
 | `--elevation-*`                            | 阴影                                    | `--elevation-panel`、`--elevation-modal`、`--elevation-focus`     |
 | `--transition-*`                           | 动效                                    | `--transition-fast`                                               |
 | `--info`                                   | 状态色                                  | `--info`                                                          |
+| `--ambient-*`                              | 动态氛围背景（auth / 工作区共用）       | `--ambient-base`、`--ambient-color-*`、`--ambient-grid-*`         |
 
 ### 色阶是派生的，不要写死
 

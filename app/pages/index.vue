@@ -127,17 +127,25 @@ async function handleSubmit() {
   --login-border-faint: color-mix(in srgb, var(--fg-subtle) 25%, transparent);
   --login-shadow: 0 24px 60px rgb(15 23 42 / 0.1);
   --login-brand-text: color-mix(in srgb, var(--brand-primary-dark), black 15%);
+  /*
+   * 卡片要透出后面的动态云雾，不能用全局的 97% 表面色。
+   * 保留较高不透明度（而不是做成全透明玻璃）以保证表单文字对比度。
+   */
+  --login-surface: color-mix(in srgb, var(--bg-surface) 76%, transparent);
+  --login-blur: 18px;
 
   /* 深色背景才撑得起原来的重阴影，浅色下会显脏 */
   html.dark & {
     --login-shadow: 0 30px 80px rgb(2 6 23 / 0.45);
     --login-brand-text: var(--brand-primary-dark);
+    --login-surface: color-mix(in srgb, var(--bg-surface) 70%, transparent);
   }
 
   padding: 36px 32px 30px;
   border: 1px solid var(--login-border-faint);
   border-radius: var(--radius-xl);
-  background: var(--bg-surface-translucent);
+  background: var(--login-surface);
+  backdrop-filter: blur(var(--login-blur)) saturate(140%);
   box-shadow: var(--login-shadow);
 
   &__header {

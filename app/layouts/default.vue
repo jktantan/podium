@@ -46,9 +46,8 @@
         </el-aside>
 
         <el-main class="app-layout__main">
-          <!-- 与 auth 布局一致的浮层光斑，压在主区域背景之上、页签之下 -->
-          <div class="app-layout__glow app-layout__glow--top" aria-hidden="true"></div>
-          <div class="app-layout__glow app-layout__glow--bottom" aria-hidden="true"></div>
+          <!-- 与 auth 布局同款动态氛围背景，压在主区域背景之上、页签之下 -->
+          <AppAmbientBackdrop class="app-layout__ambient" />
 
           <!--
           页签容器在客户端挂载完成后再渲染：
@@ -296,25 +295,13 @@ watch(currentLocale, () => {
     padding: 0 0 0 5px;
 
     /*
-     * 背景与 auth 布局保持一致：品牌色 + 信息色的雾面柔光。
-     * 令牌只作用于本布局，不进入全局 tokens。
+     * 卡片要透出动态背景：原来的 58% 表面色 + 10px 模糊会把云雾糊成一片雾，
+     * 降到 48% 并减小模糊半径，纹理才看得清；深色下再收一点，避免内容区太花。
      */
-    --main-base: var(--bg-page);
-    --main-glow-a: color-mix(in srgb, var(--brand-primary) 26%, transparent);
-    --main-glow-b: color-mix(in srgb, var(--info) 20%, transparent);
-    --main-sheen: rgb(255 255 255 / 0.72);
-    --main-glow-opacity: 0.32;
-    /*
-     * 细网格：尺寸沿用 SPA 占位（spa-loading-templates/cog.html），
-     * 但线色和线宽都再淡一档 —— 这里是大面积工作区，只能若有若无。
-     */
-    --main-grid: rgb(15 23 42 / 0.03);
-    --main-grid-size: 36px;
+    --main-card-surface: color-mix(in srgb, var(--bg-surface) 10%, transparent);
+    --main-card-blur: 3px;
 
-    background:
-      radial-gradient(circle at 15% 18%, var(--main-glow-a), transparent 45%),
-      radial-gradient(circle at 85% 82%, var(--main-glow-b), transparent 45%),
-      radial-gradient(120% 90% at 50% 0%, var(--main-sheen), transparent 62%), var(--main-base);
+    background: var(--ambient-base);
 
     /*
      * 网格单独一层：mask 在四周淡出，避免整块工作区变成方格纸。
@@ -328,9 +315,9 @@ watch(currentLocale, () => {
       z-index: 0;
       inset: 0;
       background-image:
-        linear-gradient(var(--main-grid) 1px, transparent 1px),
-        linear-gradient(90deg, var(--main-grid) 1px, transparent 1px);
-      background-size: var(--main-grid-size) var(--main-grid-size);
+        linear-gradient(var(--ambient-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--ambient-grid) 1px, transparent 1px);
+      background-size: var(--ambient-grid-size) var(--ambient-grid-size);
       mask-image: radial-gradient(72% 62% at 50% 46%, rgb(0 0 0) 0%, transparent 78%);
       filter: blur(0.6px);
       pointer-events: none;
@@ -338,13 +325,7 @@ watch(currentLocale, () => {
     }
 
     html.dark & {
-      --main-base: var(--bg-inverse);
-      --main-glow-a: color-mix(in srgb, var(--brand-primary) 32%, transparent);
-      --main-glow-b: color-mix(in srgb, var(--info) 28%, transparent);
-      /* 深色下不需要白光，换成顶部一层冷色氛围 */
-      --main-sheen: color-mix(in srgb, var(--brand-primary) 10%, transparent);
-      --main-glow-opacity: 0.5;
-      --main-grid: rgb(148 163 184 / 0.05);
+      --main-card-surface: color-mix(in srgb, var(--bg-surface) 52%, transparent);
     }
 
     /*
@@ -366,13 +347,13 @@ watch(currentLocale, () => {
       //border: 1px solid color-mix(in srgb, var(--border-default) 72%, transparent);
       //border-radius: var(--radius-md);
       box-shadow: var(--el-box-shadow-lighter);
-      background: color-mix(in srgb, var(--bg-surface) 58%, transparent);
+      background: var(--main-card-surface);
 
       &::before {
         position: absolute;
         z-index: -1;
         inset: 0;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(var(--main-card-blur));
         content: '';
         pointer-events: none;
       }
@@ -388,9 +369,9 @@ watch(currentLocale, () => {
         z-index: -1;
         inset: 0;
         background-image:
-          linear-gradient(var(--main-grid) 1px, transparent 1px),
-          linear-gradient(90deg, var(--main-grid) 1px, transparent 1px);
-        background-size: var(--main-grid-size) var(--main-grid-size);
+          linear-gradient(var(--ambient-grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--ambient-grid) 1px, transparent 1px);
+        background-size: var(--ambient-grid-size) var(--ambient-grid-size);
         mask-image: radial-gradient(94% 90% at 50% 42%, rgb(0 0 0) 0%, transparent 88%);
         filter: blur(0.6px);
         pointer-events: none;
@@ -399,30 +380,9 @@ watch(currentLocale, () => {
     }
   }
 
-  // 与 auth 布局同款浮层光斑：负 z-index 保证不遮挡页签内容
-  &__glow {
-    position: absolute;
+  // 与 auth 布局同款动态氛围背景：负 z-index 保证不遮挡页签内容
+  &__ambient {
     z-index: -1;
-    border-radius: 999px;
-    filter: blur(90px);
-    opacity: var(--main-glow-opacity);
-    pointer-events: none;
-
-    &--top {
-      top: -120px;
-      right: 8%;
-      width: 320px;
-      height: 320px;
-      background: var(--brand-primary);
-    }
-
-    &--bottom {
-      bottom: -140px;
-      left: 4%;
-      width: 360px;
-      height: 360px;
-      background: var(--info);
-    }
   }
 }
 </style>

@@ -1,7 +1,6 @@
 <template>
   <div class="auth-layout">
-    <div class="auth-layout__glow auth-layout__glow--top" aria-hidden="true"></div>
-    <div class="auth-layout__glow auth-layout__glow--bottom" aria-hidden="true"></div>
+    <AppAmbientBackdrop class="auth-layout__ambient" />
 
     <div class="auth-layout__toolbar">
       <LanguageSwitcher />
@@ -22,60 +21,33 @@
   padding: 32px 16px;
   overflow: hidden;
   place-items: center;
+  background: var(--ambient-base);
 
-  /*
-   * 登录页专用背景令牌：只作用于本布局，不进入全局 tokens。
-   * 浅色是"明亮雾面"，深色是"深空发光"，光晕都跟随品牌色与信息色。
-   */
-  --auth-base: var(--bg-page);
-  --auth-glow-a: color-mix(in srgb, var(--brand-primary) 26%, transparent);
-  --auth-glow-b: color-mix(in srgb, var(--info) 20%, transparent);
-  --auth-sheen: rgb(255 255 255 / 0.72);
-  --auth-glow-opacity: 0.32;
-
-  background:
-    radial-gradient(circle at 15% 18%, var(--auth-glow-a), transparent 45%),
-    radial-gradient(circle at 85% 82%, var(--auth-glow-b), transparent 45%),
-    radial-gradient(120% 90% at 50% 0%, var(--auth-sheen), transparent 62%), var(--auth-base);
-
-  html.dark & {
-    --auth-base: var(--bg-inverse);
-    --auth-glow-a: color-mix(in srgb, var(--brand-primary) 32%, transparent);
-    --auth-glow-b: color-mix(in srgb, var(--info) 28%, transparent);
-    /* 深色下不需要白光，换成顶部一层冷色氛围 */
-    --auth-sheen: color-mix(in srgb, var(--brand-primary) 10%, transparent);
-    --auth-glow-opacity: 0.5;
+  /* 动态背景铺满整屏，压在卡片与工具栏之下 */
+  &__ambient {
+    z-index: 0;
   }
 
-  &__glow {
+  /* 与工作区同款细网格：叠在动态背景之上、卡片之下 */
+  &::before {
     position: absolute;
-    border-radius: 999px;
-    filter: blur(90px);
-    opacity: var(--auth-glow-opacity);
+    z-index: 1;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--ambient-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--ambient-grid) 1px, transparent 1px);
+    background-size: var(--ambient-grid-size) var(--ambient-grid-size);
+    mask-image: radial-gradient(72% 62% at 50% 46%, rgb(0 0 0) 0%, transparent 78%);
+    filter: blur(0.6px);
     pointer-events: none;
-
-    &--top {
-      top: -120px;
-      right: 8%;
-      width: 320px;
-      height: 320px;
-      background: var(--brand-primary);
-    }
-
-    &--bottom {
-      bottom: -140px;
-      left: 4%;
-      width: 360px;
-      height: 360px;
-      background: var(--info);
-    }
+    content: '';
   }
 
   &__toolbar {
     position: absolute;
     top: 16px;
     right: 16px;
-    z-index: 2;
+    z-index: 3;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -83,7 +55,7 @@
 
   &__content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     width: min(420px, 100%);
   }
 }
