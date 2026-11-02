@@ -5,6 +5,7 @@
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
+      <ApiErrorLayer />
     </div>
   </el-config-provider>
 </template>

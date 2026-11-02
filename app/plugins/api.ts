@@ -1,93 +1,121 @@
-import { h } from 'vue'
-import { ElMessage } from 'element-plus'
+import type { FetchRequest } from 'ofetch'
+import type { Api, ApiRawResponse, ApiRequestOptions } from '~/types/api'
+import { useApiError } from '~/composables/useApiError'
+import { useAuthStore } from '~/stores/auth'
+import { toAuthorizationHeader } from '~/utils/auth'
+import { isAbortError, toApiError } from '~/utils/api-error'
 
 /**
- * 统一 API 客户端：
- * - 401：已登录状态下提示“登录状态已失效”，由用户点击返回登录页；
- * - 403：当前操作无权限，只提示，不打断当前页面。
+ * 统一 API 客户端。
  *
- * 用法：const { $api } = useNuxtApp(); await $api('/api/xxx')
+ * - 认证：HttpOnly Cookie 由浏览器自动携带；同时从 Pinia 取 Authorization
+ *   拼上 `Bearer ` 放到请求头，服务不支持 Cookie 的客户端 / STOMP 场景；
+ * - 成功：2xx body 直接返回；
+ * - 失败：非 2xx 统一转成 ApiError 并抛给调用方；是否弹框交给错误总线，
+ *   401 由 ApiErrorLayer 以顶级弹框处理；
+ * - baseURL 来自 NUXT_PUBLIC_API_BASE_URL，调用方写 `/auth/login` 即可。
  */
 export default defineNuxtPlugin(() => {
-  const router = useRouter()
-  const { logout } = useAuth()
-  const nuxtApp = useNuxtApp()
+  const { apiBaseUrl } = useRuntimeConfig().public
+  const { report } = useApiError()
 
-  function translate(key: string) {
-    return nuxtApp.$i18n.t(key)
-  }
-
-  let sessionExpiredMessage: ReturnType<typeof ElMessage> | null = null
-
-  async function goLogin() {
-    sessionExpiredMessage?.close()
-    sessionExpiredMessage = null
-
-    const current = router.currentRoute.value
-    const query = { ...current.query }
-    delete query.__tab
-
-    const redirect =
-      current.path === '/'
-        ? undefined
-        : router.resolve({ path: current.path, query, hash: current.hash }).fullPath
-
-    if (import.meta.client) {
-      sessionStorage.removeItem('stacktab-active-tab')
-    }
-
-    await logout()
-    await router.push({
-      path: '/',
-      query: redirect ? { redirect } : undefined
-    })
-  }
-
-  function notifySessionExpired() {
-    if (sessionExpiredMessage) {
-      return
-    }
-
-    sessionExpiredMessage = ElMessage({
-      type: 'warning',
-      duration: 0,
-      showClose: true,
-      message: h('span', { class: 'inline-flex items-center gap-2' }, [
-        translate('error.sessionExpired'),
-        h(
-          'a',
-          {
-            class: 'cursor-pointer font-semibold text-primary underline underline-offset-2',
-            onClick: goLogin
-          },
-          translate('error.backToLogin')
-        )
-      ]),
-      onClose: () => {
-        sessionExpiredMessage = null
-      }
-    })
-  }
-
-  const api = $fetch.create({
-    onResponseError({ response }) {
-      if (response.status === 401) {
-        if (router.currentRoute.value.path === '/') {
-          return
-        }
-
-        notifySessionExpired()
-        return
-      }
-
-      if (response.status === 403) {
-        ElMessage.error({
-          message: translate('error.noPermission'),
-          grouping: true
-        })
-      }
-    }
+  const client = $fetch.create({
+    baseURL: apiBaseUrl || undefined,
+    credentials: 'include',
+    timeout: 15_000,
+    retry: 0
   })
+
+  function getToken(): string {
+    try {
+      return useAuthStore().authorization
+    } catch {
+      // Pinia 尚未就绪时退化为纯 Cookie 认证
+      return ''
+    }
+  }
+
+  function buildHeaders(init: HeadersInit | undefined): Headers {
+    const headers = new Headers(init)
+    const authorization = toAuthorizationHeader(getToken())
+
+    if (authorization) {
+      headers.set('Authorization', authorization)
+    }
+
+    return headers
+  }
+
+  function handleError(
+    error: unknown,
+    options: { silent?: boolean; skipAuthRedirect?: boolean }
+  ): never {
+    if (isAbortError(error)) {
+      throw error
+    }
+
+    const apiError = toApiError(error)
+
+    if (apiError.status === 401 && !options.skipAuthRedirect) {
+      report(apiError, { authExpired: true })
+    } else if (!options.silent && !apiError.transparent) {
+      report(apiError)
+    }
+
+    throw apiError
+  }
+
+  async function execute<T>(
+    request: FetchRequest,
+    options: ApiRequestOptions = {},
+    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  ): Promise<T> {
+    const { silent, skipAuthRedirect, ...fetchOptions } = options
+    const headers = buildHeaders(fetchOptions.headers)
+
+    try {
+      return (await client<T>(request, { ...fetchOptions, method, headers })) as T
+    } catch (error) {
+      handleError(error, { silent, skipAuthRedirect })
+    }
+  }
+
+  async function executeRaw<T>(
+    request: FetchRequest,
+    options: ApiRequestOptions = {}
+  ): Promise<ApiRawResponse<T>> {
+    const { silent, skipAuthRedirect, ...fetchOptions } = options
+    const headers = buildHeaders(fetchOptions.headers)
+
+    try {
+      const response = await client.raw<T>(request, { ...fetchOptions, headers })
+
+      return {
+        data: response._data as T,
+        status: response.status,
+        headers: response.headers
+      }
+    } catch (error) {
+      handleError(error, { silent, skipAuthRedirect })
+    }
+  }
+
+  const api = Object.assign(
+    <T>(request: FetchRequest, options?: ApiRequestOptions) => execute<T>(request, options),
+    {
+      get: <T>(request: FetchRequest, options?: ApiRequestOptions) =>
+        execute<T>(request, options, 'GET'),
+      post: <T>(request: FetchRequest, options?: ApiRequestOptions) =>
+        execute<T>(request, options, 'POST'),
+      put: <T>(request: FetchRequest, options?: ApiRequestOptions) =>
+        execute<T>(request, options, 'PUT'),
+      patch: <T>(request: FetchRequest, options?: ApiRequestOptions) =>
+        execute<T>(request, options, 'PATCH'),
+      delete: <T>(request: FetchRequest, options?: ApiRequestOptions) =>
+        execute<T>(request, options, 'DELETE'),
+      raw: executeRaw
+    }
+  ) as Api
 
   return {
     provide: {

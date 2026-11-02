@@ -61,6 +61,7 @@
 
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus'
+import { ApiError } from '~/utils/api-error'
 
 definePageMeta({
   layout: 'auth'
@@ -113,7 +114,12 @@ async function handleSubmit() {
     await login(form.username, form.password)
     await navigateTo(resolveRedirect())
   } catch (err) {
-    error.value = err instanceof Error ? err.message : t('login.failed')
+    // 业务失败统一显示固定文案，不暴露后端 code / cause；
+    // 只有没有响应的网络错误才使用“请稍后重试”
+    error.value =
+      err instanceof ApiError && err.status === undefined
+        ? t('login.failed')
+        : t('login.failedCredentials')
   } finally {
     submitting.value = false
   }

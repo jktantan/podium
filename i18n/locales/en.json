@@ -53,6 +53,7 @@
     "demoAccounts": "Demo accounts: admin / admin123 (full access)",
     "demoViewer": "viewer / viewer123 (limited access)",
     "invalidCredentials": "Incorrect account or password",
+    "failedCredentials": "Sign-in failed: account does not exist or password is incorrect",
     "failed": "Sign-in failed, please try again later"
   },
   "iconPicker": {
@@ -87,6 +88,11 @@
     "backToLogin": "Back to sign-in",
     "refreshPage": "Refresh page",
     "sessionExpired": "Your session has expired. ",
+    "sessionExpiredTitle": "Session expired",
+    "relogin": "Please sign in again",
+    "title": "Request failed",
+    "confirm": "OK",
+    "unknown": "Unknown server error",
     "noPermission": "Access denied",
     "unauthorizedMessage": "This page requires sign-in",
     "notFoundMessage": "Page not found"

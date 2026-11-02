@@ -53,6 +53,7 @@
     "demoAccounts": "示範帳號：admin / admin123（全部權限）",
     "demoViewer": "viewer / viewer123（受限權限）",
     "invalidCredentials": "帳號或密碼不正確",
+    "failedCredentials": "登入失敗，帳號不存在或密碼錯誤",
     "failed": "登入失敗，請稍後再試"
   },
   "iconPicker": {
@@ -87,6 +88,11 @@
     "backToLogin": "返回登入頁面",
     "refreshPage": "重新整理頁面",
     "sessionExpired": "登入狀態已失效，",
+    "sessionExpiredTitle": "登入狀態已失效",
+    "relogin": "請重新登入",
+    "title": "請求失敗",
+    "confirm": "確定",
+    "unknown": "未知後台錯誤",
     "noPermission": "沒有存取權限",
     "unauthorizedMessage": "目前頁面需要登入後才能存取",
     "notFoundMessage": "頁面不存在"

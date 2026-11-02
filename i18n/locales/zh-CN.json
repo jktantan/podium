@@ -53,6 +53,7 @@
     "demoAccounts": "演示账号：admin / admin123（全部权限）",
     "demoViewer": "viewer / viewer123（受限权限）",
     "invalidCredentials": "账号或密码不正确",
+    "failedCredentials": "登录失败，账号不存在或密码错误",
     "failed": "登录失败，请稍后重试"
   },
   "iconPicker": {
@@ -87,6 +88,11 @@
     "backToLogin": "返回登录页面",
     "refreshPage": "刷新页面",
     "sessionExpired": "登录状态已失效，",
+    "sessionExpiredTitle": "登录状态已失效",
+    "relogin": "请重新登录",
+    "title": "请求失败",
+    "confirm": "确定",
+    "unknown": "未知后台错误",
     "noPermission": "没有访问权限",
     "unauthorizedMessage": "当前页面需要登录后才能访问",
     "notFoundMessage": "页面不存在"

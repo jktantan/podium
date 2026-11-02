@@ -1,3 +1,10 @@
+import { computed } from 'vue'
+import type { AuthUser } from '~/stores/auth'
+import { useAuthStore } from '~/stores/auth'
+import { setStompAuthorizationProvider } from './useStompAuthorization'
+import { toAuthorizationHeader } from '~/utils/auth'
+import { ApiError } from '~/utils/api-error'
+
 export type PermissionMode = 'all' | 'any'
 
 interface DemoAccount {
@@ -16,25 +23,56 @@ const DEMO_USERS: Record<string, DemoAccount> = {
   }
 }
 
+/** 登录接口；后端路径确定后只需改这里 */
+const LOGIN_PATH = '/auth/login'
+
+interface LoginPayload {
+  authorization?: string
+  user?: Record<string, unknown>
+  permissions?: string[]
+  name?: string
+  username?: string
+}
+
+function pickPermissions(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === 'string')
+    : []
+}
+
+function toAuthUser(payload: LoginPayload, fallbackName: string): AuthUser {
+  const source = (payload.user ?? payload) as Record<string, unknown>
+  const name =
+    typeof source.name === 'string'
+      ? source.name
+      : typeof source.username === 'string'
+        ? source.username
+        : fallbackName
+
+  const permissions = pickPermissions(source.permissions)
+
+  return {
+    ...source,
+    name,
+    permissions: permissions.length ? permissions : pickPermissions(payload.permissions)
+  }
+}
+
 /**
- * 轻量登录 / 权限状态管理。
+ * 轻量登录 / 权限门面。
  *
- * 目前使用 Cookie 存用户名，权限从演示账号表推导，仅用于演示。
- * 接入真实后端时，把 `login` 替换成登录接口，并把接口返回的 permissions 存到状态里即可。
+ * - 认证状态在 Pinia（sessionStorage），页面调用方式保持不变；
+ * - 演示环境保留本地账号，避免没有后端时无法进入工作台；
+ * - 真实环境登录成功后把 authorization 写入 store，并注册 STOMP provider；
+ * - 登录失败由登录页统一显示固定文案，不在这里暴露后端原因。
  */
 export function useAuth() {
-  const user = useCookie<string | null>('podium_user', {
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 7,
-    default: () => null
-  })
+  const store = useAuthStore()
+  const { demoEnabled } = useRuntimeConfig().public
 
-  const isLoggedIn = computed(() => Boolean(user.value))
-
-  const permissions = computed(() => {
-    const account = user.value ? DEMO_USERS[user.value] : undefined
-    return account?.permissions ?? []
-  })
+  const user = computed(() => store.user?.name ?? null)
+  const isLoggedIn = computed(() => store.isLoggedIn)
+  const permissions = computed(() => store.permissions)
 
   function can(required: string | string[], mode: PermissionMode = 'all') {
     const requiredList = Array.isArray(required) ? required : [required]
@@ -54,25 +92,60 @@ export function useAuth() {
       : requiredList.every((permission) => granted.includes(permission))
   }
 
+  function registerStompAuthorization() {
+    setStompAuthorizationProvider(() => {
+      const token = store.authorization
+      return token ? toAuthorizationHeader(token) : null
+    })
+  }
+
   async function login(username: string, password: string) {
     const name = username.trim()
-    const account = DEMO_USERS[name]
 
-    if (!account || account.password !== password) {
-      // 延迟到调用时取 t：useAuth 也会在插件里被调用，插件初始化阶段 i18n 可能尚未就绪
-      throw new Error(useNuxtApp().$i18n.t('login.invalidCredentials'))
+    if (demoEnabled) {
+      const account = DEMO_USERS[name]
+
+      if (account && account.password === password) {
+        store.setSession(`demo-${name}`, { name, permissions: account.permissions })
+        registerStompAuthorization()
+        return
+      }
+
+      throw new ApiError({
+        status: 500,
+        code: -1,
+        reason: useNuxtApp().$i18n.t('login.failedCredentials')
+      })
     }
 
-    user.value = name
+    const payload =
+      (await useNuxtApp().$api.post<LoginPayload>(LOGIN_PATH, {
+        body: { username: name, password },
+        silent: true,
+        skipAuthRedirect: true
+      })) ?? {}
+
+    const authorization = (payload.authorization ?? '').trim()
+
+    if (!authorization) {
+      throw new ApiError({
+        status: 500,
+        code: -1,
+        reason: useNuxtApp().$i18n.t('login.failedCredentials')
+      })
+    }
+
+    store.setSession(authorization, toAuthUser(payload, name))
+    registerStompAuthorization()
   }
 
   async function logout() {
-    user.value = null
+    store.clear()
   }
 
   return {
-    user: readonly(user),
-    permissions: readonly(permissions),
+    user,
+    permissions,
     isLoggedIn,
     can,
     login,
