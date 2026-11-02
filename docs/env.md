@@ -60,12 +60,9 @@ const { appEnv, appName, apiBaseUrl, stomp } = useRuntimeConfig().public
 ```
 
 新增配置项：在 `.env.example` 和四份 `.env.*` 里补上变量，并在
-`nuxt.config.ts` 的 `runtimeConfig.public` 中登记同名键（去掉 `NUXT_PUBLIC_` 前缀），
+`config/env.ts` 的 `createPublicRuntimeConfig()` 中登记默认值（键名去掉
+`NUXT_PUBLIC_` 前缀）；`nuxt.config.ts` 只负责挂载 `runtimeConfig.public`，
 Nuxt 会按 `NUXT_PUBLIC_<KEY>` 自动覆盖。
-
-STOMP 的四个变量是例外：它们由 `modules/stomp.ts` 读取后写入
-`runtimeConfig.public.stomp`，不需要在 `nuxt.config.ts` 里重复登记，
-变量说明见 [docs/stomp.md](./stomp.md)。
 
 ## 注意
 

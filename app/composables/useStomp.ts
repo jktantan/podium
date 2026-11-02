@@ -1,5 +1,6 @@
 import { computed, readonly, shallowRef } from 'vue'
 import { Client, type IMessage, type StompHeaders, type StompSubscription } from '@stomp/stompjs'
+import { normalizeStompConfig } from '~/config/stomp'
 import type { StompRuntimeConfig } from '~/types/stomp'
 import { getStompAuthorization } from './useStompAuthorization'
 
@@ -40,7 +41,9 @@ const readonlyLastError = readonly(lastError)
 
 function getConfig(): StompRuntimeConfig {
   if (!config) {
-    config = useRuntimeConfig().public.stomp
+    // runtimeConfig 里的 NUXT_PUBLIC_* 可能被 Nuxt 用 destr 解析成 string / number，
+    // 在第一次使用时统一成声明的类型
+    config = normalizeStompConfig(useRuntimeConfig().public.stomp)
   }
 
   return config

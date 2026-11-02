@@ -6,7 +6,8 @@
 
 ## 配置
 
-地址从 `.env.<环境>` 读取，由 `modules/stomp.ts` 写入
+地址从 `.env.<环境>` 读取，默认值由 `config/env.ts` 的
+`createPublicRuntimeConfig()` 生成，并挂到 `nuxt.config.ts` 的
 `runtimeConfig.public.stomp`：
 
 | 变量                                | 说明                                                           | 默认值          |
@@ -16,9 +17,10 @@
 | `NUXT_PUBLIC_STOMP_AUTH_HEADER`     | STOMP CONNECT 帧里放 token 的 header 名                        | `Authorization` |
 | `NUXT_PUBLIC_STOMP_DEBUG`           | `1` 输出 stompjs 调试日志，生产必须为 `0`                      | `0`             |
 
-`modules/stomp.ts` 会被 Nuxt 自动加载，不需要在 `nuxt.config.ts` 的
-`modules` 数组里登记。配置在构建期写入产物，部署后不能只改服务器环境变量生效，
-与 `apiBaseUrl` 的行为一致。
+配置在构建期写入产物，部署后不能只改服务器环境变量生效，与 `apiBaseUrl`
+的行为一致。`NUXT_PUBLIC_*` 会被 Nuxt 用 destr 解析，因此运行时读到数字 /
+布尔字段时可能是 string / number；`useStomp` 会在第一次读取时通过
+`app/config/stomp.ts` 的 `normalizeStompConfig()` 统一成声明的类型。
 
 ## 订阅
 
