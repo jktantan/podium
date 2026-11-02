@@ -331,10 +331,13 @@ function resize() {
     canvas.height = height
     gl.viewport(0, 0, width, height)
 
-    // 缓冲区尺寸变化会清空画布；暂停 / 静态模式下需要补一帧
-    if (!running) {
-      draw(pausedSeconds || 6)
-    }
+    /*
+     * 缓冲区尺寸变化会清空画布，必须在这一帧内立刻补画：
+     * ResizeObserver 回调发生在绘制之前，若等到下一帧 rAF（还被 30fps 节流），
+     * 合成器拿到的是一块空缓冲；WebGL 上下文是 alpha: false，
+     * 空缓冲会按不透明黑合成，侧栏收展 / 窗口缩放时就会看到整片背景黑闪。
+     */
+    draw(running ? (performance.now() - startTime) / 1000 : pausedSeconds || 6)
   }
 }
 
