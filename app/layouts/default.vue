@@ -61,6 +61,7 @@
               :max="20"
               :contextmenu="true"
               :page-scroll="PageScroll"
+              :page-loading="pageLoading"
               height="100%"
               style="padding: 5px"
             >
@@ -112,6 +113,8 @@ const TAB_TITLE_KEYS: Record<string, string> = {
 }
 
 const { user, isLoggedIn } = useAuth()
+/** 导航 loading 开关：内网等快速环境可在 .env.<环境> 里把 NUXT_PUBLIC_PAGE_LOADING 设为 0 */
+const { pageLoading } = useRuntimeConfig().public
 const { openTab, updateTabTitle, tabs } = useTabActions()
 const { connect, destroy } = useStomp()
 const logoutToLogin = useLogout()
