@@ -37,10 +37,11 @@
                 </template>
               </el-menu-item>
               <!--
-                Demo 菜单整体收在「示例」子菜单下。
-                构建期由 '#podium-demo' 决定渲染真实菜单还是空实现（生产包）。
+                可选层扩展位：demo 层加载时由 appConfig 提供菜单组件名，
+                未加载时这里不渲染任何内容。菜单顺序由宿主固定：
+                首页 → 项目 API 菜单 → demo 菜单。
               -->
-              <DemoMenuItems />
+              <component :is="demoMenuComponent" v-if="demoMenuComponent" />
             </el-menu>
           </AppScrollbar>
         </el-aside>
@@ -98,19 +99,29 @@
 <script setup lang="ts">
 import type { ITabData } from 'vue-stack-tabs'
 import { useTabActions } from 'vue-stack-tabs'
-import { DemoMenuItems, DEMO_TAB_TITLE_KEYS, createDemoMenuTabs } from '#podium-demo'
 import PageScroll from '~/components/stackTabs/PageScroll.vue'
+
+/**
+ * 可选层通过 appConfig 提供扩展数据，宿主不 import 任何层内模块。
+ * 层未加载时 demoExtension 为 undefined，菜单与页签表里都不会出现 demo 条目。
+ */
+const appConfig = useAppConfig()
+const { baseURL } = useRuntimeConfig().app
+const demoExtension = computed(() => appConfig.podium?.sidebar?.demo)
+const demoMenuComponent = computed(() => demoExtension.value?.menuComponent ?? null)
 
 /**
  * 菜单页签的 id 是稳定值，语言切换后按 id 回写标题。
  * （页签标题是打开时的快照，不会自动跟随语言包变化。）
  *
- * Demo 页签的标题键由 '#podium-demo' 提供：生产构建时为空对象。
+ * demo 页签的标题键由 demo 层的 appConfig 提供：层未加载时为空对象。
  */
-const TAB_TITLE_KEYS: Record<string, string> = {
-  ...DEMO_TAB_TITLE_KEYS,
+const TAB_TITLE_KEYS = computed<Record<string, string>>(() => ({
+  ...Object.fromEntries(
+    Object.entries(demoExtension.value?.tabs ?? {}).map(([id, tab]) => [id, tab.titleKey])
+  ),
   home: 'nav.home'
-}
+}))
 
 const { user, isLoggedIn } = useAuth()
 /** 导航 loading 开关：内网等快速环境可在 .env.<环境> 里把 NUXT_PUBLIC_PAGE_LOADING 设为 0 */
@@ -159,11 +170,29 @@ const homeTab = computed<ITabData>(() => ({
 /**
  * 菜单 index → 页签数据。
  * 菜单 item 的 index 与页签 id 保持一致，激活态可以直接用页签 id 驱动。
+ *
+ * demo 条目全部来自 appConfig；项目自己的 API 菜单以后在这里按同样结构
+ * 合并即可，demo 始终排在最后。
  */
-const menuTabs = computed<Record<string, ITabData>>(() => ({
-  ...createDemoMenuTabs((key) => t(key)),
-  home: { ...homeTab.value }
-}))
+const menuTabs = computed<Record<string, ITabData>>(() => {
+  const demoTabs = Object.fromEntries(
+    Object.entries(demoExtension.value?.tabs ?? {}).map(([id, tab]) => [
+      id,
+      {
+        id,
+        title: t(tab.titleKey),
+        // iframe 页签指向静态资源，不走 router，需要手动补 app.baseURL
+        path: tab.iframe ? `${baseURL}${tab.path.replace(/^\//, '')}` : tab.path,
+        ...(tab.iframe ? { iframe: true } : {})
+      }
+    ])
+  )
+
+  return {
+    ...demoTabs,
+    home: { ...homeTab.value }
+  }
+})
 
 /**
  * 左侧菜单的激活项跟着当前页签走。
@@ -191,7 +220,7 @@ function handleMenuSelect(index: string) {
 // 子组件按引用比较会跳过更新；这里再替换一次视图对象引用，让标题立即刷新。
 watch(currentLocale, () => {
   const localized = tabs.value.map((tab) => {
-    const key = TAB_TITLE_KEYS[tab.id]
+    const key = TAB_TITLE_KEYS.value[tab.id]
 
     if (!key) {
       return tab

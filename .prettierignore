@@ -3,5 +3,6 @@ node_modules
 .output
 dist
 pnpm-lock.yaml
-# msw 生成的 Service Worker，升级 msw 后由 `pnpm exec msw init public --save` 覆盖
+# msw 生成的 Service Worker，升级 msw 后由 `pnpm exec msw init optional-layers/mock/public --save` 覆盖
 public/mockServiceWorker.js
+optional-layers/mock/public/mockServiceWorker.js

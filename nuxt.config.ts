@@ -1,8 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { appearanceBootstrap } from './config/appearance'
 import { createViteConfig } from './config/build'
-import { demoAliasEntry, demoPublicAssets, extendPages } from './config/demo'
-import { apiMockEnabled, createPublicRuntimeConfig, demoEnabled, isDebugEnv } from './config/env'
+import { createPublicRuntimeConfig, isDebugEnv, optionalLayersEnabled } from './config/env'
 import { DEFAULT_LOCALE, LOCALE_COOKIE_KEY, LOCALE_OPTIONS } from './i18n/config'
 import { STACK_TABS_LOCALES, getStackTabsExtraLocales } from './i18n/vendors/vue-stack-tabs'
 import { LITE_LAYER_LOCALES, getLiteLayerExtraMessages } from './i18n/vendors/vue-lite-layer'
@@ -28,7 +27,7 @@ const spaLoadingTemplate = SPA_LOADING_TEMPLATES.cog
 
 /**
  * 应用环境与公开配置全部由 config/env.ts 派生：
- * appEnv / isDebugEnv / isReleaseEnv / demoEnabled 以及 runtimeConfig.public。
+ * appEnv / isDebugEnv / isReleaseEnv / optionalLayersEnabled 以及 runtimeConfig.public。
  *
  * 环境文件与变量说明见 docs/env.md。
  */
@@ -48,6 +47,20 @@ const appBaseURL = (() => {
 })()
 
 export default defineNuxtConfig({
+  /**
+   * 可选开发层：demo 与 mock。
+   *
+   * 只在这些层“属于本次构建”时才 extends：
+   * - dev / pages 默认加载，方便本地开发和演示站；
+   * - test / staging / prod 默认不加载，产物里不会出现 demo 页面、菜单、
+   *   文案、静态资源与 msw；
+   * - PODIUM_DEMO=1/0 可显式覆盖。
+   *
+   * 层目录放在 optional-layers/ 而不是 layers/：layers/* 会在读配置前
+   * 被 Nuxt 自动注册，无法按环境关闭；optional-layers/ 只通过这里的
+   * extends 加载，目录本身可以一直保留，git 更新不会产生删除冲突。
+   */
+  extends: optionalLayersEnabled ? ['./optional-layers/mock', './optional-layers/demo'] : [],
   // 纯前端 SPA：构建产物是静态文件，可直接放到 nginx
   ssr: false,
   // dev / test 的打包产物保留 sourceMap；staging / prod 不产出
@@ -60,12 +73,16 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   /**
-   * config/ 是构建期配置目录，不在 Nuxt 默认生成的 node tsconfig include 范围内。
-   * 显式加入后，类型检查与 eslint 的 projectService 才能覆盖到这些文件。
+   * config/ 是构建期配置目录；optional-layers/ 是可选开发层。
+   * 两者都不在 Nuxt 默认生成的 tsconfig include 范围内，显式加入后，
+   * 类型检查与 eslint 的 projectService 才能覆盖到这些文件。
    */
   typescript: {
+    tsConfig: {
+      include: ['../optional-layers/*/app/**/*']
+    },
     nodeTsConfig: {
-      include: ['../config/**/*']
+      include: ['../config/**/*', '../optional-layers/*/nuxt.config.*']
     }
   },
 
@@ -81,26 +98,11 @@ export default defineNuxtConfig({
   ],
 
   /**
-   * Demo 模块入口。
-   *
-   * 布局 / 首页只 import '#podium-demo'，构建期决定真实实现还是空实现，
-   * 避免生产包里残留 demo 菜单与首页卡片代码。
-   */
-  alias: {
-    '#podium-demo': demoAliasEntry
-  },
-
-  /**
-   * 生产构建时移除 /demo 路由。
-   * 按页面文件路径过滤而不是 URL 前缀，目录改名后仍然有效。
-   */
-  hooks: {
-    'pages:extend': extendPages
-  },
-
-  /**
-   * 暴露给运行时：环境名、demo 开关和公开配置。
+   * 暴露给运行时：环境名和公开配置。
    * 页面里通过 useRuntimeConfig().public 读取。
+   *
+   * demo / mock 相关的展示信息由可选层的 appConfig 提供，
+   * 不占用 runtimeConfig，宿主也不需要知道层是否加载。
    */
   runtimeConfig: {
     public: publicRuntimeConfig
@@ -110,8 +112,8 @@ export default defineNuxtConfig({
    * 国际化：纯前端后台系统，不做语言前缀路由。
    * - no_prefix：语言只影响界面文案，URL 不带语言前缀
    * - 语言包放在项目根 i18n/locales/（@nuxtjs/i18n v10 的约定目录）
-   * - demo 专属文案在 i18n/locales/demo/，关闭 demo 时整个文件不加载；
-   *   locales[].files 支持数组，按顺序深度合并且后面的文件优先
+   * - demo 专属文案在 optional-layers/demo/，由该层的插件合并；宿主语言包
+   *   不知道 demo 的存在
    * - 选择语言后写 cookie，刷新/下次访问时由 detectBrowserLanguage 恢复
    * - Element Plus / VXE / vue-stack-tabs 的语言包映射在 i18n/vendors/ 下按库分文件
    */
@@ -121,7 +123,7 @@ export default defineNuxtConfig({
     locales: LOCALE_OPTIONS.map(({ value: code, label: name, file }) => ({
       code,
       name,
-      files: demoEnabled ? [file, `demo/${file}`] : [file]
+      files: [file]
     })),
     langDir: 'locales',
     detectBrowserLanguage: {
@@ -181,30 +183,21 @@ export default defineNuxtConfig({
   },
 
   /**
-   * Demo 静态资源。
+   * 纯静态产物。
    *
-   * app/demo/public 只在 demo 开启时挂到 /demo-assets 下（当前是 iframe-demo.html）；
-   * 关闭 demo 时不注册，静态生成产物里不会出现该文件。
-   * 不能放 public/：Nuxt 会无条件把 public/ 拷进产物。
-   * 也不能挂在 /demo 下：Nitro 的静态中间件会先命中 /demo/*，
-   * 导致 /demo/settings 这类 SPA 路由返回 404。
+   * demo / mock 的静态资源由各自层在自己的 nuxt.config 里通过
+   * nitro.publicAssets 挂载：层不加载时，这些文件也不会进产物。
    */
   nitro: {
-    preset: 'static',
-    publicAssets: demoPublicAssets
+    preset: 'static'
   },
 
   /**
-   * 构建期常量 __PODIUM_MOCK__。
-   *
-   * NUXT_PUBLIC_API_MOCK=0 时 app/plugins/mock.client.ts 里的 mock 分支
-   * 会被整段移除，msw 与 handlers 不进入产物。
+   * 构建期常量 __PODIUM_MOCK__ 已移到 optional-layers/mock/nuxt.config.ts：
+   * 只有 mock 层参与构建时才会注入，宿主不再关心 msw 开关。
    */
   vite: {
-    ...createViteConfig(),
-    define: {
-      __PODIUM_MOCK__: JSON.stringify(apiMockEnabled)
-    }
+    ...createViteConfig()
   },
 
   css: [

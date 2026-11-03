@@ -16,8 +16,8 @@
 
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
-import LayerConfirmContent from '~/components/layer/LayerConfirmContent.vue'
-import LayerDemoContent from '~/components/layer/LayerDemoContent.vue'
+import LayerConfirmContent from '../../components/demo/LayerConfirmContent.vue'
+import LayerDemoContent from '../../components/demo/LayerDemoContent.vue'
 
 const { t } = useI18n()
 const { open } = useLayer()

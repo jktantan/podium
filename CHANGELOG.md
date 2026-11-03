@@ -15,7 +15,16 @@
 - 统一 `$api` 客户端（ofetch）+ `ApiError` 错误总线
 - 国际化 zh-CN / en / zh-TW，含 Element Plus / VXE / 第三方库语言映射
 - Tailwind CSS 4 + SCSS 设计令牌，深浅色主题
-- demo 页面作为框架回归用例，生产构建自动剔除
+- demo 页面作为框架回归用例，位于 `optional-layers/demo`，构建默认不加载
+
+### 可选层
+
+- demo 与 mock 从 `app/` 拆到 `optional-layers/`，通过 `nuxt.config.ts` 的
+  `extends` 条件加载：dev / pages 默认加载，test / staging / prod 默认不加载
+- 宿主通过 appConfig 与 route meta 读取可选层扩展，不再 import `#podium-demo`
+- 删除 `config/demo.ts`、`app/demo/stub.ts`、`scripts/build-production.mjs`
+  以及 `pages:extend` / i18n / nitro 的构建期剔除逻辑
+- menu index 统一加 `demo-` 前缀，避免和项目侧 API 菜单冲突
 
 ### 依赖
 
@@ -30,8 +39,10 @@
 
 ### Mock
 
-- 内置 MSW：`auth/login` 与 `demo/items` 示例接口
+- 内置 MSW 位于 `optional-layers/mock`：登录等通用接口在该层，
+  `demo/items` 等演示接口在 demo 层
 - 通过构建期常量 `__PODIUM_MOCK__` 控制，关闭时 msw 不进入产物
+- 项目自己的 `app/mocks/handlers.ts` 会被自动合并；未登记的请求继续走真实网络
 
 ### 工程化
 

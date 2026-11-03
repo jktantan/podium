@@ -36,21 +36,24 @@ git push -u origin master
 - `.github/workflows/pages.yml`
 - `README.md` 的「演示站」章节
 
-demo 页面建议保留：它们是框架升级后的回归用例，`pnpm build:prod` 会在构建期
-剔除，不影响生产产物。确实要删时按 [demo.md](./demo.md) 的目录清单处理，
-并同步移除 `nuxt.config.ts` 里对应的 alias / hooks / i18n / nitro 配置。
+`optional-layers/`（demo + mock）默认保留在仓库里：`pnpm dev` 加载、构建默认不加载，
+不影响生产产物，也方便框架升级后用 `/demo` 做回归。确定永远不要时，删除
+`optional-layers/` 并移除 `nuxt.config.ts` 里对应的 `extends` 条目即可，
+详见 [demo.md](./demo.md)。
 
 ## 3. 目录职责与可改边界
 
-| 区域                                                   | 建议                                         |
-| ------------------------------------------------------ | -------------------------------------------- |
-| `app/pages/**`                                         | 业务页面，可自由新增 / 修改                  |
-| `app/stores/**`、`app/components/**`（非 `global/`）   | 业务状态与组件，可自由修改                   |
-| `i18n/locales/*.json`                                  | 业务文案，可自由修改（三份语言包要同步）     |
-| `.env.*`                                               | 按项目部署环境填写                           |
-| `app/layouts/**`、`app/components/global/**`           | 框架资产，优先用 props / slots 定制          |
-| `app/composables/**`、`app/plugins/**`、`app/utils/**` | 框架资产，需要改动时先在 podium 侧改，再合并 |
-| `config/**`、`scripts/**`、`nuxt.config.ts`            | 工程骨架，尽量保持原样，方便后续 merge       |
+| 区域                                                   | 建议                                                |
+| ------------------------------------------------------ | --------------------------------------------------- |
+| `app/pages/**`                                         | 业务页面，可自由新增 / 修改                         |
+| `app/stores/**`、`app/components/**`（非 `global/`）   | 业务状态与组件，可自由修改                          |
+| `i18n/locales/*.json`                                  | 业务文案，可自由修改（三份语言包要同步）            |
+| `.env.*`                                               | 按项目部署环境填写                                  |
+| `app/layouts/**`、`app/components/global/**`           | 框架资产，优先用 props / slots 定制                 |
+| `app/composables/**`、`app/plugins/**`、`app/utils/**` | 框架资产，需要改动时先在 podium 侧改，再合并        |
+| `optional-layers/**`                                   | 框架开发参考层；不要写业务代码，需要时复制到 `app/` |
+| `app/mocks/handlers.ts`                                | 项目自己的接口 mock，可自由修改 / 删除              |
+| `config/**`、`scripts/**`、`nuxt.config.ts`            | 工程骨架，尽量保持原样，方便后续 merge              |
 
 判断标准很简单：**改动是否对所有业务项目都成立**。成立就回 podium 改，
 不成立才留在业务项目里。
@@ -62,7 +65,7 @@ git fetch podium --tags
 git merge podium/master      # 0.x 阶段跟 master；发布 tag 后换成对应 tag
 pnpm install
 pnpm check
-pnpm build:prod
+pnpm build
 pnpm dev                     # 跑一遍 /demo 页面做回归
 ```
 
@@ -79,12 +82,14 @@ pnpm dev                     # 跑一遍 /demo 页面做回归
 业务项目接入真实后端后：
 
 1. 把 `.env.*` 里的 `NUXT_PUBLIC_API_MOCK` 删掉或设为 `0`；
-2. `app/mocks/`、`app/plugins/mock.client.ts`、`app/types/mock.d.ts`、
-   `public/mockServiceWorker.js` 可以删除，`package.json` 里的 `msw` 依赖同步移除；
-3. 删除前确认没有页面依赖 `/demo/items` 这类示例接口。
+2. `test` / `staging` / `prod` 构建默认不加载 `optional-layers/`，msw 与 demo
+   不会进入产物；
+3. 项目自己的接口 mock 写 `app/mocks/handlers.ts`，mock 层会自动合并；
+4. 想完全自研 mock：删除 `optional-layers/mock`、`nuxt.config.ts` 里对应的
+   `extends` 条目，并移除 `msw` 依赖。
 
-保留 mock 也不会影响生产：`NUXT_PUBLIC_API_MOCK=0` 时插件分支是构建期死代码，
-msw 不会进入产物。
+`optional-layers/` 保留在仓库里不影响生产产物，也方便框架升级后回归；
+不要在层目录里写业务代码。
 
 ## 6. 版本约定
 

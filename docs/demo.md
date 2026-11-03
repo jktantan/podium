@@ -1,115 +1,128 @@
-# Demo 页面与生产构建
+# Demo 与 Mock（可选层）
 
-项目里的演示页面和正式页面分开存放：
+Demo 页面和内置 mock 是**框架开发期 / 演示站资产**，不参与业务项目的生产构建。
+它们放在 `optional-layers/`，由 `nuxt.config.ts` 的 `extends` 条件加载：
 
-- 正式页面：`app/pages/index.vue`（登录页）、`app/pages/admin/index.vue`（工作台首页）
-- 通用占位路由：`app/pages/iframe.vue`、`app/pages/[...slug].vue`
-- Demo 页面：`app/pages/demo/`（URL 前缀 `/demo`）
-- Demo 菜单 / 首页入口：`app/demo/`
-- Demo 静态资源：`app/demo/public/`
-- Demo 文案：`i18n/locales/demo/`
-
-`pnpm build:prod` 会把 demo 内容从产物中剔除；`pnpm dev` 和 `pnpm build` 仍然带 demo。
+- 源码一直保留在仓库里，方便本地开发和框架升级后回归；
+- 构建时只是不 `extends`，不删除文件、不移动目录，`git merge` 不受影响；
+- 宿主不 import 层内模块，可选层缺席时仍能通过类型检查和构建。
 
 ## 目录
 
 ```
-app/
-  pages/
-    index.vue                 # 登录页
-    admin/
-      index.vue               # 工作台首页
-    iframe.vue                # vue-stack-tabs 的 iframe 占位路由（通用）
-    [...slug].vue             # 页签内 404 兜底（通用）
-    demo/                     # demo 页面（URL 为 /demo/*）
-      about.vue
-      detail.vue
-      settings.vue
-      element-plus-demo.vue
-      ep-field-view-demo.vue
-      layer-demo.vue
-      permission-demo.vue
-      search-demo.vue
-      table-demo.vue
-      error-pages/{401,403,404,500}.vue
-      common-frame/{bare,full,no-header}.vue
-      [...slug].vue           # /demo 下的 404 兜底（「404 示例」菜单）
-  demo/                       # demo 的菜单、页签表与首页入口
-    index.ts                  # 真实实现
-    stub.ts                   # 生产构建用的空实现
-    menu/DemoMenuItems.vue
-    public/iframe-demo.html   # 内嵌页面示例，挂载到 /demo-assets/iframe-demo.html
-i18n/locales/
-  *.json                      # 正式页面文案
-  demo/*.json                 # demo 专属文案
+optional-layers/
+  mock/
+    nuxt.config.ts              # $meta.name、__PODIUM_MOCK__、SW publicAssets
+    app/plugins/mock.client.ts  # 注册 Service Worker
+    app/mocks/browser.ts        # worker 单例，自动合并项目侧 handlers
+    app/mocks/handlers.ts       # 登录等通用接口
+    app/app.config.ts           # 演示账号提示 / 默认账号
+    public/mockServiceWorker.js
+  demo/
+    nuxt.config.ts              # extends: ['../mock']、route meta、demo-assets
+    app/pages/demo/             # /demo/* 页面
+    app/components/             # DemoMenuItems + demo 专用组件
+    app/mocks/demo-handlers.ts  # /demo/items 等演示接口
+    app/plugins/                # 组件注册、i18n 合并、demo handlers 注册
+    app/app.config.ts           # 菜单组件名 + 页签数据
+    i18n/locales/               # demo 专属文案
+    public/iframe-demo.html
 ```
 
-## 判定规则
+demo 层强依赖 mock 层，通过 `optional-layers/demo/nuxt.config.ts` 里的
+`extends: ['../mock']` 声明。只复制 demo、不复制 mock 时，Nuxt 会直接报路径
+不存在，而不是运行到页面才发现接口 404。
 
-- 文件名带 `-demo`、只用于演示组件的页面；
-- 错误页预览（`error-pages/*`）、查询框架演示（`search-demo`）及其配套的
-  `common-frame/*`；
-- 页签缓存教程（`about` / `detail`）、设置页（`settings`）、内嵌页面示例
-  （`iframe-demo.html`）也属于演示内容；
-- 被这些页面独占的文案放进 `i18n/locales/demo/`。
+## 加载规则
 
-保留在正式页面里的东西：
-
-- 工作台首页、登录页、401/403/404/500 错误处理；
-- 页签内 403 / 404 复用 `Error403` / `Error404`，全屏错误由 `app/error.vue` 统一处理；
-- `app/pages/iframe.vue` 只是 vue-stack-tabs 的 iframe 占位路由，
-  `app/pages/[...slug].vue` 是页签内 404 兜底，两者都是通用能力；
-- 通用组件的文案（如 `iconPicker`、`searchCard`）留在基础语言包：
-  这些组件以后可能被正式页面复用，不能随 demo 一起移除。
-
-## 菜单与首页入口
-
-侧边栏的 demo 项全部收在 `nav.demo`（示例）这个 `el-sub-menu` 下，
-菜单项在 `app/demo/menu/DemoMenuItems.vue` 里维护。
-
-布局和首页不直接 import `app/demo/*`，而是 import `#podium-demo`：
-
-| `PODIUM_DEMO` | `#podium-demo` 指向 | 效果                           |
-| ------------- | ------------------- | ------------------------------ |
-| 未设置 / `1`  | `app/demo/index.ts` | 真实菜单、demo 页签、首页卡片  |
-| `0`           | `app/demo/stub.ts`  | 空组件 / 空页签表 / 空卡片列表 |
-
-这样生产包里不会留下 demo 菜单和首页卡片的代码。
-
-## 生产构建
-
-```bash
-pnpm build:prod    # 生产包：剔除 demo
-pnpm build         # 完整包：保留 demo，用于演示 / 回归
+```ts
+// nuxt.config.ts
+extends: optionalLayersEnabled ? ['./optional-layers/mock', './optional-layers/demo'] : []
 ```
 
-`pnpm build:prod` 执行 `scripts/build-production.mjs`，设置 `PODIUM_DEMO=0`
-后调用 `nuxt generate`。`nuxt.config.ts` 里会做四件事：
+`optionalLayersEnabled` 在 `config/env.ts` 里计算：
 
-1. `pages:extend` 按文件路径移除 `app/pages/demo` 下的全部路由；
-2. `alias['#podium-demo']` 指向 `app/demo/stub.ts`；
-3. `i18n.locales[].files` 不再追加 `demo/<locale>.json`；
-4. `nitro.publicAssets` 不再挂载 `app/demo/public`，`iframe-demo.html` 不会进产物。
+| 环境           | 默认   | 说明                 |
+| -------------- | ------ | -------------------- |
+| dev            | 加载   | 本地开发、跑回归用例 |
+| pages          | 加载   | GitHub Pages 演示站  |
+| test           | 不加载 | 业务测试环境         |
+| staging / prod | 不加载 | 生产 / 预发布产物    |
 
-开关是构建期常量，切换后需要重启 dev server 或重新 build。
+`PODIUM_DEMO=1` / `0` 可以显式覆盖，用于临时验证。
+
+## 为什么不在 `layers/` 下
+
+Nuxt 会在读取 `nuxt.config.ts` **之前**自动注册 `layers/*`，没有任何配置能在
+构建时跳过它。把 demo 放进去，关闭 demo 就只能删除 / 移动目录，会污染
+git 工作区，导致框架升级时出现 modify/delete 冲突。
+
+`optional-layers/` 不匹配自动扫描规则，只通过 `extends` 加载，目录内部仍然是
+标准的 Nuxt 4 layer 结构。
+
+## 宿主扩展点
+
+宿主完全不认识 demo/mock，靠三个约定读取可选层提供的信息：
+
+| 扩展点                          | 提供方                                   | 消费方                           |
+| ------------------------------- | ---------------------------------------- | -------------------------------- |
+| `appConfig.podium.sidebar.demo` | `optional-layers/demo/app/app.config.ts` | 布局动态渲染菜单组件、合并页签表 |
+| `appConfig.podium.mock`         | `optional-layers/mock/app/app.config.ts` | 登录页展示演示账号提示           |
+| route meta `podium.allow`       | demo 层的 `pages:extend`                 | 全局路由守卫放行 demo 页面       |
+
+菜单顺序由宿主模板固定：**首页 → 项目 API 菜单 → demo 菜单**。demo 层只提供
+最后一段内容，不控制位置。
+
+其他细节：
+
+- **菜单组件**：`DemoMenuItems` 由 demo 层的 `demo-components.ts` 注册为全局组件，
+  宿主用 `<component :is="appConfig...menuComponent">` 渲染；层未加载时不渲染。
+- **i18n**：demo 文案由 `i18n-demo.client.ts` 在运行时 `mergeLocaleMessage` 合并，
+  宿主语言包配置不需要知道 demo 文件的存在。
+- **mock handlers**：`demo-mock.client.ts` 在 `__PODIUM_MOCK__` 为 true 时把
+  demo 专属接口合并进 mock 层的 worker；关闭 mock 时这段是构建期死代码。
 
 ## 新增一个 demo 页面
 
-1. 页面放在 `app/pages/demo/`，URL 前缀自动是 `/demo`；
-2. 文案放进 `i18n/locales/demo/{zh-CN,en,zh-TW}.json`，三份都要补；
-3. 在 `app/demo/index.ts` 的 `DEMO_TAB_PAGES` 中登记页签；
-4. 在 `app/demo/menu/DemoMenuItems.vue` 中加对应菜单项，`index` 与页签 id 一致；
-5. 如果页面要出现在首页，在 `createDemoHomeCards()` 里加卡片。
+1. 页面放 `optional-layers/demo/app/pages/demo/`，URL 前缀是 `/demo`；
+2. 文案放 `optional-layers/demo/i18n/locales/{zh-CN,en,zh-TW}.json`，三份都要补；
+3. 在 `optional-layers/demo/app/app.config.ts` 的 `tabs` 里登记，id 统一带 `demo-` 前缀；
+4. 在 `DemoMenuItems.vue` 加对应菜单项，`index` 与 tabs id 一致；
+5. `pnpm dev` 验证菜单、页签和文案。
 
-以上步骤都不需要改 `nuxt.config.ts` 或布局，生产构建会自动排除。
+## 项目自己的 mock
 
-## 验证
+- 项目接口 mock 写 `app/mocks/handlers.ts`（导出 `handlers` 数组），mock 层会通过
+  Vite glob 自动合并；
+- 没登记 handler 的请求继续走真实网络，因此可以「一部分接口 mock、一部分连真实后端」；
+- 接入真实后端后，把 `NUXT_PUBLIC_API_MOCK` 设为 `0` 或删掉；
+- 想完全自研 mock：删除 `optional-layers/mock` 和 `nuxt.config.ts` 里对应的
+  `extends` 条目，再移除 `msw` 依赖即可。
 
-生产包构建完成后，可以检查产物里没有 demo 路由和文案：
+## 生产构建验证
 
 ```bash
-grep -rl "element-plus-demo\|permissionDemo\|epFieldViewDemo" .output/public/_nuxt
-test ! -e .output/public/demo-assets/iframe-demo.html
+pnpm build
+test ! -e .output/public/demo-assets
+test ! -e .output/public/mockServiceWorker.js
+grep -rl "element-plus-demo\|DemoMenuItems\|demo/items" .output/public/_nuxt
 ```
 
-正常情况下第一条没有输出，第二条返回成功（文件不存在）。
+前两条返回成功（路径不存在），最后一条没有输出。也可以检查预渲染路由里没有
+`/demo/*`：
+
+```bash
+find .output/public -maxdepth 2 -name "*.html" | sort
+```
+
+## 删除可选层
+
+项目确定永远不需要 demo/mock 时：
+
+1. 删除 `optional-layers/`；
+2. 删除 `nuxt.config.ts` 里的 `extends` 条件（保留条件会在 dev 环境解析路径时报错）；
+3. 删除 `package.json` 里的 `msw` 依赖；
+4. `app/mocks/handlers.ts` 如果存在也一并删除。
+
+删除后宿主不需要改任何页面代码：布局、守卫、登录页读取的都是可选的 appConfig
+和 route meta。

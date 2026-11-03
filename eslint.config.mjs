@@ -35,6 +35,17 @@ export default withNuxt(
       '@typescript-eslint/no-floating-promises': 'off'
     }
   },
+  {
+    /*
+     * 可选层的页面文件名由 URL 决定（about.vue / 401.vue 等），
+     * 和 app/pages/** 一样不需要「多词组件名」约束。
+     * Nuxt 自带的 eslint 配置只豁免了 app/pages，这里补上可选层。
+     */
+    files: ['optional-layers/*/app/pages/**/*.vue'],
+    rules: {
+      'vue/multi-word-component-names': 'off'
+    }
+  },
   // prettier 放在最后，关闭与格式化冲突的 ESLint 规则
   prettier
 )

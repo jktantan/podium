@@ -508,9 +508,8 @@ $api / request()
 `useAuth()` 建议保留为门面，内部改为读写 `useAuthStore()`，
 页面里的 `isLoggedIn` / `can` / `login` / `logout` 调用方式不变。
 
-开发环境保留了原来的本地演示账号（`demoEnabled` 时命中 `DEMO_USERS` 直接写入
-store，不请求登录接口）；其他账号才走 `/auth/login`。生产构建关闭 demo 后，
-全部走真实接口。
+登录始终走 `/auth/login`：dev / pages 由 mock 层接管，业务项目走真实接口。
+演示账号是 mock 层的能力，宿主不再保留本地账号兜底。
 
 `isLoggedIn` 在正常流程中判断 store 中是否有用户信息/authorization 即可：
 登录成功先写 store，再跳转，页面看到的一定是已登录状态。

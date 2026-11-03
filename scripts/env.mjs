@@ -8,7 +8,7 @@
  * GitHub Pages 演示站。test / staging / prod 是留给派生业务项目的空位，
  * 业务项目按自己的部署环境填写即可。
  *
- * - 入口脚本（run-nuxt.mjs / build-production.mjs）先确定环境再交给 nuxt；
+ * - 入口脚本（run-nuxt.mjs / build-pages.mjs）先确定环境再交给 nuxt；
  * - nuxt.config.ts 顶部调用 loadAppEnv()，把文件里的值读进 process.env；
  * - 命令行里已存在的变量优先于文件，CI 可临时覆盖而不改文件。
  *

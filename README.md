@@ -30,22 +30,25 @@ pnpm dev          # http://localhost:3000
 | admin  | admin123  | `*`  |
 | viewer | viewer123 | 无   |
 
-`.env.dev` 默认 `NUXT_PUBLIC_API_MOCK=1`。接入真实后端时，把该行设为 `0` 或删掉，并填写 `NUXT_PUBLIC_API_BASE_URL`。
+`.env.dev` 默认 `NUXT_PUBLIC_API_MOCK=1`，并加载 `optional-layers/`（demo + mock）。
+接入真实后端时，把该行设为 `0` 或删掉，并填写 `NUXT_PUBLIC_API_BASE_URL`；
+`test` / `staging` / `prod` 构建默认不加载可选层，产物里不会有 demo/mock。
 
 ## 目录
 
 ```
 app/
-  pages/          正式页面与 demo 页面（/demo）
+  pages/          正式页面（demo 页面在 optional-layers/demo）
   components/     通用组件（global/ 为全局布局级组件）
   layouts/        布局（工作台、登录页等）
   composables/    useAuth / useStomp / useLayer 等
   stores/         Pinia
-  plugins/        $api、mock、vxe-table、外观初始化
-  mocks/          内置 mock handlers（业务项目接后端后可删）
-  demo/           demo 菜单、页签与首页卡片
+  plugins/        $api、vxe-table、外观初始化
   assets/         设计令牌、SCSS、图标、字体
-config/           构建期配置（环境、demo、图标、Vite）
+optional-layers/  可选开发层（dev/pages 默认加载，构建默认不加载）
+  demo/           demo 页面、菜单、页签、文案、静态资源
+  mock/           内置 MSW mock（handlers 与 Service Worker）
+config/           构建期配置（环境、图标、Vite）
 i18n/             语言包与第三方库语言映射
 scripts/           环境加载、构建入口、图标生成
 docs/              使用与约定文档
@@ -53,13 +56,13 @@ docs/              使用与约定文档
 
 ## 环境
 
-| 环境      | 归属     | 用途                                    |
-| --------- | -------- | --------------------------------------- |
-| `dev`     | Podium   | 框架本地开发，默认启用 mock             |
-| `pages`   | Podium   | GitHub Pages 演示站构建                 |
-| `test`    | 业务项目 | 测试环境                                |
-| `staging` | 业务项目 | 预发布环境，产物与生产一致（剔除 demo） |
-| `prod`    | 业务项目 | 生产环境                                |
+| 环境      | 归属     | 用途                                      |
+| --------- | -------- | ----------------------------------------- |
+| `dev`     | Podium   | 框架本地开发，默认加载 demo/mock          |
+| `pages`   | Podium   | GitHub Pages 演示站构建（加载 demo/mock） |
+| `test`    | 业务项目 | 测试环境（不加载可选层）                  |
+| `staging` | 业务项目 | 预发布环境，产物与生产一致                |
+| `prod`    | 业务项目 | 生产环境（不加载可选层）                  |
 
 个人覆盖写 `.env.<环境>.local`（已 gitignore），不要改入库的 `.env.*`。
 变量清单和加载优先级见 [docs/env.md](./docs/env.md)。
@@ -68,12 +71,12 @@ docs/              使用与约定文档
 
 | 命令                      | 说明                                            |
 | ------------------------- | ----------------------------------------------- |
-| `pnpm dev`                | dev 环境本地开发（mock 开启）                   |
-| `pnpm build`              | prod 环境完整构建（保留 demo，用于回归 / 演示） |
-| `pnpm build:dev`          | dev 环境构建（框架自检：带 sourceMap 与 demo）  |
-| `pnpm build:prod`         | 生产构建，剔除 demo 路由 / 菜单 / 文案          |
-| `pnpm build:staging`      | 预发布构建，同样剔除 demo                       |
-| `pnpm build:github-pages` | 构建 Pages 演示站（pages 环境，保留 demo）      |
+| `pnpm dev`                | dev 环境本地开发（加载 demo/mock）              |
+| `pnpm build`              | prod 环境构建（不加载 demo/mock）               |
+| `pnpm build:dev`          | dev 环境构建（框架自检，加载可选层）            |
+| `pnpm build:prod`         | 与 `build` 相同，语义化别名                     |
+| `pnpm build:staging`      | 预发布构建（不加载可选层）                      |
+| `pnpm build:github-pages` | 构建 Pages 演示站（pages 环境，加载 demo/mock） |
 | `pnpm check`              | lint + 格式检查 + 类型检查                      |
 | `pnpm typecheck`          | `nuxt typecheck`                                |
 | `pnpm clean`              | 清理 `.nuxt` / `.output` 等构建缓存             |

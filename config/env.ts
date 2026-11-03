@@ -32,17 +32,17 @@ export const isDebugEnv = appEnv === 'dev' || appEnv === 'test' || isPagesEnv
 /** 打包不产出 sourceMap，并移除 console / debugger */
 export const isReleaseEnv = appEnv === 'staging' || appEnv === 'prod'
 
-const isProductionBuild = process.env.NODE_ENV === 'production'
-
 /**
- * Demo 内容开关（构建期）。
+ * 是否加载 optional-layers（demo + mock，构建期）。
  *
- * - dev / test / pages 默认开启；
- * - staging 的正式打包强制关闭，保证产物与生产一致；
- * - `PODIUM_DEMO=0` 显式关闭（pnpm build:prod / build:staging 会自动设置）。
+ * - dev / pages 默认开启：框架本地开发和演示站需要 demo/mock；
+ * - test / staging / prod 默认关闭：业务项目的构建产物里不包含 demo/mock；
+ * - `PODIUM_DEMO=1` / `0` 可以显式覆盖，便于 CI 或临时验证。
+ *
+ * 注意：这里只控制“是否 extends 可选层”，不删除源码。
+ * 项目确定永远不需要 demo/mock 时，直接删除 optional-layers 目录即可。
  */
-export const demoEnabled =
-  process.env.PODIUM_DEMO !== '0' && !(isProductionBuild && appEnv === 'staging')
+export const optionalLayersEnabled = boolEnv('PODIUM_DEMO', appEnv === 'dev' || isPagesEnv)
 
 export function envValue(key: string, fallback: string): string {
   return process.env[key]?.trim() || fallback
@@ -70,17 +70,6 @@ export function boolEnv(key: string, fallback: boolean): boolean {
 }
 
 /**
- * 内置 MSW mock 开关（构建期）。
- *
- * - 开启时客户端插件注册 Service Worker，接口请求由 app/mocks/ 下的
- *   handlers 接管，不需要后端也能点通页面；
- * - 业务项目接入真实后端后，把 .env.<环境> 里的 NUXT_PUBLIC_API_MOCK
- *   删掉或设为 0；
- * - 关掉时插件代码被构建期常量整段移除，生产包里不会留下 msw。
- */
-export const apiMockEnabled = boolEnv('NUXT_PUBLIC_API_MOCK', false)
-
-/**
  * 生成 runtimeConfig.public。
  *
  * 变量名保持 NUXT_PUBLIC_ 前缀，既作为默认值，也允许 Nuxt 在部署时
@@ -89,13 +78,14 @@ export const apiMockEnabled = boolEnv('NUXT_PUBLIC_API_MOCK', false)
  * 注意：Nuxt 会用 destr 把 NUXT_PUBLIC_* 再写回一次，因此这里的
  * 数字 / 布尔解析在构建期可能被覆盖成原始字符串或数字。运行时由
  * app/config/stomp.ts 的 normalizeStompConfig() 统一归一化。
+ *
+ * demo / mock 不在 runtimeConfig 里：它们是可选层，是否加载由构建期
+ * extends 决定，宿主通过 appConfig 读取层提供的扩展信息。
  */
 export function createPublicRuntimeConfig(): {
   appEnv: string
-  demoEnabled: boolean
   appName: string
   apiBaseUrl: string
-  apiMock: boolean
   pageLoading: boolean
   stomp: StompRuntimeConfig
 } {
@@ -107,10 +97,8 @@ export function createPublicRuntimeConfig(): {
 
   return {
     appEnv,
-    demoEnabled,
     appName: envValue('NUXT_PUBLIC_APP_NAME', 'Podium'),
     apiBaseUrl: envValue('NUXT_PUBLIC_API_BASE_URL', ''),
-    apiMock: apiMockEnabled,
     /**
      * 导航期间是否显示页面加载态，默认开启。
      *

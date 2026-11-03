@@ -7,22 +7,6 @@ import { ApiError } from '~/utils/api-error'
 
 export type PermissionMode = 'all' | 'any'
 
-interface DemoAccount {
-  password: string
-  permissions: string[]
-}
-
-const DEMO_USERS: Record<string, DemoAccount> = {
-  admin: {
-    password: 'admin123',
-    permissions: ['*']
-  },
-  viewer: {
-    password: 'viewer123',
-    permissions: []
-  }
-}
-
 /** 登录接口；后端路径确定后只需改这里 */
 const LOGIN_PATH = '/auth/login'
 
@@ -62,22 +46,13 @@ function toAuthUser(payload: LoginPayload, fallbackName: string): AuthUser {
  * 轻量登录 / 权限门面。
  *
  * - 认证状态在 Pinia（sessionStorage），页面调用方式保持不变；
- * - 演示环境保留本地账号，避免没有后端时无法进入工作台；
- * - 真实环境登录成功后把 authorization 写入 store，并注册 STOMP provider；
+ * - 登录始终走 $api：dev / pages 由 mock 层接管，业务项目走真实接口；
+ * - 演示账号是 mock 层的能力，不再在宿主里做本地兜底；
+ * - 登录成功后把 authorization 写入 store，并注册 STOMP provider；
  * - 登录失败由登录页统一显示固定文案，不在这里暴露后端原因。
  */
 export function useAuth() {
   const store = useAuthStore()
-  const { apiBaseUrl, apiMock, demoEnabled } = useRuntimeConfig().public
-
-  /**
-   * 本地演示账号只在「demo 已开启、但既没配后端也没开 mock」时兜底。
-   *
-   * 正常路径始终走 $api：dev / pages 由内置 mock 接管，业务项目走真实接口。
-   * 这样登录链路（authorization、Authorization 头、STOMP provider）在框架阶段
-   * 就被验证过，而不会因为 demo 开关被短路成本地账号。
-   */
-  const useLocalDemoAccount = demoEnabled && !apiBaseUrl && !apiMock
 
   const user = computed(() => store.user?.name ?? null)
   const isLoggedIn = computed(() => store.isLoggedIn)
@@ -110,22 +85,6 @@ export function useAuth() {
 
   async function login(username: string, password: string) {
     const name = username.trim()
-
-    if (useLocalDemoAccount) {
-      const account = DEMO_USERS[name]
-
-      if (account && account.password === password) {
-        store.setSession(`demo-${name}`, { name, permissions: account.permissions })
-        registerStompAuthorization()
-        return
-      }
-
-      throw new ApiError({
-        status: 500,
-        code: -1,
-        reason: useNuxtApp().$i18n.t('login.failedCredentials')
-      })
-    }
 
     const payload =
       (await useNuxtApp().$api.post<LoginPayload>(LOGIN_PATH, {

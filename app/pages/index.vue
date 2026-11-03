@@ -67,9 +67,13 @@ definePageMeta({
   layout: 'auth'
 })
 
-const { apiBaseUrl, apiMock, demoEnabled } = useRuntimeConfig().public
-/** 与 useAuth 的本地账号判定一致：只有 mock 或本地兜底时才提示演示账号 */
-const showDemoAccounts = computed(() => apiMock || (demoEnabled && !apiBaseUrl))
+const appConfig = useAppConfig()
+/**
+ * 演示账号提示属于 mock 层的能力，不属于宿主：
+ * mock 层通过 appConfig 声明 demoAccounts，项目自研 mock 或不用 mock 时
+ * 这里自然为 false，登录页不展示任何演示信息。
+ */
+const showDemoAccounts = computed(() => appConfig.podium?.mock?.demoAccounts ?? false)
 
 const route = useRoute()
 const { login } = useAuth()
@@ -77,8 +81,8 @@ const { t } = useI18n()
 
 const formRef = ref<FormInstance>()
 const form = reactive({
-  username: 'admin',
-  password: 'admin123'
+  username: appConfig.podium?.mock?.defaultAccount?.username ?? '',
+  password: appConfig.podium?.mock?.defaultAccount?.password ?? ''
 })
 
 const rules = computed<FormRules<typeof form>>(() => ({
