@@ -9,7 +9,13 @@
  * - 文案改走 i18n，按钮提供刷新与返回首页。
  */
 import { useTabActions, useTabRouter } from 'vue-stack-tabs'
-import { css as inconsolata } from '~/assets/fonts/Inconsolata.ttf?subsets'
+/*
+ * Inconsolata 只覆盖拉丁字符，而 ?subsets 会按全局扫描到的中文生成分片：
+ * cn-font-split 对字体里不存在的字符会产出只有 .notdef 的 woff2，
+ * 浏览器报 “glyf: zero-length table” 并拒绝解码，所以这里改用完整字体。
+ * 中文由 fallback 字体渲染，错误页只有这一处引用 Inconsolata。
+ */
+import { css as inconsolata } from '~/assets/fonts/Inconsolata.ttf'
 import { css as titleFont } from '~/assets/fonts/PangMenZhengDao3.ttf?subsets'
 import { css as titleFontTW } from '~/assets/fonts/NanoByongGyeHei-Regular.ttf?subsets'
 
