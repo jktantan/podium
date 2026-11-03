@@ -36,6 +36,11 @@
 - 新增 `pages` 环境（`.env.pages`），GitHub Pages 演示站不再借用 `test`
 - `test` / `staging` / `prod` 明确为派生业务项目的部署环境
 - 新增 `NUXT_PUBLIC_API_MOCK` 开关
+- `.env` 改用 Nuxt CLI 自带的 `--dotenv` 加载，每条命令只加载一个
+  `.env.<环境>`；删除 `dotenv` 依赖与 `scripts/env.mjs`、`scripts/run-nuxt.mjs`，
+  环境名由 `config/env.ts` 从 `--dotenv` 文件名推断
+- 删除 `scripts/build-pages.mjs`：Pages 子路径由 `.env.pages` 的
+  `NUXT_APP_BASE_URL` 决定，`.nojekyll` 改为 `public/` 下的空文件
 
 ### Mock
 

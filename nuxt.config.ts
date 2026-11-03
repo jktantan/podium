@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { appearanceBootstrap } from './config/appearance'
 import { createViteConfig } from './config/build'
-import { createPublicRuntimeConfig, isDebugEnv, optionalLayersEnabled } from './config/env'
+import { createPublicRuntimeConfig, isReleaseEnv, optionalLayersEnabled } from './config/env'
 import { DEFAULT_LOCALE, LOCALE_COOKIE_KEY, LOCALE_OPTIONS } from './i18n/config'
 import { STACK_TABS_LOCALES, getStackTabsExtraLocales } from './i18n/vendors/vue-stack-tabs'
 import { LITE_LAYER_LOCALES, getLiteLayerExtraMessages } from './i18n/vendors/vue-lite-layer'
@@ -27,7 +27,7 @@ const spaLoadingTemplate = SPA_LOADING_TEMPLATES.cog
 
 /**
  * 应用环境与公开配置全部由 config/env.ts 派生：
- * appEnv / isDebugEnv / isReleaseEnv / optionalLayersEnabled 以及 runtimeConfig.public。
+ * isReleaseEnv / optionalLayersEnabled 以及 runtimeConfig.public。
  *
  * 环境文件与变量说明见 docs/env.md。
  */
@@ -63,10 +63,10 @@ export default defineNuxtConfig({
   extends: optionalLayersEnabled ? ['./optional-layers/mock', './optional-layers/demo'] : [],
   // 纯前端 SPA：构建产物是静态文件，可直接放到 nginx
   ssr: false,
-  // dev / test 的打包产物保留 sourceMap；staging / prod 不产出
+  // staging / prod 的打包产物不产出 sourceMap；dev / test / pages 保留
   sourcemap: {
-    client: isDebugEnv,
-    server: isDebugEnv
+    client: !isReleaseEnv,
+    server: !isReleaseEnv
   },
   spaLoadingTemplate,
   compatibilityDate: '2025-07-15',

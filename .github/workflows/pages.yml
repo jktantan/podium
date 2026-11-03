@@ -41,12 +41,11 @@ jobs:
 
       - name: Build demo site
         run: pnpm build:github-pages
-        env:
-          # 项目页默认自动推导成 /<repo>/；绑定自定义域名时在仓库
-          # Settings -> Secrets and variables -> Actions -> Variables 里设为 /
-          NUXT_APP_BASE_URL: ${{ vars.NUXT_APP_BASE_URL }}
-          # 可选：覆盖 .env.pages 里的接口地址
-          NUXT_PUBLIC_API_BASE_URL: ${{ vars.NUXT_PUBLIC_API_BASE_URL }}
+
+      - name: Verify artifact
+        run: |
+          test -f .output/public/index.html
+          ! grep -q "Redirecting..." .output/public/index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v6
@@ -55,7 +54,7 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: .output/public
-          # 构建脚本会写 .nojekyll，默认会排除隐藏文件
+          # .nojekyll 是 public/ 下的隐藏文件，默认会被排除
           include-hidden-files: true
 
   deploy:

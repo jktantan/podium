@@ -5,8 +5,9 @@ Podium 有两类环境：
 - **框架自用**：`dev`（本地开发）、`pages`（GitHub Pages 演示站）
 - **业务项目占位**：`test` / `staging` / `prod`，派生业务项目后按自己的部署流程填写
 
-环境由 `APP_ENV` 决定，启动脚本负责设置，`nuxt.config.ts` 在加载配置前读取
-对应的 `.env.<环境>`。
+环境由 `APP_ENV` 决定。`package.json` 里每条命令都通过 `--dotenv` 指定
+对应的 `.env.<环境>`，Nuxt 在解析 `nuxt.config.ts` 之前加载；
+`config/env.ts` 再从命令行反推出环境名。
 
 ## 环境与命令
 
@@ -37,14 +38,22 @@ staging / prod 使用 terser 压缩并开启 `drop_debugger`，同时把 `consol
 `console.error` / `console.warn` 保留，作为线上错误线索。sourceMap 只影响打包产物，
 dev server 的调试能力不受影响。
 
-五份 `.env.*` 都已入库，只放非敏感的公开配置。个人覆盖用 `.env.<环境>.local`
-（已 gitignore）；CI 里也可以直接用环境变量临时覆盖，不必改文件。
+五份 `.env.*` 都已入库，只放非敏感的公开配置。
 
-加载优先级（先加载者优先，命令行 / CI 注入的变量始终最高）：
+每条命令只加载一个文件，就是 Nuxt 自带的 `--dotenv`：
 
 ```
-.env.<环境>.local > .env.<环境> > .env.local > .env
+nuxt dev --dotenv .env.dev
 ```
+
+不需要再准备 `.env`、`.env.local` 之类的兜底文件。个人临时改配置，本地直接改
+对应的 `.env.<环境>`；CI 里用环境变量覆盖。项目里没有额外的 dotenv 加载器，
+也没有 `dotenv` 依赖。
+
+`APP_ENV` 不需要手动设置：`config/env.ts` 会从 `--dotenv` 文件名里反推出
+`dev` / `pages` / `test` / `staging` / `prod`。没有 `--dotenv` 的场景
+（`nuxt prepare`、`typecheck`）按 `NODE_ENV` 推断。CI 里仍可以用同名环境变量
+显式覆盖。
 
 ## 变量
 
@@ -60,7 +69,7 @@ dev server 的调试能力不受影响。
 | `NUXT_PUBLIC_STOMP_AUTH_HEADER`     | CONNECT 帧里放 token 的 header 名       | `public.stomp.authHeader`     |
 | `NUXT_PUBLIC_STOMP_DEBUG`           | `1` 输出 stompjs 调试日志               | `public.stomp.debug`          |
 | `PODIUM_DEMO`                       | `1` / `0` 强制加载 / 不加载可选层       | —（构建期）                   |
-| `APP_ENV`                           | 当前环境，由脚本写入                    | `public.appEnv`               |
+| `APP_ENV`                           | 当前环境，由 `--dotenv` 文件名推断      | `public.appEnv`               |
 
 STOMP 的使用方式见 [stomp.md](./stomp.md)。
 
@@ -99,19 +108,18 @@ Vite glob 自动合并；没登记 handler 的请求继续走真实网络，因�
 
 ## 子路径部署（GitHub Pages）
 
-GitHub Pages 项目页的地址是 `https://<user>.github.io/<repo>/`，站点根不在 `/`。
-`pnpm build:github-pages` 固定使用 pages 环境并加载可选层（demo + mock），同时：
+GitHub Pages 项目页的地址是 `https://<user>.github.io/<repo>/`，站点根不在 `/`，
+所以 `NUXT_APP_BASE_URL` 直接写在 `.env.pages` 里，例如 `/podium/`。
+`pnpm build:github-pages` 就是 `nuxt generate --dotenv .env.pages`，
+打包时 Nuxt 会读到这个值。
 
-1. 按 `GITHUB_REPOSITORY` 自动推导 `NUXT_APP_BASE_URL=/<repo>/`；
-2. 在产物里写入 `.nojekyll`，避免 `_nuxt/` 被 Jekyll 忽略；
-3. 校验 `index.html` 不是重定向占位。
-
-绑定自定义域名或部署在根路径时，把仓库 Variables 里的
-`NUXT_APP_BASE_URL` 设为 `/`。workflow 见 `.github/workflows/pages.yml`。
+`.nojekyll` 是 `public/.nojekyll` 空文件，构建时原样复制到产物根目录，
+避免 `_nuxt/` 被 Jekyll 忽略。workflow 见 `.github/workflows/pages.yml`。
 
 ## 注意
 
 - 这是纯前端静态应用，`NUXT_PUBLIC_*` 会原样打进 `.output/public`，**禁止放密钥**。
 - 环境值在构建期确定，修改 `.env` 后需要重启 dev 或重新 build。
-- 直接运行 `nuxt dev` / `nuxt build` 时按 `NODE_ENV` 推断为 dev / prod；
-  要使用 pages / test / staging 请走上面的脚本。
+- 直接运行 `nuxt dev` / `nuxt build` 时只会加载根目录的 `.env`（Nuxt 默认行为），
+  不会加载 `.env.dev` 等文件；要用多环境配置请走 `package.json` 里的命令，或者
+  自己补 `--dotenv .env.dev`。`APP_ENV` 未指定时按 `NODE_ENV` 推断为 dev / prod。
