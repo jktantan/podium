@@ -34,6 +34,19 @@ const spaLoadingTemplate = SPA_LOADING_TEMPLATES.cog
  */
 const publicRuntimeConfig = createPublicRuntimeConfig()
 
+/**
+ * 部署子路径（例如 GitHub Pages 项目页 `https://<user>.github.io/podium/`）。
+ *
+ * Nuxt 自己会读取 NUXT_APP_BASE_URL，这里显式规范化一次：
+ * - 必须以 / 开头和结尾，否则 client router 与资源路径会拼错；
+ * - 默认是根路径，本地开发和正式部署都不受影响。
+ */
+const appBaseURL = (() => {
+  const raw = process.env.NUXT_APP_BASE_URL?.trim() || '/'
+  const withLeadingSlash = raw.startsWith('/') ? raw : `/${raw}`
+  return withLeadingSlash.endsWith('/') ? withLeadingSlash : `${withLeadingSlash}/`
+})()
+
 export default defineNuxtConfig({
   // 纯前端 SPA：构建产物是静态文件，可直接放到 nginx
   ssr: false,
@@ -222,11 +235,12 @@ export default defineNuxtConfig({
   ],
 
   app: {
+    baseURL: appBaseURL,
     head: {
       title: publicRuntimeConfig.appName,
       link: [
         // 关键：type 指定为 image/svg+xml
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
+        { rel: 'icon', type: 'image/svg+xml', href: `${appBaseURL}favicon.svg` }
       ],
       script: [
         {

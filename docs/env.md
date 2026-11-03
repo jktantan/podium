@@ -43,6 +43,7 @@ dev server 的调试能力不受影响。
 | 变量                                | 说明                                   | runtimeConfig                 |
 | ----------------------------------- | -------------------------------------- | ----------------------------- |
 | `NUXT_PUBLIC_APP_NAME`              | 应用名，构建期写入 `index.html` 的标题 | `public.appName`              |
+| `NUXT_APP_BASE_URL`                 | 部署子路径，例如 `/podium/`；默认 `/`  | `app.baseURL`                 |
 | `NUXT_PUBLIC_API_BASE_URL`          | 接口基础地址                           | `public.apiBaseUrl`           |
 | `NUXT_PUBLIC_STOMP_URL`             | 原生 WebSocket STOMP 地址，留空不连接  | `public.stomp.url`            |
 | `NUXT_PUBLIC_STOMP_RECONNECT_DELAY` | 断线重连间隔（毫秒），`0` 关闭重连     | `public.stomp.reconnectDelay` |
@@ -63,6 +64,18 @@ const { appEnv, appName, apiBaseUrl, stomp } = useRuntimeConfig().public
 `config/env.ts` 的 `createPublicRuntimeConfig()` 中登记默认值（键名去掉
 `NUXT_PUBLIC_` 前缀）；`nuxt.config.ts` 只负责挂载 `runtimeConfig.public`，
 Nuxt 会按 `NUXT_PUBLIC_<KEY>` 自动覆盖。
+
+## 子路径部署（GitHub Pages）
+
+GitHub Pages 项目页的地址是 `https://<user>.github.io/<repo>/`，站点根不在 `/`。
+`pnpm build:github-pages` 固定使用 test 环境并保留 demo，同时：
+
+1. 按 `GITHUB_REPOSITORY` 自动推导 `NUXT_APP_BASE_URL=/<repo>/`；
+2. 在产物里写入 `.nojekyll`，避免 `_nuxt/` 被 Jekyll 忽略；
+3. 校验 `index.html` 不是重定向占位。
+
+绑定自定义域名或部署在根路径时，把仓库 Variables 里的
+`NUXT_APP_BASE_URL` 设为 `/`。workflow 见 `.github/workflows/pages.yml`。
 
 ## 注意
 

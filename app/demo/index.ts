@@ -42,10 +42,18 @@ export const DEMO_TAB_TITLE_KEYS: Record<string, string> = Object.fromEntries(
 )
 
 export function createDemoMenuTabs(t: DemoTranslate): Record<string, ITabData> {
+  // 部署在子路径时，静态资源不走 router，需要手动补 app.baseURL
+  const { baseURL } = useRuntimeConfig().app
+
   return Object.fromEntries(
     DEMO_TAB_PAGES.map(([id, titleKey, path, isIframe]) => [
       id,
-      { id, title: t(titleKey), path, ...(isIframe ? { iframe: true } : {}) }
+      {
+        id,
+        title: t(titleKey),
+        path: path.startsWith('/demo-assets/') ? `${baseURL}${path.slice(1)}` : path,
+        ...(isIframe ? { iframe: true } : {})
+      }
     ])
   )
 }
