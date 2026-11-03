@@ -77,9 +77,16 @@
   --ambient-base: var(--bg-page);
   --ambient-color-a: color-mix(in srgb, var(--brand-primary) 24%, #8aa3d6);
   --ambient-color-b: color-mix(in srgb, var(--brand-primary) 8%, #fff);
-  /* 细网格：登录页与工作区共用同一套尺寸和线色 */
-  --ambient-grid: rgb(15 23 42 / 0.03);
-  --ambient-grid-size: 36px;
+  /*
+   * 细网格纹理：登录页与工作区共用同一套六边形。
+   * mask 只取 SVG 的 alpha，描边色由 --ambient-grid 提供；
+   * --ambient-grid-size 是六边形宽度，tile 高度 = 3 × 边长 ≈ 1.7321 × 宽度。
+   * 线色要比方格时代更实一些：斜线抗锯齿会摊薄 1px 描边，太淡会直接看不见。
+   */
+  --ambient-grid: rgb(15 23 42 / 0.13);
+  --ambient-grid-size: 44px;
+  --ambient-hex-height: calc(var(--ambient-grid-size) * 1.7321);
+  --ambient-hex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='76.2102' viewBox='0 0 44 76.2102'%3E%3Cg fill='none' stroke='%23000' stroke-width='1'%3E%3Cpath d='M22 25.4034L44 38.1051L44 63.5085L22 76.2102L0 63.5085L0 38.1051Z'/%3E%3Cpath d='M0 -12.7017L22 0L22 25.4034L0 38.1051L-22 25.4034L-22 0Z'/%3E%3Cpath d='M44 -12.7017L66 0L66 25.4034L44 38.1051L22 25.4034L22 0Z'/%3E%3C/g%3E%3C/svg%3E");
 
   /* ---------- 边框 ---------- */
   --border-default: var(--el-border-color);
@@ -137,7 +144,7 @@ html.dark {
   --ambient-base: var(--bg-inverse);
   --ambient-color-a: color-mix(in srgb, var(--brand-primary) 30%, #16345c);
   --ambient-color-b: color-mix(in srgb, var(--brand-primary) 10%, #0c1b2e);
-  --ambient-grid: rgb(148 163 184 / 0.05);
+  --ambient-grid: rgb(148 163 184 / 0.11);
 }
 
 /* 自定义主题在 Element Plus 深色基底上调整品牌色和语义色。 */

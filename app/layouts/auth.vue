@@ -14,6 +14,8 @@
 </template>
 
 <style scoped lang="scss">
+@use '../assets/scss/mixins' as *;
+
 .auth-layout {
   position: relative;
   display: grid;
@@ -28,17 +30,14 @@
     z-index: 0;
   }
 
-  /* 与工作区同款细网格：叠在动态背景之上、卡片之下 */
+  /* 与工作区同款六边形纹理：叠在动态背景之上、卡片之下 */
   &::before {
     position: absolute;
     z-index: 1;
     inset: 0;
-    background-image:
-      linear-gradient(var(--ambient-grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--ambient-grid) 1px, transparent 1px);
-    background-size: var(--ambient-grid-size) var(--ambient-grid-size);
-    mask-image: radial-gradient(72% 62% at 50% 46%, rgb(0 0 0) 0%, transparent 78%);
-    filter: blur(0.6px);
+
+    @include ambient-mesh;
+
     pointer-events: none;
     content: '';
   }

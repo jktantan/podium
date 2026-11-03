@@ -66,9 +66,8 @@
             >
               <!-- 缩展按钮放在标签栏左侧，复用库的 header 按钮尺寸与外观 -->
               <template #leftButton>
-                <button
-                  type="button"
-                  class="stack-tab__header-button app-layout__aside-toggle"
+                <TabHeaderButton
+                  class="app-layout__aside-toggle"
                   :class="{ 'is-collapsed': asideCollapsed }"
                   :title="asideToggleLabel"
                   :aria-label="asideToggleLabel"
@@ -76,10 +75,10 @@
                   aria-controls="app-layout-aside"
                   @click="toggleAside"
                 >
-                  <span class="stack-tab__button">
+                  <template #icon>
                     <ElIconFold class="app-layout__aside-toggle-icon" />
-                  </span>
-                </button>
+                  </template>
+                </TabHeaderButton>
               </template>
             </VueStackTabs>
 
@@ -205,6 +204,8 @@ watch(currentLocale, () => {
 </script>
 
 <style scoped lang="scss">
+@use '../assets/scss/mixins' as *;
+
 .app-layout {
   // 布局直接用语义令牌，深浅色模式自动跟随，不再维护局部色值
   height: 100vh;
@@ -232,29 +233,16 @@ watch(currentLocale, () => {
   }
 
   &__aside-toggle {
-    color: var(--fg-muted);
-    // 图标在两个状态之间旋转，过渡时长与 aside 宽度一致
-    transition: color var(--transition-fast);
-
-    &:hover {
-      color: var(--brand-primary);
-    }
-
     &:focus-visible {
       outline: 2px solid var(--brand-primary);
       outline-offset: -4px;
-    }
-
-    .stack-tab__button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
   }
 
   &__aside-toggle-icon {
     width: 16px;
     height: 16px;
+    // 图标在两个状态之间旋转，过渡时长与 aside 宽度一致
     transition: transform 300ms ease;
   }
 
@@ -295,46 +283,43 @@ watch(currentLocale, () => {
     padding: 0 0 0 5px;
 
     /*
-     * 卡片要透出动态背景：原来的 58% 表面色 + 10px 模糊会把云雾糊成一片雾，
-     * 降到 48% 并减小模糊半径，纹理才看得清；深色下再收一点，避免内容区太花。
+     * 卡片要透出动态背景：只保留一层很薄的表面色，不再做毛玻璃。
+     * 六边形纹理由主区域那一层直接透出来，只有一套网格，不会错位；
+     * 深色下表面色收得紧一些，避免内容区和纹理糊在一起。
      */
     --main-card-surface: color-mix(in srgb, var(--bg-surface) 10%, transparent);
-    --main-card-blur: 3px;
 
     background: var(--ambient-base);
 
     /*
-     * 网格单独一层：mask 在四周淡出，避免整块工作区变成方格纸。
+     * 六边形纹理单独一层：mask 在四周淡出，避免整块工作区变成蜂巢板。
      * 要单独成层就不能写进 background 简写里 —— mask 会连底色和光斑一起裁掉。
      *
      * 线用带一点模糊的细描边，不用硬边实线：1px 落在半透明底上
-     * 仍然是一条清晰可见的线，blur 之后才真正是"纹理"而不是"表格"。
+     * 仍然是一条清晰可见的线，blur 之后才真正是"纹理"而不是"图案"。
      */
     &::before {
       position: absolute;
       z-index: 0;
       inset: 0;
-      background-image:
-        linear-gradient(var(--ambient-grid) 1px, transparent 1px),
-        linear-gradient(90deg, var(--ambient-grid) 1px, transparent 1px);
-      background-size: var(--ambient-grid-size) var(--ambient-grid-size);
-      mask-image: radial-gradient(72% 62% at 50% 46%, rgb(0 0 0) 0%, transparent 78%);
-      filter: blur(0.6px);
+
+      @include ambient-mesh;
+
       pointer-events: none;
       content: '';
     }
 
     html.dark & {
-      --main-card-surface: color-mix(in srgb, var(--bg-surface) 52%, transparent);
+      --main-card-surface: color-mix(in srgb, var(--bg-surface) 10%, transparent);
     }
 
     /*
-     * 卡片底色改为半透明雾面：否则不透明的 .stack-tab 会铺满主区域，
-     * 把上面的背景柔光和光斑整个盖住。
+     * 卡片底色改为半透明：否则不透明的 .stack-tab 会铺满主区域，
+     * 把上面的背景柔光、光斑和六边形纹理整个盖住。
      *
-     * 毛玻璃必须放在伪元素上：backdrop-filter 会让元素成为 position: fixed
-     * 后代的包含块，而库的右键菜单就是 fixed + clientX/clientY，
-     * 直接写在 .stack-tab 上会让菜单相对卡片定位而整体偏移。
+     * 不再使用 backdrop-filter：六边形只画在主区域一层，毛玻璃会把它糊成雾；
+     * 而且 backdrop-filter 会让元素成为 position: fixed 后代的包含块，
+     * 库的右键菜单是 fixed + clientX/clientY，会被整体带偏。
      *
      * 这些样式只作用于普通卡片态：最大化时库靠 .stack-tab--maximum
      * 把元素改成 position: fixed + inset: 0，若这里仍命中 .stack-tab，
@@ -348,35 +333,6 @@ watch(currentLocale, () => {
       //border-radius: var(--radius-md);
       box-shadow: var(--el-box-shadow-lighter);
       background: var(--main-card-surface);
-
-      &::before {
-        position: absolute;
-        z-index: -1;
-        inset: 0;
-        backdrop-filter: blur(var(--main-card-blur));
-        content: '';
-        pointer-events: none;
-      }
-
-      /*
-       * 卡片占满主区域，网格得再画一次：只画在主区域那层，
-       * 会被卡片的半透明底色和上面的 backdrop-filter 糊成一片雾。
-       * 网格另起 ::after 而不是塞进上面的 ::before，是为了让 mask
-       * 只淡出网格本身，不至于把毛玻璃一起裁掉。
-       */
-      &::after {
-        position: absolute;
-        z-index: -1;
-        inset: 0;
-        background-image:
-          linear-gradient(var(--ambient-grid) 1px, transparent 1px),
-          linear-gradient(90deg, var(--ambient-grid) 1px, transparent 1px);
-        background-size: var(--ambient-grid-size) var(--ambient-grid-size);
-        mask-image: radial-gradient(94% 90% at 50% 42%, rgb(0 0 0) 0%, transparent 88%);
-        filter: blur(0.6px);
-        pointer-events: none;
-        content: '';
-      }
     }
   }
 

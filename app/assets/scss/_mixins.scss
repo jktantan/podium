@@ -44,3 +44,28 @@ $breakpoints: (
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/// 氛围网格纹理（登录页 / 工作区主区 / 页签卡片共用）
+///
+/// 用一张平铺的六边形 SVG 作为 mask，描边色无所谓：mask 只取 alpha，
+/// 真正的线色由 background-color 引用 --ambient-grid，
+/// 因此切换深浅色 / 主题色时不需要换图。
+///
+/// 再叠一层径向渐变并求交集，让纹理在四周淡出；
+/// 不使用 background-image 直接平铺，是因为那样颜色只能写死在 SVG 里。
+///
+/// @param {String} $fade-position - 径向渐变的中心与半径
+/// @param {Number} $fade-end - 径向渐变完全透明的百分比
+/// @example
+///   @include ambient-mesh;
+@mixin ambient-mesh($fade-position: '72% 62% at 50% 46%', $fade-end: 78%) {
+  background-color: var(--ambient-grid);
+  mask-image:
+    var(--ambient-hex), radial-gradient(#{$fade-position}, rgb(0 0 0) 0%, transparent #{$fade-end});
+  mask-size:
+    var(--ambient-grid-size) var(--ambient-hex-height),
+    auto;
+  mask-repeat: repeat, no-repeat;
+  mask-composite: intersect;
+  filter: blur(0.35px);
+}
