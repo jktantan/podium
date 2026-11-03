@@ -68,7 +68,16 @@ function toAuthUser(payload: LoginPayload, fallbackName: string): AuthUser {
  */
 export function useAuth() {
   const store = useAuthStore()
-  const { demoEnabled } = useRuntimeConfig().public
+  const { apiBaseUrl, apiMock, demoEnabled } = useRuntimeConfig().public
+
+  /**
+   * 本地演示账号只在「demo 已开启、但既没配后端也没开 mock」时兜底。
+   *
+   * 正常路径始终走 $api：dev / pages 由内置 mock 接管，业务项目走真实接口。
+   * 这样登录链路（authorization、Authorization 头、STOMP provider）在框架阶段
+   * 就被验证过，而不会因为 demo 开关被短路成本地账号。
+   */
+  const useLocalDemoAccount = demoEnabled && !apiBaseUrl && !apiMock
 
   const user = computed(() => store.user?.name ?? null)
   const isLoggedIn = computed(() => store.isLoggedIn)
@@ -102,7 +111,7 @@ export function useAuth() {
   async function login(username: string, password: string) {
     const name = username.trim()
 
-    if (demoEnabled) {
+    if (useLocalDemoAccount) {
       const account = DEMO_USERS[name]
 
       if (account && account.password === password) {

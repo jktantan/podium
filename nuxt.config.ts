@@ -2,7 +2,7 @@
 import { appearanceBootstrap } from './config/appearance'
 import { createViteConfig } from './config/build'
 import { demoAliasEntry, demoPublicAssets, extendPages } from './config/demo'
-import { createPublicRuntimeConfig, demoEnabled, isDebugEnv } from './config/env'
+import { apiMockEnabled, createPublicRuntimeConfig, demoEnabled, isDebugEnv } from './config/env'
 import { DEFAULT_LOCALE, LOCALE_COOKIE_KEY, LOCALE_OPTIONS } from './i18n/config'
 import { STACK_TABS_LOCALES, getStackTabsExtraLocales } from './i18n/vendors/vue-stack-tabs'
 import { LITE_LAYER_LOCALES, getLiteLayerExtraMessages } from './i18n/vendors/vue-lite-layer'
@@ -194,7 +194,18 @@ export default defineNuxtConfig({
     publicAssets: demoPublicAssets
   },
 
-  vite: createViteConfig(),
+  /**
+   * 构建期常量 __PODIUM_MOCK__。
+   *
+   * NUXT_PUBLIC_API_MOCK=0 时 app/plugins/mock.client.ts 里的 mock 分支
+   * 会被整段移除，msw 与 handlers 不进入产物。
+   */
+  vite: {
+    ...createViteConfig(),
+    define: {
+      __PODIUM_MOCK__: JSON.stringify(apiMockEnabled)
+    }
+  },
 
   css: [
     /*

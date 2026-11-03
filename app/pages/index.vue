@@ -51,7 +51,7 @@
         {{ t('login.submit') }}
       </el-button>
 
-      <p class="login-card__hint">
+      <p v-if="showDemoAccounts" class="login-card__hint">
         {{ t('login.demoAccounts') }}<br />
         {{ t('login.demoViewer') }}
       </p>
@@ -66,6 +66,10 @@ import { ApiError } from '~/utils/api-error'
 definePageMeta({
   layout: 'auth'
 })
+
+const { apiBaseUrl, apiMock, demoEnabled } = useRuntimeConfig().public
+/** 与 useAuth 的本地账号判定一致：只有 mock 或本地兜底时才提示演示账号 */
+const showDemoAccounts = computed(() => apiMock || (demoEnabled && !apiBaseUrl))
 
 const route = useRoute()
 const { login } = useAuth()
