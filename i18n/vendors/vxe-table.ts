@@ -10,8 +10,11 @@ import type { AppLocale } from '../config'
  * VXE 只自带 zh-CN，其他语言需要先 setI18n 注册再 setLanguage 切换。
  * 某个语言官方缺失时，在 VXE_LOCALES 里补 messages 即可。
  */
+/** VXE 内部的语言标识联合类型，取 setI18n 的形参类型，避免依赖内部类型名 */
+type VxeLocaleCode = Parameters<typeof VxeUI.setI18n>[0]
+
 interface VxeLocale {
-  code: string
+  code: VxeLocaleCode
   messages: Record<string, unknown>
 }
 
