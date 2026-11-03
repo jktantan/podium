@@ -1,6 +1,7 @@
 name: Deploy demo to GitHub Pages
 
-# Pages 上只是演示站：固定 test 环境构建，保留 demo 页面，不用于正式发布。
+# Pages 上只是 podium 的展示站：固定 pages 环境构建，保留 demo 页面，
+# 接口由内置 mock 提供，不用于业务项目发布。
 on:
   push:
     branches:
@@ -27,8 +28,7 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
-        with:
-          version: 12
+        # 版本由 package.json 的 packageManager 字段决定
 
       - name: Setup Node
         uses: actions/setup-node@v5
@@ -45,7 +45,7 @@ jobs:
           # 项目页默认自动推导成 /<repo>/；绑定自定义域名时在仓库
           # Settings -> Secrets and variables -> Actions -> Variables 里设为 /
           NUXT_APP_BASE_URL: ${{ vars.NUXT_APP_BASE_URL }}
-          # 可选：覆盖 .env.test 里的接口地址
+          # 可选：覆盖 .env.pages 里的接口地址
           NUXT_PUBLIC_API_BASE_URL: ${{ vars.NUXT_PUBLIC_API_BASE_URL }}
 
       - name: Setup Pages

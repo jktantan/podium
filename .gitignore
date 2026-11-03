@@ -22,13 +22,14 @@ logs
 .idea
 
 # Local env files
-# 本地私有覆盖不入库；四种环境的默认配置（不含敏感信息）入库
+# 本地私有覆盖不入库；框架与业务项目的默认配置（不含敏感信息）入库
 .env
 .env.local
 .env.*.local
 .env.*
 !.env.example
 !.env.dev
+!.env.pages
 !.env.test
 !.env.staging
 !.env.prod

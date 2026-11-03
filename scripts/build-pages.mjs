@@ -2,8 +2,9 @@
 /**
  * GitHub Pages 演示站构建。
  *
- * 与正式发布的区别：
- * - 固定 test 环境，保留 demo 路由 / 菜单 / 文案，只用于演示；
+ * 这是 podium 框架自己的展示站，与业务项目的发布流程无关：
+ * - 固定 pages 环境（.env.pages），保留 demo 路由 / 菜单 / 文案；
+ * - 展示站没有后端，接口由内置 MSW mock 提供；
  * - 自动把 app.baseURL 设成项目页子路径，避免资源与 router 指向站点根；
  * - 构建后写入 .nojekyll，防止 Pages 的 Jekyll 处理忽略 _nuxt 目录。
  *
@@ -25,14 +26,14 @@ import { loadAppEnv } from './env.mjs'
 
 const ROOT_DIR = fileURLToPath(new URL('..', import.meta.url))
 const PUBLIC_DIR = path.join(ROOT_DIR, '.output', 'public')
-const appEnv = 'test'
+const appEnv = 'pages'
 
-// 命令行 / GitHub Variables 显式传入的值优先于 .env.test
+// 命令行 / GitHub Variables 显式传入的值优先于 .env.pages
 const explicitBaseURL = process.env.NUXT_APP_BASE_URL?.trim()
 
 /*
  * GitHub Actions 里未配置的 repository Variables 会以空字符串注入。
- * dotenv 不覆盖已存在的键，空值会把 .env.test 里的真实配置顶掉，
+ * dotenv 不覆盖已存在的键，空值会把 .env.pages 里的真实配置顶掉，
  * 所以先把空的 NUXT_* 删掉，再加载环境文件。
  */
 for (const [key, value] of Object.entries(process.env)) {

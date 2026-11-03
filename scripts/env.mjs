@@ -1,8 +1,12 @@
 /**
  * 应用环境（.env）加载。
  *
- * 环境四选一：dev / test / staging / prod，分别对应根目录的
- * .env.dev / .env.test / .env.staging / .env.prod。
+ * 环境五选一：dev / pages / test / staging / prod，分别对应根目录的
+ * .env.dev / .env.pages / .env.test / .env.staging / .env.prod。
+ *
+ * dev / pages 属于 podium 框架自身：dev 用于本地开发，pages 用于构建
+ * GitHub Pages 演示站。test / staging / prod 是留给派生业务项目的空位，
+ * 业务项目按自己的部署环境填写即可。
  *
  * - 入口脚本（run-nuxt.mjs / build-production.mjs）先确定环境再交给 nuxt；
  * - nuxt.config.ts 顶部调用 loadAppEnv()，把文件里的值读进 process.env；
@@ -19,7 +23,7 @@ import { fileURLToPath } from 'node:url'
 import { config as loadDotenv } from 'dotenv'
 
 /** 支持的环境名，也是 .env.<环境> 的后缀 */
-export const APP_ENVS = ['dev', 'test', 'staging', 'prod']
+export const APP_ENVS = ['dev', 'pages', 'test', 'staging', 'prod']
 
 /** 项目根目录（scripts/ 的上一级） */
 export const ROOT_DIR = fileURLToPath(new URL('..', import.meta.url))
