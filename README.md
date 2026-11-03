@@ -84,6 +84,9 @@ Pages 上的站点只是演示：使用 test 环境构建，保留 demo 页面�
 
 - workflow：`.github/workflows/pages.yml`，push 到 `master` / `main` 或手动触发
 - 首次部署前，在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**
+- 如果部署报 `Branch "master" is not allowed to deploy to github-pages`，到
+  **Settings → Environments → github-pages → Deployment branches and tags**
+  把 `master` 加进去（或选择 **All branches**）
 - 项目页子路径会自动推导为 `/<repo>/`；绑定自定义域名时，把 Actions Variable
   `NUXT_APP_BASE_URL` 设为 `/`
 - 可选：用 Actions Variable `NUXT_PUBLIC_API_BASE_URL` 覆盖 `.env.test` 的接口地址
