@@ -60,6 +60,13 @@
       </template>
     </el-menu-item>
 
+    <el-menu-item index="demo-flow-upload">
+      <el-icon><ElIconUpload /></el-icon>
+      <template #title>
+        <span>{{ t('nav.flowUploadDemo') }}</span>
+      </template>
+    </el-menu-item>
+
     <el-menu-item index="demo-layer">
       <el-icon><ElIconCopyDocument /></el-icon>
       <template #title>

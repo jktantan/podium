@@ -30,6 +30,10 @@ export default defineAppConfig({
             titleKey: 'nav.giantTreeDemo',
             path: '/demo/giant-tree-demo'
           },
+          'demo-flow-upload': {
+            titleKey: 'nav.flowUploadDemo',
+            path: '/demo/flow-upload-demo'
+          },
           'demo-layer': { titleKey: 'nav.layerDemo', path: '/demo/layer-demo' },
           'demo-search': { titleKey: 'nav.searchDemo', path: '/demo/search-demo' },
           'demo-settings': { titleKey: 'nav.settings', path: '/demo/settings' },

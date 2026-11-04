@@ -9,6 +9,7 @@
     "elementPlusDemo": "Element Plus 示例",
     "epFieldViewDemo": "表单文本态示例",
     "giantTreeDemo": "虚拟树示例",
+    "flowUploadDemo": "上传示例",
     "layerDemo": "弹层示例",
     "errorPages": "错误页面",
     "error401": "401 未登录",
@@ -232,6 +233,23 @@
       "finance": "财务部",
       "admin": "行政部"
     }
+  },
+  "flowUploadDemo": {
+    "title": "文件上传示例",
+    "lead": "vue-flow-upload 的文件与头像上传组件：颜色跟随 Element Plus 令牌，行高与控件尺寸跟随外观密度；demo 使用内存 transport，文件不会发送到服务器。",
+    "tip": "演示数据保存在浏览器内存中，刷新页面后清空。",
+    "fileTitle": "文件",
+    "fileHint": "支持拖拽、多选、进度、暂停 / 重试与删除。",
+    "avatarTitle": "头像",
+    "avatarHint": "选择图片后按 1:1 裁剪为 512 × 512，可预览与更新。",
+    "addSample": "添加示例图片",
+    "clear": "清空列表",
+    "listLabel": "列表样式",
+    "listTypes": {
+      "list": "列表",
+      "picture": "照片墙"
+    },
+    "uploadTip": "最多 8 个文件，单个不超过 20 MB。"
   },
   "permissionDemo": {
     "title": "权限守卫示例",

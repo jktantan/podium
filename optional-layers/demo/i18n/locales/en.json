@@ -9,6 +9,7 @@
     "elementPlusDemo": "Element Plus Demo",
     "epFieldViewDemo": "Form Text Mode",
     "giantTreeDemo": "Virtual Tree Demo",
+    "flowUploadDemo": "Upload Demo",
     "layerDemo": "Layer Demo",
     "errorPages": "Error Pages",
     "error401": "401 Unauthorized",
@@ -232,6 +233,23 @@
       "finance": "Finance",
       "admin": "Administration"
     }
+  },
+  "flowUploadDemo": {
+    "title": "File upload",
+    "lead": "File and avatar uploaders from vue-flow-upload: colors follow Element Plus tokens, and row heights track the appearance density. The demo uses an in-memory transport, so files never leave the browser.",
+    "tip": "Demo data lives in browser memory and is cleared on refresh.",
+    "fileTitle": "Files",
+    "fileHint": "Drag, multi-select, progress, pause / retry and removal.",
+    "avatarTitle": "Avatar",
+    "avatarHint": "Crop the selected image to 512 × 512; preview and replace it.",
+    "addSample": "Add sample image",
+    "clear": "Clear list",
+    "listLabel": "Layout",
+    "listTypes": {
+      "list": "List",
+      "picture": "Picture wall"
+    },
+    "uploadTip": "Up to 8 files, 20 MB each."
   },
   "permissionDemo": {
     "title": "Permission guard demo",
