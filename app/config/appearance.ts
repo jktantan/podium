@@ -17,6 +17,8 @@ export type ElementSize = 'small' | 'default' | 'large'
 export type VxeSize = 'mini' | 'small' | 'medium'
 /** vue-stack-tabs 的 data-stack-tab-size 预设 */
 export type StackTabSize = 'small' | 'normal' | 'large'
+/** vue3-giant-tree-wasm 的 size 预设：字号 / 行高分别为 12·24、14·26、16·32 */
+export type GiantTreeSize = 'small' | 'default' | 'large'
 
 export interface ThemePreset {
   id: string
@@ -33,6 +35,7 @@ export interface DensityOption {
   elSize: ElementSize
   vxeSize: VxeSize
   stackTabSize: StackTabSize
+  giantTreeSize: GiantTreeSize
 }
 
 /** localStorage 键名，nuxt.config.ts 的首屏防闪脚本会读取同一个键 */
@@ -73,21 +76,24 @@ export const DENSITY_OPTIONS: readonly DensityOption[] = [
     labelKey: 'appearance.densities.compact',
     elSize: 'small',
     vxeSize: 'mini',
-    stackTabSize: 'small'
+    stackTabSize: 'small',
+    giantTreeSize: 'small'
   },
   {
     value: 'default',
     labelKey: 'appearance.densities.default',
     elSize: 'default',
     vxeSize: 'small',
-    stackTabSize: 'normal'
+    stackTabSize: 'normal',
+    giantTreeSize: 'default'
   },
   {
     value: 'comfortable',
     labelKey: 'appearance.densities.comfortable',
     elSize: 'large',
     vxeSize: 'medium',
-    stackTabSize: 'large'
+    stackTabSize: 'large',
+    giantTreeSize: 'large'
   }
 ]
 

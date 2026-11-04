@@ -142,6 +142,7 @@ export function useAppearance() {
 
   const elSize = computed(() => getDensityOption(state.density).elSize)
   const vxeSize = computed(() => getDensityOption(state.density).vxeSize)
+  const giantTreeSize = computed(() => getDensityOption(state.density).giantTreeSize)
 
   function setTheme(id: string) {
     const preset = getThemePreset(id)
@@ -177,6 +178,7 @@ export function useAppearance() {
     scheme: readonly(scheme),
     elSize,
     vxeSize,
+    giantTreeSize,
     presets: THEME_PRESETS,
     densityOptions: DENSITY_OPTIONS,
     schemeOptions: SCHEME_OPTIONS,

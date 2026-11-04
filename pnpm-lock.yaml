@@ -235,6 +235,9 @@ importers:
       vue-stack-tabs:
         specifier: ^3.2.1
         version: 3.2.1(nuxt@4.6.3(d3a484f7266beec9a1dd25887760e29f))(vue-router@5.4.0(@vue/compiler-sfc@3.5.44)(esbuild@0.28.2)(pinia@4.1.0(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.44(typescript@6.0.3)))(rolldown@1.2.16)(rollup@4.67.4)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.107.1)(sass@1.107.1)(terser@5.51.2)(yaml@2.9.1))(vue@3.5.44(typescript@6.0.3)))(vue@3.5.44(typescript@6.0.3))
+      vue3-giant-tree-wasm:
+        specifier: ^0.2.8
+        version: 0.2.8(vue@3.5.44(typescript@6.0.3))
       vxe-pc-ui:
         specifier: 4.20.18
         version: 4.20.18(vue@3.5.44(typescript@6.0.3))
@@ -5411,6 +5414,10 @@ packages:
   text-decoder@1.2.7:
     resolution: {integrity: sha512-vlLytXkeP4xvEq2otHeJfSQIRyWxo/oZGEbXrtEEF9Hnmrdly59sUbzZ/QgyWuLYHctCHxFF4tRQZNQ9k60ExQ==}
 
+  throttle-debounce@5.0.2:
+    resolution: {integrity: sha512-B71/4oyj61iNH0KeCamLuE2rmKuTO5byTOSVwECM5FA7TiAiAW+UqTKZ9ERueC4qvgSttUhdmq1mXC3kJqGX7A==}
+    engines: {node: '>=12.22'}
+
   time-span@5.1.0:
     resolution: {integrity: sha512-75voc/9G4rDIJleOo4jPvN4/YC4GRZrY8yy1uU4lwrB3XEQbWve8zXoO5No4eFrGcTAMYyoY67p8jRQdtA1HbA==}
     engines: {node: '>=12'}
@@ -5953,6 +5960,12 @@ packages:
     hasBin: true
     peerDependencies:
       typescript: '>=5.0.0'
+
+  vue3-giant-tree-wasm@0.2.8:
+    resolution: {integrity: sha512-kvIQhf88lhVIjkMeuDEa3X0DdyxnzfqHon+mKSvGP3qxJGloOomnY9QMh3coXU7/IOuqhCN793SK4+hcGqhUgg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      vue: ^3.4.0
 
   vue@3.5.44:
     resolution: {integrity: sha512-dvvmaOCG7lAMkJTPqPwWeGMsPS6DIsFsfZDUgBp9V6mHf9b3+/wyVwYR4Es+WV6uJC0FKRxp81Obcq0ZwUcGFQ==}
@@ -11538,6 +11551,8 @@ snapshots:
     transitivePeerDependencies:
       - react-native-b4a
 
+  throttle-debounce@5.0.2: {}
+
   time-span@5.1.0:
     dependencies:
       convert-hrtime: 5.0.0
@@ -12066,6 +12081,11 @@ snapshots:
       '@volar/typescript': 2.4.30(typescript@6.0.3)
       '@vue/language-core': 3.3.14
       typescript: 6.0.3
+
+  vue3-giant-tree-wasm@0.2.8(vue@3.5.44(typescript@6.0.3)):
+    dependencies:
+      throttle-debounce: 5.0.2
+      vue: 3.5.44(typescript@6.0.3)
 
   vue@3.5.44(typescript@6.0.3):
     dependencies:

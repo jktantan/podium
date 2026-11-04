@@ -214,6 +214,7 @@ export default defineNuxtConfig({
     'modern-normalize/modern-normalize.css',
     'vue-stack-tabs/dist/style.css',
     'vue-lite-layer/style.css',
+    'vue3-giant-tree-wasm/style.css',
     'vxe-table/lib/style.css',
     // VXE 渲染 Element Plus 组件时的单元格内控件样式，必须排在 vxe-table 之后
     '@vxe-ui/plugin-render-element/dist/style.css',
@@ -231,6 +232,7 @@ export default defineNuxtConfig({
     '~/assets/css/adapters/vxe-table.css',
     '~/assets/css/adapters/vue-stack-tabs.css',
     '~/assets/css/adapters/vue-lite-layer.css',
+    '~/assets/css/adapters/vue3-giant-tree-wasm.css',
     '~/assets/css/adapters/overlayscrollbars.css',
     // Tailwind -> 基础样式 -> 页面共享排版
     '~/assets/css/tailwind.css',

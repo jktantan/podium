@@ -1,0 +1,67 @@
+/**
+ * vue3-giant-tree-wasm 适配层
+ *
+ * 项目约定：树的颜色以 Element Plus 的变量为基础覆盖，不在这里写业务色值；
+ * 深浅模式直接消费 --el-*，随项目主题色与 html.dark 自动切换。
+ *
+ * 尺寸：库的 small / default / large 预设为 12px·24px / 14px·26px / 16px·32px，
+ * 与 Element Plus 的 small / default / large 控件字号对齐：
+ * compact -> small、default -> default、comfortable -> large。
+ * large 档库字号是 16px，而 Element Plus 大档控件仍为 14px，这里统一到 14px；
+ * 缩进与控件列保持 16px，避免大档层级缩进反而变小。
+ *
+ * 行高参与虚拟滚动计算，只能通过组件的 size / lineHeight prop 传入，
+ * 不能用 CSS 修改（见 docs/styling.md）。
+ *
+ * 特异性：库的浅色变量定义在 :root，暗色变量定义在
+ * `html.dark .giant-tree, .giant-tree--dark`。这里用相同或更高的选择器，
+ * 依赖 nuxt.config.ts 中的加载顺序（适配层在库样式之后）覆盖。
+ * 强制浅色的实例（`theme="light"`）不参与暗色适配，保留库原生浅色值：
+ * --el-* 在 html.dark 下本身就是深色值，无法用来表达“浅色主题”。
+ */
+:root {
+  /* 主色与状态色 */
+  --giant-tree-color-primary: var(--el-color-primary);
+  --giant-tree-color-primary-hover: var(--el-color-primary-light-9);
+  --giant-tree-color-primary-active: var(--el-color-primary-dark-2);
+  --giant-tree-color-danger: var(--el-color-danger);
+  --giant-tree-color-disabled: var(--el-text-color-disabled);
+
+  /* 文本与表面：树放在卡片里，背景保持透明，由宿主容器决定 */
+  --giant-tree-text-color: var(--el-text-color-regular);
+  --giant-tree-bg-color: transparent;
+  --giant-tree-bg-color-hover: var(--el-color-primary-light-9);
+
+  /* 连接线与搜索命中 */
+  --giant-tree-line-color: var(--el-border-color);
+  --giant-tree-search-hit-bg: var(--el-color-warning-light-5);
+  --giant-tree-search-hit-color: var(--el-text-color-primary);
+}
+
+html.dark .giant-tree:not(.giant-tree--light),
+.giant-tree--dark {
+  --giant-tree-color-primary: var(--el-color-primary);
+  --giant-tree-color-primary-hover: var(--el-color-primary-light-9);
+  --giant-tree-color-primary-active: var(--el-color-primary-dark-2);
+  --giant-tree-color-danger: var(--el-color-danger);
+  --giant-tree-color-disabled: var(--el-text-color-disabled);
+
+  --giant-tree-text-color: var(--el-text-color-regular);
+  --giant-tree-bg-color: transparent;
+  --giant-tree-bg-color-hover: var(--el-color-primary-light-9);
+
+  --giant-tree-line-color: var(--el-border-color);
+  --giant-tree-search-hit-bg: var(--el-color-warning-light-5);
+  --giant-tree-search-hit-color: var(--el-text-color-primary);
+}
+
+/*
+ * 大档字号对齐 Element Plus：库的 16px 会大于同档控件的 14px。
+ * 缩进与箭头列仍保持 16px，视觉缩进与控件尺寸不随字号一起缩小。
+ */
+.giant-tree--large {
+  --giant-tree-font-size: var(--el-font-size-base);
+  --giant-tree-row-size: 16px;
+  --giant-tree-indent-size: 16px;
+  --giant-tree-icon-size: 16px;
+}
