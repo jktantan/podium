@@ -25,3 +25,16 @@ declare module '*.ttf?subsets' {
   }
   export const fontFamilyFallback: string
 }
+
+/**
+ * 按 key 选择扫描范围的变体，形如 `Inconsolata.ttf?subsets&key=latin`。
+ * TS 的模块通配只能有一个 `*`，所以这里把 key 也写进后缀。
+ */
+declare module '*.ttf?subsets&key=latin' {
+  export const css: {
+    family: string
+    weight?: string
+    style?: string
+  }
+  export const fontFamilyFallback: string
+}
