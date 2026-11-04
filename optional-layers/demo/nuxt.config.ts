@@ -1,6 +1,23 @@
 import { fileURLToPath } from 'node:url'
 
 /**
+ * dev server 启动时预转换的 demo 页面清单。
+ *
+ * 页面是按需懒加载的：切到某个页签时浏览器才 import 对应 chunk。
+ * dev server 冷启动/重启后，模块图还在重建，此时首次切页签请求到的
+ * chunk 可能返回 404/500 或被中断，浏览器报
+ * "Failed to fetch dynamically imported module"（刷新即好）。
+ * 在 Vite 启动时把这些页面先转换一遍，避开这段窗口。
+ *
+ * 必须是绝对路径：dev 下本层的模块 URL 是 /@fs/<绝对路径>，说明本层
+ * 不在 Vite root 内，相对 glob 会解析到 root 下而匹配不到。
+ * glob 分隔符统一为 /（glob 库不认 Windows 反斜杠）。
+ */
+const demoPageWarmupFiles = [
+  fileURLToPath(new URL('./app/pages/demo/**/*.vue', import.meta.url)).replace(/\\/g, '/')
+]
+
+/**
  * Demo 层（可选）。
  *
  * 只有项目在 nuxt.config.ts 里 extends 本目录时才会加载。
@@ -14,6 +31,22 @@ export default defineNuxtConfig({
   },
 
   extends: ['../mock'],
+
+  /**
+   * 启动预热 demo 页面（仅 dev 生效，构建时 server 配置被忽略）。
+   *
+   * 不必列出入口：入口由 Nuxt 启动后的模块图爬取预热（vite.warmupEntry）。
+   * 注意开启 experimental.viteEnvironmentApi 后（本项目的
+   * compatibilityVersion 尚未到 5），这里的 clientFiles 会替换
+   * Vite 默认的 environments.client.dev.warmup。
+   */
+  vite: {
+    server: {
+      warmup: {
+        clientFiles: demoPageWarmupFiles
+      }
+    }
+  },
 
   /**
    * 给 demo 页面统一加上「允许访问」标记。
