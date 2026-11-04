@@ -1,6 +1,7 @@
 import type { AppLocale } from '~~/i18n/config'
 import { DEFAULT_LOCALE, LOCALE_OPTIONS, getLocaleOption, isAppLocale } from '~~/i18n/config'
 import { getVendorLocale } from '~~/i18n/vendors'
+import { getFlowUploadExtraMessages } from '~~/i18n/vendors/vue-flow-upload'
 
 /**
  * 语言状态 + 第三方组件库映射。
@@ -26,6 +27,12 @@ export function useLocale() {
 
   const liteLayerLocale = computed(() => getVendorLocale(currentLocale.value).liteLayer)
 
+  /** FlowUpload 的 i18n 配置；在调用点通过 :i18n 传入，不安装到宿主 app */
+  const flowUploadI18n = computed(() => ({
+    locale: getVendorLocale(currentLocale.value).flowUpload,
+    messages: getFlowUploadExtraMessages()
+  }))
+
   async function changeLocale(next: AppLocale) {
     if (next === currentLocale.value) {
       return
@@ -46,6 +53,7 @@ export function useLocale() {
     elLocale,
     stackTabsLocale,
     liteLayerLocale,
+    flowUploadI18n,
     changeLocale,
     t
   }

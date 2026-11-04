@@ -223,9 +223,15 @@ importers:
       pinia-plugin-persistedstate:
         specifier: ^4.7.1
         version: 4.7.1(@nuxt/kit@4.6.3(@nuxt/schema@4.6.3)(confbox@0.2.4)(dotenv@18.0.9)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.5)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.16)(unplugin@3.7.0(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.67.4)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.107.1)(sass@1.107.1)(terser@5.51.2)(yaml@2.9.1))))(@pinia/nuxt@1.0.3(@nuxt/schema@4.6.3)(confbox@0.2.4)(dotenv@18.0.9)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.5)(mlly@1.8.2)(oxc-parser@0.141.0)(pinia@4.1.0(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.44(typescript@6.0.3)))(rolldown@1.2.16)(unplugin@3.7.0(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.67.4)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.107.1)(sass@1.107.1)(terser@5.51.2)(yaml@2.9.1))))(pinia@4.1.0(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.44(typescript@6.0.3)))
+      viewerjs:
+        specifier: ^1.15.2
+        version: 1.15.2
       vue:
         specifier: ^3.5.44
         version: 3.5.44(typescript@6.0.3)
+      vue-flow-upload:
+        specifier: ^0.6.0
+        version: 0.6.0(nuxt@4.6.3(d3a484f7266beec9a1dd25887760e29f))(vue@3.5.44(typescript@6.0.3))
       vue-lite-layer:
         specifier: ^1.3.3
         version: 1.3.3(@nuxt/kit@4.6.3(@nuxt/schema@4.6.3)(confbox@0.2.4)(dotenv@18.0.9)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.5)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.16)(unplugin@3.7.0(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.67.4)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.107.1)(sass@1.107.1)(terser@5.51.2)(yaml@2.9.1))))(nuxt@4.6.3(d3a484f7266beec9a1dd25887760e29f))(vue@3.5.44(typescript@6.0.3))
@@ -3007,6 +3013,9 @@ packages:
     resolution: {integrity: sha512-ixNtAJndqh173VQ4KodSdJEI6nuioBWI0V1ITNKhZZsO0pEMoDxz539T4FTTbSZ/xIOSuDnzxLVRqBVSvPNE2g==}
     engines: {node: '>=18.0'}
 
+  cropperjs@1.7.0:
+    resolution: {integrity: sha512-AkGnZxr7xAJBa63ObXq5ZKLkh9c8wisC+Ym8VzIDn3KZ+6qRTbBnOl2w2dFOTMzLP5IcfOpEK9PICDywNXhncg==}
+
   cross-fetch@3.2.0:
     resolution: {integrity: sha512-Q+xVJLoGOeIMXZmbUK4HYk+69cQH6LudR0Vu/pRm2YlU/hDV9CiS0gKUMaWY5f2NeUH9C1nV3bsTlCo0FsTV1Q==}
 
@@ -3724,6 +3733,9 @@ packages:
   has-flag@5.0.1:
     resolution: {integrity: sha512-CsNUt5x9LUdx6hnk/E2SZLsDyvfqANZSUq4+D3D8RzDJ2M+HDTIkF60ibS1vHaK55vzgiZw1bEPFG9yH7l33wA==}
     engines: {node: '>=12'}
+
+  hash-wasm@4.12.0:
+    resolution: {integrity: sha512-+/2B2rYLb48I/evdOIhP+K/DD2ca2fgBjp6O+GBEnCDk2e4rpeXIK8GvIyRPjTezgmWn9gmKwkQjjx6BtqDHVQ==}
 
   hashery@1.5.1:
     resolution: {integrity: sha512-iZyKG96/JwPz1N55vj2Ie2vXbhu440zfUfJvSwEqEbeLluk7NnapfGqa7LH0mOsnDxTF85Mx8/dyR6HfqcbmbQ==}
@@ -5751,12 +5763,21 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
+  v-viewer@3.0.23:
+    resolution: {integrity: sha512-u/Zd/FXTdtdE2k2YeYMf6mU4oL0ILEZ9STHnZT7myyfRwQot68GO3O+6DwxNnHTaATiiAJTrz2MXjaqYKoB7iA==}
+    peerDependencies:
+      viewerjs: ^1.11.0
+      vue: ^3.0.0
+
   varint@6.0.0:
     resolution: {integrity: sha512-cXEIW6cfr15lFv563k4GuVuW/fiwjknytD37jIOLSdSWuOI6WnO/oKwmP2FQTU2l01LP8/M5TSAJpzUaGe3uWg==}
 
   verkit@0.5.0:
     resolution: {integrity: sha512-u4J1hr6Y+C/hit34GwL3eIcUf3wngT8TlYUjK7tk0jxydKLAq3sYvifjdTDA6U3KCKRcQCQDGf/srjxfZF3l7g==}
     engines: {node: '>=18.12.0'}
+
+  viewerjs@1.15.2:
+    resolution: {integrity: sha512-CYEqSFfPUSnmn1PjrhYxXOScaUC7n8+NpSqI+MrOSM8wcKPe35MlwQYwksuD5rjFkYv/ePmY5NsUa51uRNN2jA==}
 
   vite-dev-rpc@2.0.0:
     resolution: {integrity: sha512-yKwbTwdHKSD2k/aGqyWpPHepo45OQc8lH3/6IfT4ZqeKE26ooKvi4WIEKzqWav8v+9Is8u1k8q54hvOmqASazA==}
@@ -5903,6 +5924,16 @@ packages:
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
 
+  vue-flow-upload@0.6.0:
+    resolution: {integrity: sha512-rXyLWTvj34aX53KQkZk1VNClxejvb80zrA9jO6oGQXYwse1JPJq2j3jH06eactJj2YDnT4q++0LaWLRyrBtzqA==}
+    engines: {node: '>=20.19.0'}
+    peerDependencies:
+      nuxt: ^3.0.0 || ^4.0.0
+      vue: ^3.5.0
+    peerDependenciesMeta:
+      nuxt:
+        optional: true
+
   vue-i18n-lite@1.0.2:
     resolution: {integrity: sha512-2eaYIPQb4oY8LbhjDJExpZJvVAu2E8dxwQ9sI+x5EbEVw86oDSEXGvAQrdAT5j4WeICuq9RPAJTNhrBknzAp8Q==}
     peerDependencies:
@@ -5926,6 +5957,12 @@ packages:
         optional: true
       nuxt:
         optional: true
+
+  vue-picture-cropper@1.0.0:
+    resolution: {integrity: sha512-zp4OdK8SHqhvrLYqu+0XL9La8dHf0664RRjM5seWqohWyZ8c8pXOZ0KqEJAW5AT9hU6UBDrvZC5QzeTqCXl7ww==}
+    peerDependencies:
+      cropperjs: ^1
+      vue: '>=3.2.13'
 
   vue-router@5.4.0:
     resolution: {integrity: sha512-pFvcYcxinDHjZUlf7AzFBrT8r8Xqvv4uMHoJnjc+EqPawXQvHTkF8S4tfSmQLpriVHUGfkaKlI7Et0KRjTMTdw==}
@@ -8873,6 +8910,8 @@ snapshots:
 
   croner@10.0.1: {}
 
+  cropperjs@1.7.0: {}
+
   cross-fetch@3.2.0:
     dependencies:
       node-fetch: 2.7.0
@@ -9664,6 +9703,8 @@ snapshots:
   has-flag@4.0.0: {}
 
   has-flag@5.0.1: {}
+
+  hash-wasm@4.12.0: {}
 
   hashery@1.5.1:
     dependencies:
@@ -11863,9 +11904,17 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
+  v-viewer@3.0.23(viewerjs@1.15.2)(vue@3.5.44(typescript@6.0.3)):
+    dependencies:
+      lodash-es: 4.18.1
+      viewerjs: 1.15.2
+      vue: 3.5.44(typescript@6.0.3)
+
   varint@6.0.0: {}
 
   verkit@0.5.0: {}
+
+  viewerjs@1.15.2: {}
 
   vite-dev-rpc@2.0.0(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.107.1)(sass@1.107.1)(terser@5.51.2)(yaml@2.9.1)):
     dependencies:
@@ -12009,6 +12058,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  vue-flow-upload@0.6.0(nuxt@4.6.3(d3a484f7266beec9a1dd25887760e29f))(vue@3.5.44(typescript@6.0.3)):
+    dependencies:
+      cropperjs: 1.7.0
+      hash-wasm: 4.12.0
+      v-viewer: 3.0.23(viewerjs@1.15.2)(vue@3.5.44(typescript@6.0.3))
+      viewerjs: 1.15.2
+      vue: 3.5.44(typescript@6.0.3)
+      vue-i18n-lite: 1.0.2(vue@3.5.44(typescript@6.0.3))
+      vue-picture-cropper: 1.0.0(cropperjs@1.7.0)(vue@3.5.44(typescript@6.0.3))
+    optionalDependencies:
+      nuxt: 4.6.3(d3a484f7266beec9a1dd25887760e29f)
+
   vue-i18n-lite@1.0.2(vue@3.5.44(typescript@6.0.3)):
     dependencies:
       vue: 3.5.44(typescript@6.0.3)
@@ -12031,6 +12092,11 @@ snapshots:
     optionalDependencies:
       '@nuxt/kit': 4.6.3(@nuxt/schema@4.6.3)(confbox@0.2.4)(dotenv@18.0.9)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.5)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.16)(unplugin@3.7.0(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.67.4)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.107.1)(sass@1.107.1)(terser@5.51.2)(yaml@2.9.1)))
       nuxt: 4.6.3(d3a484f7266beec9a1dd25887760e29f)
+
+  vue-picture-cropper@1.0.0(cropperjs@1.7.0)(vue@3.5.44(typescript@6.0.3)):
+    dependencies:
+      cropperjs: 1.7.0
+      vue: 3.5.44(typescript@6.0.3)
 
   vue-router@5.4.0(@vue/compiler-sfc@3.5.44)(esbuild@0.28.2)(pinia@4.1.0(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.44(typescript@6.0.3)))(rolldown@1.2.16)(rollup@4.67.4)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.107.1)(sass@1.107.1)(terser@5.51.2)(yaml@2.9.1))(vue@3.5.44(typescript@6.0.3)):
     dependencies:

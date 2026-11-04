@@ -1,0 +1,39 @@
+/**
+ * vue-flow-upload 适配层
+ *
+ * 库的颜色令牌默认引用 --el-*（定义在 :where(:root)），深色令牌定义在
+ * :where(html.dark, .dark, .vfu-dark)，因此主题色、深浅模式会自动跟随项目，
+ * 这里不需要再写一套颜色映射。
+ *
+ * 本层只补三类项目约定：
+ * - 字体与字号对齐项目的 --ui-font-size（随密度变化）
+ * - 圆角对齐 Element Plus
+ * - 列表最小行高、工具栏、缩略图与操作按钮由 --control-height 推导，
+ *   标准密度正好等于库原生的 52 / 50 / 41 / 28px（行高是 min-height，
+ *   缩略图等内容仍可能把单行撑高）
+ *
+ * 库用 :where() 归零了变量选择器特异性，普通 :root 即可覆盖。
+ */
+:root {
+  --vfu-font-family: var(--font-family-sans);
+  --vfu-font-size-base: var(--ui-font-size);
+  /* 库的 medium 是 13px；项目正文统一使用密度字号 */
+  --vfu-font-size-medium: var(--ui-font-size);
+  --vfu-font-size-small: var(--el-font-size-extra-small);
+  --vfu-font-size-large: var(--el-font-size-medium);
+
+  --vfu-radius-small: var(--el-border-radius-small);
+  --vfu-radius-base: var(--el-border-radius-base);
+  --vfu-radius-large: var(--el-border-radius-base);
+
+  /* 拖拽蒙层跟随品牌主色，库默认是固定蓝色 */
+  --vfu-drop-mask-color: color-mix(in srgb, var(--el-color-primary) 18%, transparent);
+  --vfu-drop-mask-color-strong: color-mix(in srgb, var(--el-color-primary) 28%, transparent);
+
+  /* 列表尺寸随密度：compact 44 / default 52 / comfortable 60 */
+  --vfu-file-row-height: calc(var(--control-height) + 20px);
+  --vfu-file-thumbnail-size: calc(var(--control-height) + 9px);
+  --vfu-toolbar-height: calc(var(--control-height) + 18px);
+  --vfu-footer-height: calc(var(--control-height) + 14px);
+  --vfu-action-size: max(24px, calc(var(--control-height) - 4px));
+}

@@ -93,6 +93,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     'vue-stack-tabs/nuxt',
     'vue-lite-layer/nuxt',
+    'vue-flow-upload/nuxt',
     // 必须排在 @element-plus/nuxt 之后：组件复用 Element Plus 的 CSS 变量
     'ep-field-view/nuxt'
   ],
@@ -168,6 +169,16 @@ export default defineNuxtConfig({
   },
 
   /**
+   * vue-flow-upload 模块：注册仅客户端渲染的 FlowUpload / AvatarUpload。
+   * 设置 css: false，由下面的 css 数组手动登记库样式，
+   * 保证 adapters/vue-flow-upload.css 在库样式之后加载。
+   */
+  vueFlowUpload: {
+    prefix: '',
+    css: false
+  },
+
+  /**
    * vue-lite-layer 模块：注册客户端插件 / 自动导入 composables。
    * - css: false：宿主自己控制样式顺序，保证 adapters/vue-lite-layer.css 在库样式之后
    * - i18n.messages：补齐库内置 zh-CN / en 之外的繁体包
@@ -215,6 +226,11 @@ export default defineNuxtConfig({
     'vue-stack-tabs/dist/style.css',
     'vue-lite-layer/style.css',
     'vue3-giant-tree-wasm/style.css',
+    // vue-flow-upload/style.css 只带 Viewer 的局部外观样式，基础布局在 viewerjs 官方样式里；
+    // 先引基础样式，再引库样式，保证 toolbar / navbar / title 的定位生效。
+    // 等 vue-flow-upload 自行补齐 viewer 基础样式后，可以删除这一行和 viewerjs 依赖。
+    'viewerjs/dist/viewer.css',
+    'vue-flow-upload/style.css',
     'vxe-table/lib/style.css',
     // VXE 渲染 Element Plus 组件时的单元格内控件样式，必须排在 vxe-table 之后
     '@vxe-ui/plugin-render-element/dist/style.css',
@@ -233,6 +249,7 @@ export default defineNuxtConfig({
     '~/assets/css/adapters/vue-stack-tabs.css',
     '~/assets/css/adapters/vue-lite-layer.css',
     '~/assets/css/adapters/vue3-giant-tree-wasm.css',
+    '~/assets/css/adapters/vue-flow-upload.css',
     '~/assets/css/adapters/overlayscrollbars.css',
     // Tailwind -> 基础样式 -> 页面共享排版
     '~/assets/css/tailwind.css',
