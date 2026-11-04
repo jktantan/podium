@@ -10,7 +10,7 @@
 ## 技术栈
 
 - Nuxt 4 + Vue 3 + TypeScript，纯前端 SPA（`ssr: false`），产物是静态文件
-- Element Plus、VXE Table、vue-stack-tabs、vue-lite-layer、ep-field-view
+- Element Plus、VXE Table、vue-stack-tabs、vue-lite-layer、ep-field-view、vue3-giant-tree-wasm
 - Pinia（sessionStorage 持久化）、`@nuxtjs/i18n`（zh-CN / en / zh-TW）
 - Tailwind CSS 4 + SCSS 设计令牌，深浅色主题
 - 统一 `$api` 客户端（ofetch）+ `ApiError` 错误总线

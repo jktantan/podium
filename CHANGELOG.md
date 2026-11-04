@@ -28,6 +28,10 @@
 
 ### 依赖
 
+- 新增 `vue3-giant-tree-wasm`：WASM 虚拟树组件。库样式与
+  `adapters/vue3-giant-tree-wasm.css` 在 `nuxt.config.ts` 登记，颜色映射到
+  Element Plus 令牌，密度通过 `useAppearance()` 的 `giantTreeSize` 传入；
+  demo 页面位于 `optional-layers/demo/app/pages/demo/giant-tree-demo.vue`
 - 升级 `vue-stack-tabs` 到 `3.2.1`：页签在导航前立即出现，内容区显示导航 loading；
   新增 `pageLoading` 开关（`NUXT_PUBLIC_PAGE_LOADING`，默认开启，内网等快速环境可关闭）
 
