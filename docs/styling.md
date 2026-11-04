@@ -39,9 +39,9 @@ Tailwind   tailwind.css
 
 `../app/assets/scss/base.scss` 只做文档级排版；第三方主题映射在 `app/assets/css/adapters/*.css`。
 
-| 区块                                                                                     | 是否分层   | 原因                                                                                                                                                                                                                      |
-| ---------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `adapters/*.css` 的 `:root:root { --el-* }`、`:root:root { --vxe-ui-* }`、`body`、`html` | **未分层** | Element Plus、VXE、vue-stack-tabs、vue-lite-layer、vue3-giant-tree-wasm、modern-normalize 的样式都是未分层的。按 CSS Cascade Layers 规范，**未分层声明优先于任何 `@layer`**。这些覆盖如果放进 layer，会被组件库反向覆盖。 |
+| 区块                                                                                     | 是否分层   | 原因                                                                                                                                                                                                                                       |
+| ---------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `adapters/*.css` 的 `:root:root { --el-* }`、`:root:root { --vxe-ui-* }`、`body`、`html` | **未分层** | Element Plus、VXE、vue-stack-tabs、vue-lite-layer、vue3-giant-tree-wasm、vue-flow-upload、modern-normalize 的样式都是未分层的。按 CSS Cascade Layers 规范，**未分层声明优先于任何 `@layer`**。这些覆盖如果放进 layer，会被组件库反向覆盖。 |
 
 页面共享的 `.page` 排版在 `../app/assets/scss/pages.scss`，位于 `@layer components`，因此可以被工具类覆盖（如 `<section class="page mt-6">` 中的 `mt-6`）。
 
@@ -252,6 +252,7 @@ export const THEME_PRESETS = [
 | vue-stack-tabs       | `adapters/vue-stack-tabs.css` 将主色、表面、文字、边框和阴影映射到 Element Plus 变量                        | `data-stack-tab-size`（compact→small / default→normal / comfortable→large）                                  |
 | vue-lite-layer       | `adapters/vue-lite-layer.css` 将语义色、文本、边框、填充、背景、遮罩和阴影映射到 Element Plus 变量          | `theme.size`（compact→small / default→default / comfortable→large），由 `useLayer()` 注入                    |
 | vue3-giant-tree-wasm | `adapters/vue3-giant-tree-wasm.css` 将主色、状态色、文本、边框、行 hover 与搜索命中映射到 Element Plus 变量 | `size`（compact→small / default→default / comfortable→large），调用方传 `useAppearance()` 的 `giantTreeSize` |
+| vue-flow-upload      | `adapters/vue-flow-upload.css` 的库颜色默认引用 `--el-*`，适配层只补字体、字号、圆角与拖拽蒙层              | 行高 / 工具栏 / 缩略图由 `--control-height` 推导，随 `data-density` 自动变化                                 |
 
 状态色以 Element Plus 的 `primary / success / warning / danger / info / error` 为基准。自定义主题在 `adapters/element-plus.css` 中调整各状态的基础色及明暗色阶；VXE 适配层须同时映射基础色、浅底、提亮、按下和禁用态。新增状态组件时，检查它实际消费的变量及浅色、深色效果，不能只核对基础色。
 
@@ -301,6 +302,10 @@ vue-stack-tabs 的 small / normal / large 原生页签高度为 32 / 40 / 48px�
 vue-lite-layer 的尺寸使用 small / default / large 三档，通过 `data-lite-layer-size` 切换；标题栏高度与间距保留库原生值（small 标题高度提到 40px，default / large 为 40 / 48px），标题字号 small 14px、default / large 16px，按钮字号与圆角仍对齐 Element Plus（14 / 14 / 14px 与 2 / 4 / 4px）。颜色令牌全部映射到 `--el-*`，遮罩使用 `--el-overlay-color-lighter`，窗口阴影使用 `--el-box-shadow`。弹层**不设置 `theme.mode`**：库在未显式设置时不写 `data-lite-layer-theme`，由 `html.dark .lite-layer` 跟随项目明暗，避免系统深色偏好与项目明暗不一致。弹层内容区的 Element Plus 组件通过调用点继承 `ElConfigProvider`，无需为弹层单独配置语言。
 
 vue3-giant-tree-wasm 的颜色令牌全部映射到 `--el-*`，浅色、深色和主题色都跟随 Element Plus，不在适配层写业务色值；行背景保持透明，便于放进卡片或弹层。尺寸使用库的 small / default / large 预设（12px·24px / 14px·26px / 16px·32px），由 `useAppearance()` 的 `giantTreeSize` 按密度传入：compact→small、default→default、comfortable→large。large 档库原生字号为 16px，Element Plus 大档控件仍是 14px，适配层统一到 14px，同时保留 16px 的缩进与控件列宽。行高参与虚拟滚动计算，只能通过 `size` / `lineHeight` prop 传入，不能用 CSS 修改。深色变量用与库相同的 `html.dark .giant-tree` 选择器覆盖，并用 `:not(.giant-tree--light)` 排除强制浅色的实例；`theme="light"` 保留库原生浅色值，因为 `--el-*` 在深色模式下本身就是深色值，无法用来表达浅色主题。
+
+vue-flow-upload 的颜色令牌默认引用 `--el-*`，深色令牌定义在 `:where(html.dark, .dark, .vfu-dark)`，所以主题色、深浅模式天然跟随项目，适配层不再重复映射颜色。适配层只做三件事：字体族 / 字号对齐 `--ui-font-size`，圆角对齐 Element Plus，列表最小行高、工具栏、缩略图与操作按钮由 `--control-height` 推导（标准密度等于库原生的 52 / 50 / 41 / 28px，紧凑与宽松档自动增减；行高是 `min-height`，缩略图等内容仍可能把单行撑高）。拖拽蒙层的固定蓝色改为品牌主色的半透明混合。库的变量用 `:where()` 归零特异性，普通 `:root` 即可覆盖；模块设置 `css: false`，库样式在 `nuxt.config.ts` 的 `css` 数组手动登记，保证适配层在库样式之后加载（与 vue-lite-layer 一致）。
+
+`vue-flow-upload@0.6.0` 的 `style.css` 只包含 Viewer 的局部外观样式，缺少 toolbar / navbar / title 的定位规则，预览时这些区域会全部堆到顶部。podium 因此显式声明 `viewerjs` 依赖，并在 `vue-flow-upload/style.css` 之前登记 `viewerjs/dist/viewer.css`；库补齐 Viewer 基础样式后可删除这两处。
 
 Nuxt 模块默认会把库样式追加到 CSS 列表末尾，会排在适配层之后；因此 `nuxt.config.ts` 中给 `vueLiteLayer` 设置 `css: false`，由 `css` 数组手动登记 `vue-lite-layer/style.css`，保持“库样式 -> 适配层”的顺序。
 
@@ -534,7 +539,7 @@ Tailwind 工具类与 BEM 类可以同时出现在一个元素上：
 - [ ] 新增组件库时已建 `adapters/<库名>.css`，并在 `nuxt.config.ts` 登记。
 - [ ] VXE 的尺寸没有写进 `VxeUI.setConfig`，而是走 `app.vue` 的 `xeSizeInfo`。
 - [ ] 页面共享排版放在 `pages.scss` 的 `@layer components` 内。
-- [ ] 第三方（Element Plus / VXE / vue-stack-tabs / vue-lite-layer / vue3-giant-tree-wasm / normalize）覆盖保持未分层。
+- [ ] 第三方（Element Plus / VXE / vue-stack-tabs / vue-lite-layer / vue3-giant-tree-wasm / vue-flow-upload / normalize）覆盖保持未分层。
 - [ ] 没有删除 `tailwind.css` 顶部的 `@layer theme, base, components, utilities;`。
 - [ ] 用 `@apply` 的 SFC 已加 `@reference '~/assets/css/tailwind.css';`。
 - [ ] 构建产物中 Tailwind 工具类仍然生效（`pnpm build` 后检查 `.output/public/_nuxt/entry.*.css`）。

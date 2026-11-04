@@ -28,6 +28,17 @@
 
 ### 依赖
 
+- 新增 `vue-flow-upload@0.6.0`：文件与头像上传组件。通过 `vue-flow-upload/nuxt`
+  注册仅客户端组件，模块设置 `css: false`，库样式在 `nuxt.config.ts` 的 `css`
+  数组登记；`adapters/vue-flow-upload.css` 只补字体、字号、圆角与由
+  `--control-height` 推导的密度尺寸；语言由 `useLocale()` 提供
+  `flowUploadI18n`，同时传给 `FlowUpload` 与 `AvatarUpload`
+  （`i18n/vendors/vue-flow-upload.ts` 补繁体）。demo 页面位于
+  `optional-layers/demo/app/pages/demo/flow-upload-demo.vue`，使用内存 transport，
+  不请求后端
+- 显式引入 `viewerjs/dist/viewer.css` 并声明 `viewerjs` 依赖：`vue-flow-upload@0.6.0`
+  的 `style.css` 只带 Viewer 的局部外观样式，缺少 toolbar / navbar / title 的定位规则，
+  预览时会全部堆到顶部；库补齐后可删除该依赖与 CSS 登记
 - 新增 `vue3-giant-tree-wasm`：WASM 虚拟树组件。库样式与
   `adapters/vue3-giant-tree-wasm.css` 在 `nuxt.config.ts` 登记，颜色映射到
   Element Plus 令牌，密度通过 `useAppearance()` 的 `giantTreeSize` 传入；
