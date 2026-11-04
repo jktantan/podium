@@ -26,6 +26,10 @@ export default defineAppConfig({
             titleKey: 'nav.epFieldViewDemo',
             path: '/demo/ep-field-view-demo'
           },
+          'demo-giant-tree': {
+            titleKey: 'nav.giantTreeDemo',
+            path: '/demo/giant-tree-demo'
+          },
           'demo-layer': { titleKey: 'nav.layerDemo', path: '/demo/layer-demo' },
           'demo-search': { titleKey: 'nav.searchDemo', path: '/demo/search-demo' },
           'demo-settings': { titleKey: 'nav.settings', path: '/demo/settings' },

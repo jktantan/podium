@@ -53,6 +53,13 @@
       </template>
     </el-menu-item>
 
+    <el-menu-item index="demo-giant-tree">
+      <el-icon><ElIconShare /></el-icon>
+      <template #title>
+        <span>{{ t('nav.giantTreeDemo') }}</span>
+      </template>
+    </el-menu-item>
+
     <el-menu-item index="demo-layer">
       <el-icon><ElIconCopyDocument /></el-icon>
       <template #title>
