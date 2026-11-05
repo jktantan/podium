@@ -34,6 +34,10 @@ export default defineAppConfig({
             titleKey: 'nav.flowUploadDemo',
             path: '/demo/flow-upload-demo'
           },
+          'demo-dropdown-captcha': {
+            titleKey: 'nav.dropDownCaptchaDemo',
+            path: '/demo/dropdown-captcha-demo'
+          },
           'demo-layer': { titleKey: 'nav.layerDemo', path: '/demo/layer-demo' },
           'demo-search': { titleKey: 'nav.searchDemo', path: '/demo/search-demo' },
           'demo-settings': { titleKey: 'nav.settings', path: '/demo/settings' },

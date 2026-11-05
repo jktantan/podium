@@ -10,6 +10,7 @@
     "epFieldViewDemo": "Form Text Mode",
     "giantTreeDemo": "Virtual Tree Demo",
     "flowUploadDemo": "Upload Demo",
+    "dropDownCaptchaDemo": "Drag Captcha Demo",
     "layerDemo": "Layer Demo",
     "errorPages": "Error Pages",
     "error401": "401 Unauthorized",
@@ -291,6 +292,17 @@
       "remark": "Notes",
       "remarkPlaceholder": "Additional notes",
       "saved": "Saved"
+    }
+  },
+  "dropDownCaptchaDemo": {
+    "title": "Drag captcha",
+    "lead": "The background and puzzle piece are passed in as base64 by the parent. After dropping the piece, the parent compares the coordinates and sends back the result.",
+    "tip": "Each refresh generates a new background, puzzle piece and gap position.",
+    "answer": "Target: ({x}, {y}) (demo only)",
+    "messages": {
+      "default": "Drag the puzzle piece into the gap",
+      "success": "Verified",
+      "error": "Verification failed, please retry"
     }
   },
   "settings": {

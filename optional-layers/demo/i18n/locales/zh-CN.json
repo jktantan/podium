@@ -10,6 +10,7 @@
     "epFieldViewDemo": "表单文本态示例",
     "giantTreeDemo": "虚拟树示例",
     "flowUploadDemo": "上传示例",
+    "dropDownCaptchaDemo": "拖拽验证码示例",
     "layerDemo": "弹层示例",
     "errorPages": "错误页面",
     "error401": "401 未登录",
@@ -291,6 +292,17 @@
       "remark": "备注",
       "remarkPlaceholder": "补充说明",
       "saved": "已保存"
+    }
+  },
+  "dropDownCaptchaDemo": {
+    "title": "拖拽拼图验证码",
+    "lead": "底图和拼图块都由父组件以 base64 传入；拖拽拼图块到缺口位置后，由父组件比对坐标并回传验证结果。",
+    "tip": "每次刷新都会随机生成新的底图、拼图块和缺口位置。",
+    "answer": "正确位置：({x}, {y})（仅用于演示校验）",
+    "messages": {
+      "default": "拖动拼图块到图中缺口位置",
+      "success": "验证成功",
+      "error": "验证失败，请重试"
     }
   },
   "settings": {

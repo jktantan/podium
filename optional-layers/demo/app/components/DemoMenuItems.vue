@@ -67,6 +67,13 @@
       </template>
     </el-menu-item>
 
+    <el-menu-item index="demo-dropdown-captcha">
+      <el-icon><ElIconKey /></el-icon>
+      <template #title>
+        <span>{{ t('nav.dropDownCaptchaDemo') }}</span>
+      </template>
+    </el-menu-item>
+
     <el-menu-item index="demo-layer">
       <el-icon><ElIconCopyDocument /></el-icon>
       <template #title>
