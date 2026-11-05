@@ -20,6 +20,24 @@
   --stack-tab-surface: var(--el-bg-color);
   --stack-tab-surface-muted: var(--el-fill-color-light);
   --stack-tab-overlay: var(--el-bg-color-overlay);
+
+  /*
+   * 容器背景由宿主通过 #background 插槽绘制（动态氛围背景），
+   * 容器本身保持透明，避免不透明底色把背景层盖住；
+   * 页签头透明，让背景从页签之间的缝隙透出来。
+   */
+  --stack-tab-background: transparent;
+  --stack-tab-header-background: transparent;
+
+  /*
+   * 3.3.0 新增：页签头图标按钮自带描边、圆角与悬停底色。
+   * 描边与圆角对齐 Element Plus，悬停底色用主色的浅色档，
+   * 与项目里其他图标按钮的反馈保持一致。
+   */
+  --stack-tab-button-border: 1px solid var(--el-border-color);
+  --stack-tab-button-border-radius: var(--el-border-radius-base);
+  --stack-tab-button-hover-bg: var(--el-color-primary-light-9);
+
   --stack-tab-border: var(--el-border-color);
   --stack-tab-divider: var(--el-border-color);
   --stack-tab-text: var(--el-text-color-regular);

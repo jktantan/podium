@@ -46,9 +46,6 @@
 
         <el-splitter-panel class="app-layout__main-panel" :size="mainWidth">
           <el-main class="app-layout__main">
-            <!-- 与 auth 布局同款动态氛围背景，压在主区域背景之上、页签之下 -->
-            <AppAmbientBackdrop class="app-layout__ambient" />
-
             <!--
           页签容器在客户端挂载完成后再渲染：
           既提供首屏占位，也避免 vue-stack-tabs 直接使用 RouterView 时触发 Nuxt 的页面渲染诊断。
@@ -63,8 +60,12 @@
                 :page-scroll="PageScroll"
                 :page-loading="pageLoading"
                 height="100%"
-                style="padding: 5px"
               >
+                <!-- 动态氛围背景交给库的背景层渲染，位于页签头与内容之下 -->
+                <template #background>
+                  <WorkspaceBackdrop />
+                </template>
+
                 <!-- 缩展按钮放在标签栏左侧，复用库的 header 按钮尺寸与外观 -->
                 <template #leftButton>
                   <TabHeaderButton
@@ -101,6 +102,7 @@ import type { ITabData } from 'vue-stack-tabs'
 import { useTabActions } from 'vue-stack-tabs'
 import PageScroll from '~/components/layout/PageScroll.vue'
 import SidebarMenu from '~/components/layout/SidebarMenu.vue'
+import WorkspaceBackdrop from '~/components/layout/WorkspaceBackdrop.vue'
 
 /**
  * 可选层通过 appConfig 提供扩展数据，宿主不 import 任何层内模块。
@@ -402,8 +404,6 @@ watch(currentLocale, () => {
 </script>
 
 <style scoped lang="scss">
-@use '../assets/scss/mixins' as *;
-
 .app-layout {
   // 布局直接用语义令牌，深浅色模式自动跟随，不再维护局部色值
   height: 100vh;
@@ -499,71 +499,28 @@ watch(currentLocale, () => {
   }
 
   &__main {
-    position: relative;
-    // 建立层叠上下文：光斑用负 z-index 停在背景之上、页签内容之下
-    isolation: isolate;
     height: 100%;
     min-height: 0;
     overflow: hidden;
-    padding: 0 0 0 5px;
+    // 背景层由 #background 插槽铺满页签容器，主区域不再单独绘制背景
+    padding: 0;
 
     /*
-     * 卡片要透出动态背景：只保留一层很薄的表面色，不再做毛玻璃。
-     * 六边形纹理由主区域那一层直接透出来，只有一套网格，不会错位；
-     * 深色下表面色收得紧一些，避免内容区和纹理糊在一起。
-     */
-    --main-card-surface: color-mix(in srgb, var(--bg-surface) 10%, transparent);
-
-    background: var(--ambient-base);
-
-    /*
-     * 六边形纹理单独一层：mask 在四周淡出，避免整块工作区变成蜂巢板。
-     * 要单独成层就不能写进 background 简写里 —— mask 会连底色和光斑一起裁掉。
-     *
-     * 线用带一点模糊的细描边，不用硬边实线：1px 落在半透明底上
-     * 仍然是一条清晰可见的线，blur 之后才真正是"纹理"而不是"图案"。
-     */
-    &::before {
-      position: absolute;
-      z-index: 0;
-      inset: 0;
-
-      @include ambient-mesh;
-
-      pointer-events: none;
-      content: '';
-    }
-
-    html.dark & {
-      --main-card-surface: color-mix(in srgb, var(--bg-surface) 10%, transparent);
-    }
-
-    /*
-     * 卡片底色改为半透明：否则不透明的 .stack-tab 会铺满主区域，
-     * 把上面的背景柔光、光斑和六边形纹理整个盖住。
-     *
-     * 不再使用 backdrop-filter：六边形只画在主区域一层，毛玻璃会把它糊成雾；
-     * 而且 backdrop-filter 会让元素成为 position: fixed 后代的包含块，
-     * 库的右键菜单是 fixed + clientX/clientY，会被整体带偏。
+     * 背景、六边形纹理与表面色都由库的 #background 插槽承载，
+     * 这里只保留卡片边缘的阴影与裁切。
      *
      * 这些样式只作用于普通卡片态：最大化时库靠 .stack-tab--maximum
      * 把元素改成 position: fixed + inset: 0，若这里仍命中 .stack-tab，
-     * 高特异性的 position: relative 会压过库规则，最大化会塌成一张小卡片。
+     * overflow / isolation 会干扰最大化布局。
      */
     :deep(.stack-tab:not(.stack-tab--maximum)) {
-      position: relative;
       isolation: isolate;
       overflow: hidden;
-      //border: 1px solid color-mix(in srgb, var(--border-default) 72%, transparent);
-      //border-radius: var(--radius-md);
       box-shadow: var(--el-box-shadow-lighter);
-      background: var(--main-card-surface);
     }
-  }
-
-  // 与 auth 布局同款动态氛围背景：负 z-index 保证不遮挡页签内容
-  &__ambient {
-    z-index: -1;
+    :deep(.stack-tab) {
+      gap: 2px;
+    }
   }
 }
 </style>

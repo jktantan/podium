@@ -43,8 +43,13 @@
   `adapters/vue3-giant-tree-wasm.css` 在 `nuxt.config.ts` 登记，颜色映射到
   Element Plus 令牌，密度通过 `useAppearance()` 的 `giantTreeSize` 传入；
   demo 页面位于 `optional-layers/demo/app/pages/demo/giant-tree-demo.vue`
-- 升级 `vue-stack-tabs` 到 `3.2.1`：页签在导航前立即出现，内容区显示导航 loading；
-  新增 `pageLoading` 开关（`NUXT_PUBLIC_PAGE_LOADING`，默认开启，内网等快速环境可关闭）
+- 升级 `vue-stack-tabs` 到 `3.3.0`：页签在导航前立即出现，内容区显示导航 loading；
+  新增 `pageLoading` 开关（`NUXT_PUBLIC_PAGE_LOADING`，默认开启，内网等快速环境可关闭）。
+  3.3.0 新增 `background` 属性与 `#background` 插槽，工作区的动态氛围背景、六边形纹理
+  与表面色改由库的背景层承载（`app/components/layout/WorkspaceBackdrop.vue`），布局不再
+  自己绘制主区域背景；页签头图标按钮自带描边、圆角与悬停底色，
+  `adapters/vue-stack-tabs.css` 将其映射到 Element Plus 令牌；页签栏新增左右滚动区内边距，
+  页签项背景可通过 `--stack-tab-tab-active-bg` / `--stack-tab-tab-inactive-bg` 单独配置
 
 ### 环境
 

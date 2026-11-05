@@ -151,7 +151,7 @@ onActivated(attachScrollTarget)
 </script>
 
 <template>
-  <section ref="root" class="common-frame">
+  <section ref="root" class="common-frame px-1.5">
     <div
       v-if="showHeader"
       class="common-frame__header"
@@ -164,7 +164,7 @@ onActivated(attachScrollTarget)
       </slot>
     </div>
 
-    <div class="common-frame__body px-2">
+    <div class="common-frame__body p-1.5">
       <slot></slot>
     </div>
 
