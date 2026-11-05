@@ -2,7 +2,8 @@
   "app": {
     "loading": "Loading workspace…",
     "collapseSidebar": "Collapse menu",
-    "expandSidebar": "Expand menu"
+    "expandSidebar": "Expand menu",
+    "resizeSidebar": "Resize sidebar"
   },
   "nav": {
     "home": "Home",

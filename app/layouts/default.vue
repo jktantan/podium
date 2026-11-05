@@ -15,98 +15,83 @@
         </div>
       </el-header>
 
-      <el-container class="app-layout__body">
-        <el-aside id="app-layout-aside" class="app-layout__aside" :width="asideWidth">
-          <!-- 菜单滚动交给 OverlayScrollbars，避免 el-aside 原生滚动条与外层滚动条叠加 -->
-          <AppScrollbar class="app-layout__aside-scroll">
-            <!--
-            收缩时交给 el-menu 原生 collapse 模式：只留图标，激活态与点击导航不变。
-            每项用 #title 插槽提供文字，折叠后该插槽会作为悬浮提示显示。
-          -->
-            <el-menu
-              class="app-layout__menu"
-              :collapse="asideCollapsed"
-              :collapse-transition="false"
-              :default-active="activeMenu"
-              @select="handleMenuSelect"
-              @mouseover="handleMenuHover"
-              @mouseout="handleMenuOut"
-            >
-              <el-menu-item index="home">
-                <el-icon><ElIconHomeFilled /></el-icon>
-                <template #title>
-                  <span>{{ t('nav.home') }}</span>
-                </template>
-              </el-menu-item>
+      <el-splitter
+        ref="splitterRef"
+        class="app-layout__body"
+        :class="{ 'is-resizing': asideResizing }"
+        layout="horizontal"
+        @resize-start="handleAsideResizeStart"
+        @resize-end="handleAsideResizeEnd"
+        @keydown="handleSplitterKeydown"
+      >
+        <el-splitter-panel
+          class="app-layout__aside-panel"
+          :size="asideWidth"
+          :min="asideCollapsed ? undefined : `${ASIDE_MIN_WIDTH}px`"
+          :max="`${ASIDE_MAX_WIDTH}px`"
+          :resizable="!asideCollapsed"
+        >
+          <!-- 菜单滚动交给 OverlayScrollbars，避免容器再产生一条原生滚动条 -->
+          <AppScrollbar id="app-layout-aside" class="app-layout__aside-scroll">
+            <SidebarMenu :collapse="asideCollapsed" :active="activeMenu" @select="handleMenuSelect">
               <!--
                 可选层扩展位：demo 层加载时由 appConfig 提供菜单组件名，
                 未加载时这里不渲染任何内容。菜单顺序由宿主固定：
                 首页 → 项目 API 菜单 → demo 菜单。
               -->
               <component :is="demoMenuComponent" v-if="demoMenuComponent" />
-            </el-menu>
+            </SidebarMenu>
+          </AppScrollbar>
+        </el-splitter-panel>
+
+        <el-splitter-panel class="app-layout__main-panel" :size="mainWidth">
+          <el-main class="app-layout__main">
+            <!-- 与 auth 布局同款动态氛围背景，压在主区域背景之上、页签之下 -->
+            <AppAmbientBackdrop class="app-layout__ambient" />
 
             <!--
-              展开态的文字截断提示：el-menu 只在折叠态自带 tooltip，
-              展开态文字被省略号截断后，这里用虚拟触发补一个。
-            -->
-            <el-tooltip
-              :visible="menuTooltip.visible"
-              :content="menuTooltip.text"
-              :virtual-ref="menuTooltip.target ?? undefined"
-              virtual-triggering
-              placement="right"
-              :interactive="false"
-            />
-          </AppScrollbar>
-        </el-aside>
-
-        <el-main class="app-layout__main">
-          <!-- 与 auth 布局同款动态氛围背景，压在主区域背景之上、页签之下 -->
-          <AppAmbientBackdrop class="app-layout__ambient" />
-
-          <!--
           页签容器在客户端挂载完成后再渲染：
           既提供首屏占位，也避免 vue-stack-tabs 直接使用 RouterView 时触发 Nuxt 的页面渲染诊断。
         -->
-          <ClientOnly>
-            <VueStackTabs
-              iframe-path="/iframe"
-              :home-tab="homeTab"
-              :i18n="stackTabsLocale"
-              :max="20"
-              :contextmenu="true"
-              :page-scroll="PageScroll"
-              :page-loading="pageLoading"
-              height="100%"
-              style="padding: 5px"
-            >
-              <!-- 缩展按钮放在标签栏左侧，复用库的 header 按钮尺寸与外观 -->
-              <template #leftButton>
-                <TabHeaderButton
-                  class="app-layout__aside-toggle"
-                  :class="{ 'is-collapsed': asideCollapsed }"
-                  :title="asideToggleLabel"
-                  :aria-label="asideToggleLabel"
-                  :aria-expanded="!asideCollapsed"
-                  aria-controls="app-layout-aside"
-                  @click="toggleAside"
-                >
-                  <template #icon>
-                    <ElIconFold class="app-layout__aside-toggle-icon" />
-                  </template>
-                </TabHeaderButton>
-              </template>
-            </VueStackTabs>
+            <ClientOnly>
+              <VueStackTabs
+                iframe-path="/iframe"
+                :home-tab="homeTab"
+                :i18n="stackTabsLocale"
+                :max="20"
+                :contextmenu="true"
+                :page-scroll="PageScroll"
+                :page-loading="pageLoading"
+                height="100%"
+                style="padding: 5px"
+              >
+                <!-- 缩展按钮放在标签栏左侧，复用库的 header 按钮尺寸与外观 -->
+                <template #leftButton>
+                  <TabHeaderButton
+                    class="app-layout__aside-toggle"
+                    :class="{ 'is-collapsed': asideCollapsed }"
+                    :title="asideToggleLabel"
+                    :aria-label="asideToggleLabel"
+                    :aria-expanded="!asideCollapsed"
+                    aria-controls="app-layout-aside"
+                    @click="toggleAside"
+                  >
+                    <template #icon>
+                      <ElIconFold class="app-layout__aside-toggle-icon" />
+                    </template>
+                  </TabHeaderButton>
+                </template>
+              </VueStackTabs>
 
-            <template #fallback>
-              <div class="grid h-full place-items-center text-sm text-muted">
-                {{ t('app.loading') }}
-              </div>
-            </template>
-          </ClientOnly>
-        </el-main>
-      </el-container>
+              <template #fallback>
+                <div class="grid h-full place-items-center text-sm text-muted">
+                  {{ t('app.loading') }}
+                </div>
+              </template>
+            </ClientOnly>
+          </el-main>
+        </el-splitter-panel>
+      </el-splitter>
     </el-container>
   </WaterMark>
 </template>
@@ -115,6 +100,7 @@
 import type { ITabData } from 'vue-stack-tabs'
 import { useTabActions } from 'vue-stack-tabs'
 import PageScroll from '~/components/stackTabs/PageScroll.vue'
+import SidebarMenu from '~/components/layout/SidebarMenu.vue'
 
 /**
  * 可选层通过 appConfig 提供扩展数据，宿主不 import 任何层内模块。
@@ -161,10 +147,175 @@ onBeforeUnmount(() => {
   void destroy()
 })
 
+/** 侧栏宽度：收起时与 el-menu collapse 的图标宽度（24 + 20 * 2）对齐 */
+const ASIDE_COLLAPSED_WIDTH = 64
+const ASIDE_DEFAULT_WIDTH = 192
+const ASIDE_MIN_WIDTH = 160
+const ASIDE_MAX_WIDTH = 420
+const ASIDE_WIDTH_STORAGE_KEY = 'podium:sidebar-width'
+
 /** 左侧菜单是否收起为图标模式 */
 const asideCollapsed = ref(false)
-/** el-aside 宽度：收起时与 el-menu collapse 的图标宽度（24 + 20 * 2）对齐 */
-const asideWidth = computed(() => (asideCollapsed.value ? '64px' : '192px'))
+
+/** 展开态宽度可拖拽，折叠后再展开时恢复到这里记住的宽度 */
+const asideSavedWidth = ref(readAsideWidth())
+
+function readAsideWidth() {
+  if (!import.meta.client) {
+    return ASIDE_DEFAULT_WIDTH
+  }
+
+  try {
+    const raw = window.localStorage.getItem(ASIDE_WIDTH_STORAGE_KEY)
+    const value = raw === null ? Number.NaN : Number(raw)
+
+    if (!Number.isFinite(value)) {
+      return ASIDE_DEFAULT_WIDTH
+    }
+
+    return Math.min(Math.max(value, ASIDE_MIN_WIDTH), ASIDE_MAX_WIDTH)
+  } catch {
+    return ASIDE_DEFAULT_WIDTH
+  }
+}
+
+function saveAsideWidth(width: number) {
+  asideSavedWidth.value = width
+
+  try {
+    window.localStorage.setItem(ASIDE_WIDTH_STORAGE_KEY, String(width))
+  } catch {
+    // 隐私模式 / 存储被禁用时忽略，界面仍然可用
+  }
+}
+
+/** splitter 容器宽度：主区域尺寸按它减去侧栏宽度计算 */
+const splitterWidth = ref(0)
+let splitterResizeObserver: ResizeObserver | null = null
+
+const asidePanelWidth = computed(() =>
+  asideCollapsed.value ? ASIDE_COLLAPSED_WIDTH : asideSavedWidth.value
+)
+
+/*
+ * 两块面板的尺寸各自受控、且之和始终等于容器宽度。
+ * 只固定侧栏时，EP 的 useSize 会把两块面板的固定 px 当比例归一化，
+ * 拖拽过或窗口大小变化后，侧栏宽度就会跟着容器一起漂移。
+ */
+const asideWidth = computed(() => `${asidePanelWidth.value}px`)
+const mainWidth = computed(() =>
+  splitterWidth.value > 0 ? `${splitterWidth.value - asidePanelWidth.value}px` : undefined
+)
+
+/** 拖拽期间禁用宽度过渡，避免 flex-basis 过渡造成拖影 */
+const asideResizing = ref(false)
+
+function handleAsideResizeStart() {
+  asideResizing.value = true
+}
+
+/** 拖拽结束：记住展开宽度；折叠宽度由按钮控制，不写回存储 */
+function handleAsideResizeEnd(_index: number, sizes: number[]) {
+  asideResizing.value = false
+
+  if (asideCollapsed.value) {
+    return
+  }
+
+  const width = Math.round(sizes[0] ?? 0)
+  if (width < ASIDE_MIN_WIDTH) {
+    return
+  }
+
+  saveAsideWidth(Math.min(width, ASIDE_MAX_WIDTH))
+}
+
+/**
+ * el-splitter 的分隔条只有鼠标 / 触摸拖拽，没有键盘与 ARIA 语义。
+ * 挂载后补齐 separator 属性：方向键按 8px（Shift 32px）调整，Home / End 到两端。
+ */
+const splitterRef = ref<{ $el?: HTMLElement } | null>(null)
+
+function syncSplitterA11y() {
+  const bar = splitterRef.value?.$el?.querySelector<HTMLElement>('.el-splitter-bar__dragger')
+
+  if (!bar) {
+    return
+  }
+
+  bar.setAttribute('role', 'separator')
+  bar.setAttribute('aria-orientation', 'vertical')
+  bar.setAttribute('aria-label', t('app.resizeSidebar'))
+  bar.setAttribute('aria-controls', 'app-layout-aside')
+  bar.setAttribute('aria-valuemin', String(ASIDE_MIN_WIDTH))
+  bar.setAttribute('aria-valuemax', String(ASIDE_MAX_WIDTH))
+  bar.setAttribute('aria-valuenow', String(asideSavedWidth.value))
+  // 折叠态宽度固定，分隔条不进入键盘焦点
+  bar.setAttribute('aria-disabled', String(asideCollapsed.value))
+  bar.setAttribute('tabindex', asideCollapsed.value ? '-1' : '0')
+}
+
+function handleSplitterKeydown(event: KeyboardEvent) {
+  const target = event.target
+
+  if (
+    asideCollapsed.value ||
+    !(target instanceof HTMLElement) ||
+    !target.classList.contains('el-splitter-bar__dragger')
+  ) {
+    return
+  }
+
+  const step = event.shiftKey ? 32 : 8
+  let width = asideSavedWidth.value
+
+  switch (event.key) {
+    case 'ArrowLeft':
+      width -= step
+      break
+    case 'ArrowRight':
+      width += step
+      break
+    case 'Home':
+      width = ASIDE_MIN_WIDTH
+      break
+    case 'End':
+      width = ASIDE_MAX_WIDTH
+      break
+    default:
+      return
+  }
+
+  event.preventDefault()
+  saveAsideWidth(Math.min(Math.max(width, ASIDE_MIN_WIDTH), ASIDE_MAX_WIDTH))
+}
+
+onMounted(syncSplitterA11y)
+watch([asideCollapsed, asideSavedWidth, currentLocale], syncSplitterA11y)
+
+/** 跟随容器宽度更新主区域尺寸，保证两块面板之和恒等于容器宽度 */
+onMounted(() => {
+  const el = splitterRef.value?.$el
+
+  if (!el) {
+    return
+  }
+
+  splitterWidth.value = el.clientWidth
+  splitterResizeObserver = new ResizeObserver((entries) => {
+    const width = entries[0]?.contentRect.width ?? 0
+
+    if (width > 0) {
+      splitterWidth.value = Math.round(width)
+    }
+  })
+  splitterResizeObserver.observe(el)
+})
+
+onBeforeUnmount(() => {
+  splitterResizeObserver?.disconnect()
+  splitterResizeObserver = null
+})
 const asideToggleLabel = computed(() =>
   asideCollapsed.value ? t('app.expandSidebar') : t('app.collapseSidebar')
 )
@@ -230,62 +381,6 @@ function handleMenuSelect(index: string) {
   void openTab({ ...tab })
 }
 
-/**
- * 展开态菜单项文字被省略号截断时，悬停显示完整名称。
- *
- * el-menu 只在折叠态自带 tooltip，展开态截断后需要补一层提示；
- * 这里用事件委托，后续通过 API 下发的菜单项不用各自处理。
- */
-const menuTooltip = reactive({
-  visible: false,
-  text: '',
-  target: null as HTMLElement | null
-})
-
-function handleMenuHover(event: MouseEvent) {
-  const target = event.target
-
-  if (!(target instanceof Element)) {
-    return
-  }
-
-  const item = target.closest<HTMLElement>('.el-menu-item, .el-sub-menu__title')
-  // 折叠态由 el-menu 自带 tooltip 负责
-  if (!item || item.closest('.el-menu--collapse')) {
-    return
-  }
-
-  const label = item.querySelector<HTMLElement>(':scope > span')
-  if (!label || label.scrollWidth <= label.clientWidth) {
-    return
-  }
-
-  menuTooltip.target = item
-  menuTooltip.text = label.textContent?.trim() ?? ''
-  menuTooltip.visible = true
-}
-
-function handleMenuOut(event: MouseEvent) {
-  const target = event.target
-
-  if (!(target instanceof Element)) {
-    return
-  }
-
-  const item = target.closest<HTMLElement>('.el-menu-item, .el-sub-menu__title')
-  if (!item) {
-    return
-  }
-
-  // 在同一个菜单项内部移动（图标 ↔ 文字）不关闭提示
-  const related = event.relatedTarget
-  if (related instanceof Node && item.contains(related)) {
-    return
-  }
-
-  menuTooltip.visible = false
-}
-
 // 已打开的菜单页签跟随语言切换，避免中英混排。
 // updateTabTitle 会同步 store / session / URL，但库内复用稳定的页签视图对象，
 // 子组件按引用比较会跳过更新；这里再替换一次视图对象引用，让标题立即刷新。
@@ -318,21 +413,71 @@ watch(currentLocale, () => {
   }
 
   &__body {
+    // el-splitter 自带 height: 100%，作为 flex 列的直接子项会取整屏高度；这里用 flex 撑满剩余空间
+    flex: 1;
+    height: auto;
     min-height: 0;
-  }
 
-  &__aside {
-    // 滚动交给 OverlayScrollbars，避免 el-aside 默认 overflow: auto 再产生一条原生滚动条
-    overflow: hidden;
-    border-right: 1px solid var(--border-default);
-    background: var(--bg-surface);
-    // 收缩 / 展开时宽度跟着图标栏一起过渡，菜单内容由 overflow 裁切
-    transition: width 300ms ease;
+    // el-splitter-panel 是 Fragment 根组件，拿不到父级 scoped 标记；
+    // 默认 overflow: auto，滚动交给内部容器，避免出现双滚动条
+    :deep(.el-splitter-panel) {
+      overflow: hidden;
+      // 折叠 / 展开时宽度跟着图标栏一起过渡
+      transition: flex-basis 300ms ease;
+    }
+
+    // 侧栏背景直接放在面板上：面板就是侧栏的盒子，不再额外包一层
+    :deep(.app-layout__aside-panel) {
+      background: var(--bg-surface);
+    }
+
+    // 拖拽是逐帧写 flex-basis，带过渡会拖影
+    &.is-resizing :deep(.el-splitter-panel) {
+      transition: none;
+    }
+
+    // 分隔条：默认 1px 边框色；悬停 / 拖拽时整条热区亮起主色
+    :deep(.el-splitter-bar__dragger) {
+      border-radius: var(--radius-xs);
+      transition: background-color 150ms ease;
+
+      &::before {
+        width: 1px;
+        background-color: var(--border-default);
+        transition:
+          width 150ms ease,
+          background-color 150ms ease;
+      }
+
+      &:hover:not(.is-disabled) {
+        background-color: color-mix(in srgb, var(--brand-primary) 14%, transparent);
+
+        &::before {
+          width: 2px;
+          background-color: var(--brand-primary);
+        }
+      }
+
+      // 拖拽中：热区再加深一档，主线保持主色
+      &.el-splitter-bar__dragger-active {
+        background-color: color-mix(in srgb, var(--brand-primary) 22%, transparent);
+
+        &::before {
+          width: 2px;
+          background-color: var(--brand-primary);
+        }
+      }
+    }
   }
 
   &__aside-scroll {
     // OverlayScrollbars 的宿主不会像 el-scrollbar 那样自带 height: 100%
     height: 100%;
+
+    // 分隔条热区覆盖侧栏右缘 8px，滚动条内移避让，避免被拖拽条接管
+    :deep(.os-scrollbar-vertical) {
+      right: 5px;
+    }
   }
 
   &__aside-toggle {
@@ -353,54 +498,11 @@ watch(currentLocale, () => {
     transform: rotate(180deg);
   }
 
-  &__menu {
-    //高度由内容决定，超出部分由外层 OverlayScrollbars 滚动
-    --el-menu-item-height: 42px;
-    //--el-menu-base-level-padding: 14px;
-
-    border-right: none;
-
-    /*
-     * 菜单项文字过长时用省略号截断。
-     * el-menu-item 本身宽度固定为侧栏宽度，文字默认 nowrap 会溢出到项外，
-     * 此时激活底色只铺满菜单项，超出的文字既没有底色，也会被侧栏裁掉。
-     * 让文字成为可收缩的 flex 项后，底色、可见文字始终是同一宽度。
-     */
-    :deep(.el-menu-item),
-    :deep(.el-sub-menu__title) {
-      > .el-icon {
-        // 图标不参与收缩，省略只发生在文字上
-        flex-shrink: 0;
-      }
-
-      > span {
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
-
-    :deep(.el-menu-item.is-active) {
-      background: var(--brand-primary-surface);
-      font-weight: 600;
-    }
-
-    :deep(.el-menu-item.is-active)::before {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      width: 3px;
-      border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
-      background: var(--brand-primary);
-      content: '';
-    }
-  }
-
   &__main {
     position: relative;
     // 建立层叠上下文：光斑用负 z-index 停在背景之上、页签内容之下
     isolation: isolate;
+    height: 100%;
     min-height: 0;
     overflow: hidden;
     padding: 0 0 0 5px;

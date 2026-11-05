@@ -2,7 +2,8 @@
   "app": {
     "loading": "正在加载工作台…",
     "collapseSidebar": "收起菜单",
-    "expandSidebar": "展开菜单"
+    "expandSidebar": "展开菜单",
+    "resizeSidebar": "调整侧栏宽度"
   },
   "nav": {
     "home": "首页",
