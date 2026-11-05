@@ -29,6 +29,8 @@
               :collapse-transition="false"
               :default-active="activeMenu"
               @select="handleMenuSelect"
+              @mouseover="handleMenuHover"
+              @mouseout="handleMenuOut"
             >
               <el-menu-item index="home">
                 <el-icon><ElIconHomeFilled /></el-icon>
@@ -43,6 +45,19 @@
               -->
               <component :is="demoMenuComponent" v-if="demoMenuComponent" />
             </el-menu>
+
+            <!--
+              展开态的文字截断提示：el-menu 只在折叠态自带 tooltip，
+              展开态文字被省略号截断后，这里用虚拟触发补一个。
+            -->
+            <el-tooltip
+              :visible="menuTooltip.visible"
+              :content="menuTooltip.text"
+              :virtual-ref="menuTooltip.target ?? undefined"
+              virtual-triggering
+              placement="right"
+              :interactive="false"
+            />
           </AppScrollbar>
         </el-aside>
 
@@ -215,6 +230,62 @@ function handleMenuSelect(index: string) {
   void openTab({ ...tab })
 }
 
+/**
+ * 展开态菜单项文字被省略号截断时，悬停显示完整名称。
+ *
+ * el-menu 只在折叠态自带 tooltip，展开态截断后需要补一层提示；
+ * 这里用事件委托，后续通过 API 下发的菜单项不用各自处理。
+ */
+const menuTooltip = reactive({
+  visible: false,
+  text: '',
+  target: null as HTMLElement | null
+})
+
+function handleMenuHover(event: MouseEvent) {
+  const target = event.target
+
+  if (!(target instanceof Element)) {
+    return
+  }
+
+  const item = target.closest<HTMLElement>('.el-menu-item, .el-sub-menu__title')
+  // 折叠态由 el-menu 自带 tooltip 负责
+  if (!item || item.closest('.el-menu--collapse')) {
+    return
+  }
+
+  const label = item.querySelector<HTMLElement>(':scope > span')
+  if (!label || label.scrollWidth <= label.clientWidth) {
+    return
+  }
+
+  menuTooltip.target = item
+  menuTooltip.text = label.textContent?.trim() ?? ''
+  menuTooltip.visible = true
+}
+
+function handleMenuOut(event: MouseEvent) {
+  const target = event.target
+
+  if (!(target instanceof Element)) {
+    return
+  }
+
+  const item = target.closest<HTMLElement>('.el-menu-item, .el-sub-menu__title')
+  if (!item) {
+    return
+  }
+
+  // 在同一个菜单项内部移动（图标 ↔ 文字）不关闭提示
+  const related = event.relatedTarget
+  if (related instanceof Node && item.contains(related)) {
+    return
+  }
+
+  menuTooltip.visible = false
+}
+
 // 已打开的菜单页签跟随语言切换，避免中英混排。
 // updateTabTitle 会同步 store / session / URL，但库内复用稳定的页签视图对象，
 // 子组件按引用比较会跳过更新；这里再替换一次视图对象引用，让标题立即刷新。
@@ -288,6 +359,26 @@ watch(currentLocale, () => {
     //--el-menu-base-level-padding: 14px;
 
     border-right: none;
+
+    /*
+     * 菜单项文字过长时用省略号截断。
+     * el-menu-item 本身宽度固定为侧栏宽度，文字默认 nowrap 会溢出到项外，
+     * 此时激活底色只铺满菜单项，超出的文字既没有底色，也会被侧栏裁掉。
+     * 让文字成为可收缩的 flex 项后，底色、可见文字始终是同一宽度。
+     */
+    :deep(.el-menu-item),
+    :deep(.el-sub-menu__title) {
+      > .el-icon {
+        // 图标不参与收缩，省略只发生在文字上
+        flex-shrink: 0;
+      }
+
+      > span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
 
     :deep(.el-menu-item.is-active) {
       background: var(--brand-primary-surface);
