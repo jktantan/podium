@@ -151,7 +151,7 @@ onActivated(attachScrollTarget)
 </script>
 
 <template>
-  <section ref="root" class="common-frame px-1.5">
+  <section ref="root" class="common-frame">
     <div
       v-if="showHeader"
       class="common-frame__header"
@@ -164,7 +164,7 @@ onActivated(attachScrollTarget)
       </slot>
     </div>
 
-    <div class="common-frame__body p-1.5">
+    <div class="common-frame__body p-2">
       <slot></slot>
     </div>
 
@@ -204,7 +204,7 @@ onActivated(attachScrollTarget)
     //padding: calc(var(--density-gap) / 2) 0;
     padding: calc(var(--density-gap) / 2);
     background: var(--bg-surface);
-    border-radius: var(--radius-md);
+    //border-radius: var(--radius-md);
     // 阴影样式与页签一致：颜色 / 模糊 / 扩散都取自 vue-stack-tabs
     &--shadow {
       box-shadow: 0 5px 5px -5px var(--stack-tab-shadow-color);
@@ -230,7 +230,7 @@ onActivated(attachScrollTarget)
     margin-top: auto;
     padding: calc(var(--density-gap) / 2);
     background: var(--bg-surface);
-    border-radius: var(--radius-md);
+    //border-radius: var(--radius-md);
 
     &--shadow {
       box-shadow: 0 -5px 5px -5px var(--stack-tab-shadow-color);

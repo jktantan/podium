@@ -34,7 +34,7 @@ try {
 </script>
 
 <template>
-  <section class="h-full flex flex-col gap-1.5 p-1.5">
+  <section class="h-full flex flex-col gap-1.5 px-2 py-1.5">
     <div>
       <slot name="search"></slot>
     </div>
