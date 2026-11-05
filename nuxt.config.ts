@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { appearanceBootstrap } from './config/appearance'
+import { assetCompress } from './config/asset-compress'
 import { createViteConfig } from './config/build'
 import { createPublicRuntimeConfig, isReleaseEnv, optionalLayersEnabled } from './config/env'
 import { DEFAULT_LOCALE, LOCALE_COOKIE_KEY, LOCALE_OPTIONS } from './i18n/config'
@@ -95,7 +96,9 @@ export default defineNuxtConfig({
     'vue-lite-layer/nuxt',
     'vue-flow-upload/nuxt',
     // 必须排在 @element-plus/nuxt 之后：组件复用 Element Plus 的 CSS 变量
-    'ep-field-view/nuxt'
+    'ep-field-view/nuxt',
+    // 静态生成后压缩 HTML 并更新其 .gz / .br 副本（见 config/asset-compress.ts）
+    assetCompress
   ],
 
   /**
@@ -200,7 +203,16 @@ export default defineNuxtConfig({
    * nitro.publicAssets 挂载：层不加载时，这些文件也不会进产物。
    */
   nitro: {
-    preset: 'static'
+    preset: 'static',
+    /*
+     * 构建时为 public 资源生成 .gz / .br 预压缩副本（阈值与可压缩类型由
+     * Nitro 决定）。HTML 的副本由 config/asset-compress.ts 在 minify 后重写，
+     * 否则会和最终 HTML 不一致。
+     */
+    compressPublicAssets: {
+      gzip: true,
+      brotli: true
+    }
   },
 
   /**
