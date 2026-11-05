@@ -12,6 +12,8 @@
 </template>
 
 <script setup lang="ts">
+import { ensureSvgSprite } from '~/utils/svg-sprite'
+
 interface AppIconProps {
   /**
    * 图标名，等于 app/assets/icons 下的相对路径（去掉 .svg）：
@@ -33,6 +35,12 @@ const symbolId = computed(() => `icon-${props.name}`)
 const sizeStyle = computed(() => {
   const value = typeof props.size === 'number' ? `${props.size}px` : props.size
   return { width: value, height: value }
+})
+
+// sprite 只在真正渲染图标时才注入：页面没有 AppIcon 就不会下载那一整块 sprite。
+// 注入是异步的，<use> 在 symbol 到位后自动生效，不需要额外刷新。
+onMounted(() => {
+  void ensureSvgSprite()
 })
 </script>
 

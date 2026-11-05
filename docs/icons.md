@@ -1,6 +1,6 @@
 # SVG 图标
 
-图标分两个目录：`app/assets/icons/` 是源目录，入库，保持设计稿 / 上游图标包原样；`.icons/` 是 `pnpm icons:build` 生成的目录，已被 gitignore，只作为 sprite 输入，不要手工修改。构建期由 `vite-plugin-svg-icons-ng` 把 `.icons/` 合成一张 sprite，运行时由 `app/plugins/svg-icons.client.ts` 导入 `virtual:svg-icons/register` 注入 `<body>` 末尾的隐藏 `<svg id="__svg__icons__dom__">`。
+图标分两个目录：`app/assets/icons/` 是源目录，入库，保持设计稿 / 上游图标包原样；`.icons/` 是 `pnpm icons:build` 生成的目录，已被 gitignore，只作为 sprite 输入，不要手工修改。构建期由 `vite-plugin-svg-icons-ng` 把 `.icons/` 合成一张 sprite，运行时由 `AppIcon` 首次挂载时通过 `app/utils/svg-sprite.ts` 导入 `virtual:svg-icons/register`，注入 `<body>` 末尾的隐藏 `<svg id="__svg__icons__dom__">`。
 
 ## 目录与命名
 
@@ -111,7 +111,7 @@ pnpm icons:build --dry-run  # 只统计，不写文件
 
 ## 体积提示
 
-当前 1252 个图标会全部进入 sprite，并通过注册模块打进客户端入口。图标数量继续增长时，有两个方向：
+当前 1252 个图标会全部进入 sprite，打成独立 chunk；注册模块由 `AppIcon` 首次挂载时按需导入，页面没有图标时不会下载这块 sprite（约 1 MB / gzip 260 KB）。图标数量继续增长时，有两个方向：
 
 - 只把实际用到的目录加入 `iconDirs`（需要同时调整 `scripts/build-icons.mjs` 的输出目录）；
 - 按目录拆多个 sprite（需要自行处理虚拟模块 id 冲突，`vite-plugin-svg-icons-ng` 的 `virtual:svg-icons/register` 是固定 id，多个实例只有第一个生效）。

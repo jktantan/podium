@@ -74,7 +74,8 @@ export function iconsBuildPlugin(): Plugin {
 
 /**
  * SVG sprite：构建期把 .icons 下的所有 .svg 转成 <symbol>，
- * 运行时由 app/plugins/svg-icons.client.ts 注入到 <body> 末尾。
+ * 运行时由 AppIcon 首次挂载时通过 app/utils/svg-sprite.ts 注入到 <body> 末尾；
+ * 页面没有渲染图标就不会下载这块 sprite。
  *
  * - htmlMode: 'none'：Nuxt 的 index.html 由 Nitro 生成，插件的 transformIndexHtml
  *   不可靠，改为在客户端入口显式 import virtual:svg-icons/register。
