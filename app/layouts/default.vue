@@ -99,7 +99,7 @@
 <script setup lang="ts">
 import type { ITabData } from 'vue-stack-tabs'
 import { useTabActions } from 'vue-stack-tabs'
-import PageScroll from '~/components/stackTabs/PageScroll.vue'
+import PageScroll from '~/components/layout/PageScroll.vue'
 import SidebarMenu from '~/components/layout/SidebarMenu.vue'
 
 /**

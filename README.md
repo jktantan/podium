@@ -39,7 +39,12 @@ pnpm dev          # http://localhost:3000
 ```
 app/
   pages/          正式页面（demo 页面在 optional-layers/demo）
-  components/     通用组件（global/ 为全局布局级组件）
+  components/     组件
+    global/       Nuxt 全局组件：跨页面基础能力（AppIcon / AppScrollbar / WaterMark 等）
+    layout/       应用外壳组件（SidebarMenu / PageScroll，仅 layouts 显式引入）
+    (frame)/      页签内页面骨架（CommonFrame / SearchCard / SearchFrame）
+    (widgets)/    通用控件（FlipClock / DropDownCaptcha / AppIconPicker）
+    (error)/      401 / 403 / 404 / 500 错误页
   layouts/        布局（工作台、登录页等）
   composables/    useAuth / useStomp / useLayer 等
   stores/         Pinia
@@ -51,8 +56,20 @@ optional-layers/  可选开发层（dev/pages 默认加载，构建默认不加�
 config/           构建期配置（环境、图标、Vite）
 i18n/             语言包与第三方库语言映射
 scripts/           环境加载、构建入口、图标生成
-docs/              使用与约定文档
+文档/              使用与约定文档
 ```
+
+组件目录约定：
+
+- `global/` 是 Nuxt 默认的全局组件目录：组件会全局注册，目录名不进入组件名。
+  只放跨页面的基础能力（`App*`、`WaterMark`、`PermissionGuard`、`ApiError*`）；
+  需要按字符串名或 `resolveComponent()` 动态使用时，也必须放这里或用
+  `.global.vue` 后缀
+- `(frame)`、`(widgets)`、`(error)` 是括号分组目录：只用于归类，不进入组件名，
+  也不做全局注册，模板里仍由自动导入解析。页面骨架、通用控件、错误页分别放这里
+- 只服务于布局外壳的组件放 `layout/`，由 `app/layouts/**` 显式引入
+- 其余只在少数页面使用的组件放普通目录，按需加载，不占用全局组件命名空间
+- 仅父组件使用的子组件与父组件放在同一目录，避免全局组件名膨胀
 
 ## 环境
 

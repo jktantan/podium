@@ -66,6 +66,13 @@
 
 ### 工程化
 
+- 组件目录重组：`global/` 只保留跨页面基础能力（`App*`、`WaterMark`、
+  `PermissionGuard`、`ApiError*`）；页面骨架移到 `(frame)/`，通用控件移到
+  `(widgets)/`，错误页移到 `(error)/`；`stackTabs/PageScroll.vue` 移到
+  `layout/`。括号分组目录不参与组件名、也不做全局注册，因此 `FlipClock`、
+  `DropDownCaptcha`、`CommonFrame`、`SearchCard`、`SearchFrame`、`Error401~500`
+  的用法不变；显式引用 `~/components/stackTabs/PageScroll.vue` 的地方要改成
+  `~/components/layout/PageScroll.vue`
 - README 重写为框架说明；新增 `docs/template.md` 派生与升级指南
 - `package.json` 补齐 version / engines / packageManager / repository
 - 新增 `typecheck`（vue-tsc）、`clean` 脚本，`check` 串联 lint / 格式 / 类型

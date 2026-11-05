@@ -43,17 +43,17 @@ git push -u origin master
 
 ## 3. 目录职责与可改边界
 
-| 区域                                                   | 建议                                                |
-| ------------------------------------------------------ | --------------------------------------------------- |
-| `app/pages/**`                                         | 业务页面，可自由新增 / 修改                         |
-| `app/stores/**`、`app/components/**`（非 `global/`）   | 业务状态与组件，可自由修改                          |
-| `i18n/locales/*.json`                                  | 业务文案，可自由修改（三份语言包要同步）            |
-| `.env.*`                                               | 按项目部署环境填写                                  |
-| `app/layouts/**`、`app/components/global/**`           | 框架资产，优先用 props / slots 定制                 |
-| `app/composables/**`、`app/plugins/**`、`app/utils/**` | 框架资产，需要改动时先在 podium 侧改，再合并        |
-| `optional-layers/**`                                   | 框架开发参考层；不要写业务代码，需要时复制到 `app/` |
-| `app/mocks/handlers.ts`                                | 项目自己的接口 mock，可自由修改 / 删除              |
-| `config/**`、`scripts/**`、`nuxt.config.ts`            | 工程骨架，尽量保持原样，方便后续 merge              |
+| 区域                                                                                                                           | 建议                                                |
+| ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| `app/pages/**`                                                                                                                 | 业务页面，可自由新增 / 修改                         |
+| `app/stores/**`、`app/components/**`（普通目录）                                                                               | 业务状态与组件，可自由修改                          |
+| `i18n/locales/*.json`                                                                                                          | 业务文案，可自由修改（三份语言包要同步）            |
+| `.env.*`                                                                                                                       | 按项目部署环境填写                                  |
+| `app/layouts/**`、`app/components/{global,layout}/**`、`app/components/` 下括号分组目录（`(frame)` / `(widgets)` / `(error)`） | 框架资产，优先用 props / slots 定制                 |
+| `app/composables/**`、`app/plugins/**`、`app/utils/**`                                                                         | 框架资产，需要改动时先在 podium 侧改，再合并        |
+| `optional-layers/**`                                                                                                           | 框架开发参考层；不要写业务代码，需要时复制到 `app/` |
+| `app/mocks/handlers.ts`                                                                                                        | 项目自己的接口 mock，可自由修改 / 删除              |
+| `config/**`、`scripts/**`、`nuxt.config.ts`                                                                                    | 工程骨架，尽量保持原样，方便后续 merge              |
 
 判断标准很简单：**改动是否对所有业务项目都成立**。成立就回 podium 改，
 不成立才留在业务项目里。

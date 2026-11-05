@@ -1,6 +1,6 @@
 # 给 vue-stack-tabs 的修改提示：内容区自定义滚动容器
 
-> 状态：已在 `vue-stack-tabs@2.6.0` 实现；3.0.0 将 `scrollContainer` / `globalScroll` 合并为 `pageScroll`。本仓库已按 3.0 接入（`../app/components/stackTabs/PageScroll.vue` + `app/layouts/default.vue`）。保留本文档作为设计记录。
+> 状态：已在 `vue-stack-tabs@2.6.0` 实现；3.0.0 将 `scrollContainer` / `globalScroll` 合并为 `pageScroll`。本仓库已按 3.0 接入（`../app/components/layout/PageScroll.vue` + `app/layouts/default.vue`）。保留本文档作为设计记录。
 
 > 直接复制下面这段发给维护者或编码助手即可（2.6.0 已实现，以下内容作为实现参考保留）。
 
@@ -323,7 +323,7 @@ useScrollShadow({
 
 ## 本仓库接入方式（vue-stack-tabs 3.0）
 
-- `../app/components/stackTabs/PageScroll.vue`：`el-scrollbar` 适配组件，`expose({ scrollElement })` 指向 `scrollbar.wrapRef`。
+- `../app/components/layout/PageScroll.vue`：`el-scrollbar` 适配组件，`expose({ scrollElement })` 指向 `scrollbar.wrapRef`。
 - `app/layouts/default.vue`：`<VueStackTabs :page-scroll="PageScroll" ...>`。3.0 起 `pageScroll`（`'native' | 'none' | Component`，默认 `'none'`）取代 `scrollContainer` 与 `globalScroll`，接入自定义组件后所有页签统一由 `el-scrollbar` 承载滚动。
 - 每个缓存页 wrapper 变为 `overflow: hidden`，滚动由 `el-scrollbar` 承载；切页签时库通过适配器保存 / 恢复位置，不再使用 `#W-<cacheName>` 选择器。
 - 页面自身不再是滚动容器，页面内无需再包一层 `PageScroll`；需要固定布局的页面可以使用 `SearchFrame`。
