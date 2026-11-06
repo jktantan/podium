@@ -32,7 +32,7 @@ git push -u origin master
 展示站相关资产可以整份删除：
 
 - `.env.pages`
-- `scripts/build-pages.mjs` 与 `package.json` 里的 `build:github-pages`
+- `package.json` 里的 `build:github-pages`
 - `.github/workflows/pages.yml`
 - `README.md` 的「演示站」章节
 
@@ -52,7 +52,7 @@ git push -u origin master
 | `app/layouts/**`、`app/components/{global,layout}/**`、`app/components/` 下括号分组目录（`(frame)` / `(widgets)` / `(error)`） | 框架资产，优先用 props / slots 定制                 |
 | `app/composables/**`、`app/plugins/**`、`app/utils/**`                                                                         | 框架资产，需要改动时先在 podium 侧改，再合并        |
 | `optional-layers/**`                                                                                                           | 框架开发参考层；不要写业务代码，需要时复制到 `app/` |
-| `app/mocks/handlers.ts`                                                                                                        | 项目自己的接口 mock，可自由修改 / 删除              |
+| `app/mocks/handlers.ts`                                                                                                        | 项目自己的接口 mock（按需自建，mock 层自动合并）    |
 | `config/**`、`scripts/**`、`nuxt.config.ts`                                                                                    | 工程骨架，尽量保持原样，方便后续 merge              |
 
 判断标准很简单：**改动是否对所有业务项目都成立**。成立就回 podium 改，
@@ -84,7 +84,8 @@ pnpm dev                     # 跑一遍 /demo 页面做回归
 1. 把 `.env.*` 里的 `NUXT_PUBLIC_API_MOCK` 删掉或设为 `0`；
 2. `test` / `staging` / `prod` 构建默认不加载 `optional-layers/`，msw 与 demo
    不会进入产物；
-3. 项目自己的接口 mock 写 `app/mocks/handlers.ts`，mock 层会自动合并；
+3. 项目自己的接口 mock 新建 `app/mocks/handlers.ts` 并导出 `handlers` 数组，
+   mock 层会自动合并（文件不存在时什么都不做）；
 4. 想完全自研 mock：删除 `optional-layers/mock`、`nuxt.config.ts` 里对应的
    `extends` 条目，并移除 `msw` 依赖。
 

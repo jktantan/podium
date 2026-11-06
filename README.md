@@ -55,7 +55,7 @@ optional-layers/  可选开发层（dev/pages 默认加载，构建默认不加�
   mock/           内置 MSW mock（handlers 与 Service Worker）
 config/           构建期配置（环境、图标、Vite）
 i18n/             语言包与第三方库语言映射
-scripts/           环境加载、构建入口、图标生成
+scripts/           图标生成（build-icons.mjs）
 文档/              使用与约定文档
 ```
 
