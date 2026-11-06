@@ -6,8 +6,8 @@
  * - fullscreen：未登录访问受保护路由时由 app/error.vue 全屏渲染；
  * - 默认（容器填充）：在页签内演示 / 业务页复用，高度跟随父容器。
  *
- * 原组件依赖 parallax-js（项目未安装），这里移除该依赖，
- * 只保留纯 CSS 动效，避免新增运行时依赖。
+ * 图层动效由 parallax-js 驱动：data-depth 决定各图层的位移幅度，
+ * 鼠标移动时按比例偏移，形成视差层次。
  */
 import Parallax from 'parallax-js'
 import { css as barlowBold } from '~/assets/fonts/Barlow-Bold.ttf?subsets'
