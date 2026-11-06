@@ -190,21 +190,12 @@ importers:
       '@vxe-ui/plugin-render-element':
         specifier: ^4.4.4
         version: 4.4.4
-      dayjs:
-        specifier: ^1.11.23
-        version: 1.11.23
       element-plus:
         specifier: ^2.14.7
         version: 2.14.7(vue@3.5.44(typescript@6.0.3))
       ep-field-view:
         specifier: ^0.5.2
         version: 0.5.2(@nuxt/kit@4.6.3(@nuxt/schema@4.6.3)(confbox@0.2.4)(dotenv@18.0.9)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.5)(mlly@1.8.2)(oxc-parser@0.141.0)(rolldown@1.2.16)(unplugin@3.7.0(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.67.4)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.107.1)(sass@1.107.1)(terser@5.51.2)(yaml@2.9.1))))(element-plus@2.14.7(vue@3.5.44(typescript@6.0.3)))(vue@3.5.44(typescript@6.0.3))
-      es-toolkit:
-        specifier: ^1.53.1
-        version: 1.53.1
-      lodash-unified:
-        specifier: ^1.0.3
-        version: 1.0.3(@types/lodash-es@4.17.12)(lodash-es@4.18.1)(lodash@4.18.1)
       modern-normalize:
         specifier: ^3.0.1
         version: 3.0.1
@@ -3303,9 +3294,6 @@ packages:
 
   es-module-lexer@3.0.4:
     resolution: {integrity: sha512-BldNY5mwkVu+cQ5Ymn3e6hB9Sx8XHx4ZevWbiUyZbfKxJxYO27Hf0wfzkxIaD5CAJMaGl3YspKELj0ff/7nCMA==}
-
-  es-toolkit@1.53.1:
-    resolution: {integrity: sha512-VhMc6IXmexu8iYFfL2aaAww6IvJTdHlqBLruLoEUs33YD4IcP5DdZcLOybMsMmmLsiy1c8PsiLsrM0DdIuuRUA==}
 
   esbuild@0.25.12:
     resolution: {integrity: sha512-bbPBYYrtZbkt6Os6FiTLCTFxvq4tt3JKall1vRwshA3fdVztsLAatFaZobhkBC8/BrPetoa0oksYoKXoG4ryJg==}
@@ -9187,8 +9175,6 @@ snapshots:
   es-module-lexer@2.3.2: {}
 
   es-module-lexer@3.0.4: {}
-
-  es-toolkit@1.53.1: {}
 
   esbuild@0.25.12:
     optionalDependencies:
