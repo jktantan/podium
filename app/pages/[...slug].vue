@@ -8,8 +8,9 @@
  * 401/403/500 等错误由 error.vue 或明确路由处理，不会进入这里。
  */
 const { t } = useI18n()
+const { appName } = useRuntimeConfig().public
 
 useHead({
-  title: computed(() => `${t('error.notFoundTitle')} | Podium`)
+  title: computed(() => `${t('error.notFoundTitle')} | ${appName}`)
 })
 </script>

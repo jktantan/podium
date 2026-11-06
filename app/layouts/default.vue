@@ -5,7 +5,9 @@
         class="app-layout__header flex items-center justify-between border-b border-line bg-surface"
         height="50px"
       >
-        <span class="text-[15px] font-bold uppercase tracking-[0.12em] text-primary">Podium</span>
+        <span class="text-[15px] font-bold uppercase tracking-[0.12em] text-primary">{{
+          appName
+        }}</span>
 
         <div class="flex items-center gap-2">
           <LanguageSwitcher />
@@ -110,6 +112,7 @@ import WorkspaceBackdrop from '~/components/layout/WorkspaceBackdrop.vue'
  */
 const appConfig = useAppConfig()
 const { baseURL } = useRuntimeConfig().app
+const { appName } = useRuntimeConfig().public
 const demoExtension = computed(() => appConfig.podium?.sidebar?.demo)
 const demoMenuComponent = computed(() => demoExtension.value?.menuComponent ?? null)
 

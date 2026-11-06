@@ -1,7 +1,7 @@
 <template>
   <section class="login-card">
     <header class="login-card__header">
-      <el-tag class="login-card__brand" effect="plain" round>Podium</el-tag>
+      <el-tag class="login-card__brand" effect="plain" round>{{ appName }}</el-tag>
       <h1>{{ t('login.title') }}</h1>
       <p>{{ t('login.subtitle') }}</p>
     </header>
@@ -68,6 +68,8 @@ definePageMeta({
 })
 
 const appConfig = useAppConfig()
+const { appName } = useRuntimeConfig().public
+
 /**
  * 演示账号提示属于 mock 层的能力，不属于宿主：
  * mock 层通过 appConfig 声明 demoAccounts，项目自研 mock 或不用 mock 时

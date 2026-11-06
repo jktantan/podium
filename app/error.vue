@@ -46,6 +46,7 @@ const props = defineProps<{ error: AppErrorLike }>()
 
 const route = useRoute()
 const router = useRouter()
+const { appName } = useRuntimeConfig().public
 const { isLoggedIn, logout } = useAuth()
 // 401 全屏错误页渲染在 <VueStackTabs> 之外，没有页签上下文；
 // 此时调用 useTabActions() 会在应用初始化阶段抛错。
@@ -92,7 +93,7 @@ const loginActionLabel = computed(() =>
 )
 
 useHead({
-  title: computed(() => `${resultTitle.value} | Podium`)
+  title: computed(() => `${resultTitle.value} | ${appName}`)
 })
 
 function buildLoginTarget() {
