@@ -67,15 +67,6 @@
   border-radius: var(--el-border-radius-base) var(--el-border-radius-base) 0 0;
 }
 
-/*.stack-tab__context-menu {*/
-/*  border-radius: var(--el-border-radius-base);*/
-/*}*/
-
-/* Element Plus 下拉菜单项使用方形悬停面，圆角留给菜单外框。 */
-/*.stack-tab__context-menu-item {*/
-/*  border-radius: 0;*/
-/*}*/
-
 .stack-tab__iframe-error-retry,
 .stack-tab__iframe-error-open {
   border-radius: var(--el-border-radius-base);

@@ -518,6 +518,7 @@ watch(currentLocale, () => {
       overflow: hidden;
       box-shadow: var(--el-box-shadow-lighter);
     }
+
     :deep(.stack-tab) {
       gap: 2px;
     }
