@@ -55,7 +55,7 @@ interface AppIconPickerGridProps {
   modelValue?: string
   /** 单色图标选中时跟随主色，彩色图标保留原色 */
   variant: 'mono' | 'color'
-  /** 是否处于当前激活的 tab；激活时重新测量容器尺寸 */
+  /** 下拉是否可见且处于当前激活的 tab；变为可见时重新测量容器尺寸 */
   active?: boolean
   /** 可视区高度（px） */
   height?: number
@@ -109,14 +109,29 @@ const rowHeight = computed(() => cellWidth.value + GAP)
 const rowCount = computed(() => Math.ceil(props.icons.length / columnCount.value))
 const totalHeight = computed(() => Math.max(0, rowCount.value * rowHeight.value - GAP))
 
+/**
+ * 可视区起点。
+ *
+ * popover 关闭 / 内容变矮（切换密度、搜索过滤）后，scrollTop 可能大于内容总高度，
+ * 而浏览器不一定派发 scroll 事件来纠正；虚拟列表若继续用旧值，
+ * 算出的区间会整个落在列表之外，表现就是图标区一片空白。
+ * 这里先把起点夹到有效范围，真实滚动位置仍由 el-scrollbar 维护。
+ */
+const visibleTop = computed(() => {
+  const max = Math.max(0, totalHeight.value - viewportHeight.value)
+  const top = Number.isFinite(scrollTop.value) ? scrollTop.value : 0
+
+  return Math.min(Math.max(0, top), max)
+})
+
 const startRow = computed(() =>
-  Math.max(0, Math.floor(scrollTop.value / rowHeight.value) - OVERSCAN)
+  Math.max(0, Math.floor(visibleTop.value / rowHeight.value) - OVERSCAN)
 )
 
 const endRow = computed(() =>
   Math.min(
     rowCount.value,
-    Math.ceil((scrollTop.value + viewportHeight.value) / rowHeight.value) + OVERSCAN
+    Math.ceil((visibleTop.value + viewportHeight.value) / rowHeight.value) + OVERSCAN
   )
 )
 
@@ -185,6 +200,11 @@ function measure() {
 
   if (wrap.clientHeight > 0) {
     viewportHeight.value = wrap.clientHeight
+  }
+
+  // 关闭期间浏览器可能已经把真实滚动位置夹掉，虚拟列表不能继续拿着旧值
+  if (wrap.clientWidth > 0 && wrap.scrollTop !== scrollTop.value) {
+    scrollTop.value = wrap.scrollTop
   }
 }
 
@@ -265,6 +285,15 @@ watch(rowHeight, async () => {
     justify-content: center;
     height: 100%;
     padding: 0;
+  }
+
+  /*
+   * el-scrollbar 的滚动条浮在内容之上（right: 2px、宽 6px），
+   * 这里给滚动条让出槽位，避免最右一列图标被压住。
+   * 14px = 2px 内缩 + 6px 条宽 + 6px 与图标的间距（与 GAP 一致）。
+   */
+  &__scroll {
+    padding-right: 14px;
   }
 
   &__item {
