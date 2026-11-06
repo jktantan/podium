@@ -1,5 +1,5 @@
 <template>
-  <section class="page">
+  <CommonFrame :header="false" :footer="false">
     <p class="page__eyebrow">Element Plus</p>
     <h1>{{ t('elementPlusDemo.title') }}</h1>
     <p class="page__lead">{{ t('elementPlusDemo.lead') }}</p>
@@ -167,7 +167,7 @@
         {{ t('elementPlusDemo.dialogContent') }}
       </el-dialog>
     </div>
-  </section>
+  </CommonFrame>
 </template>
 
 <script setup lang="ts">

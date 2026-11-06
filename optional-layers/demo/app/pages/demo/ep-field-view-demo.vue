@@ -1,5 +1,5 @@
 <template>
-  <section class="page ep-demo">
+  <CommonFrame :header="false" :footer="false">
     <p class="page__eyebrow">ep-field-view</p>
     <h1>{{ t('epFieldViewDemo.title') }}</h1>
     <p class="page__lead">{{ t('epFieldViewDemo.lead') }}</p>
@@ -215,7 +215,7 @@
       </el-table>
       <p class="ep-demo__hint">{{ t('epFieldViewDemo.tableHint') }}</p>
     </section>
-  </section>
+  </CommonFrame>
 </template>
 
 <script setup lang="ts">

@@ -1,21 +1,23 @@
 <template>
-  <p class="page__eyebrow">About</p>
-  <h1>{{ t('about.title') }}</h1>
-  <p class="page__lead">{{ t('about.lead') }}</p>
+  <CommonFrame :header="false" :footer="false">
+    <p class="page__eyebrow">About</p>
+    <h1>{{ t('about.title') }}</h1>
+    <p class="page__lead">{{ t('about.lead') }}</p>
 
-  <div class="demo-box">
-    <label for="note">{{ t('about.inputLabel') }}</label>
-    <el-input id="note" v-model="note" :placeholder="t('about.inputPlaceholder')" />
-  </div>
+    <div class="demo-box">
+      <label for="note">{{ t('about.inputLabel') }}</label>
+      <el-input id="note" v-model="note" :placeholder="t('about.inputPlaceholder')" />
+    </div>
 
-  <p class="page__lead" style="margin-top: 24px">
-    {{ t('about.stackLead') }}
-  </p>
+    <p class="page__lead" style="margin-top: 24px">
+      {{ t('about.stackLead') }}
+    </p>
 
-  <div class="page__actions">
-    <el-button type="primary" @click="openDetail">{{ t('about.forward') }}</el-button>
-    <el-button @click="openSettings">{{ t('about.openSettings') }}</el-button>
-  </div>
+    <div class="page__actions">
+      <el-button type="primary" @click="openDetail">{{ t('about.forward') }}</el-button>
+      <el-button @click="openSettings">{{ t('about.openSettings') }}</el-button>
+    </div>
+  </CommonFrame>
 </template>
 
 <script setup lang="ts">
