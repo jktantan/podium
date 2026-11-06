@@ -95,7 +95,7 @@ const form = reactive({ icon: 'mono-ant-Gitlab' })
 | ------------ | ------------------------------------------------------------------------------------------------------- |
 | 删除无用内容 | svgo `preset-default` + `removeTitle`（元数据、注释、空容器、无用属性）                                 |
 | 尺寸交给 CSS | `removeDimensions` 移除 `width` / `height`，自定义 `removeRootStyle` 插件移除根节点的 `class` / `style` |
-| 去除空白     | 用 `svg-path-bbox` 计算所有 path 的实际包围盒，取长边作为正方形边长、内容居中                           |
+| 去除空白     | 遍历可见图形（path / rect / circle 等）合并包围盒，取长边作为正方形边长、内容居中                       |
 | 收缩 viewBox | `viewBox` 始终是 1:1 正方形，长方形图形在画布内居中，不会被拉伸                                         |
 | 颜色         | `color/` 保留颜色；`mono/` 的 `fill` / `stroke` 统一转成 `currentColor`                                 |
 

@@ -8,7 +8,7 @@
  * 规则：
  * 1. svgo preset-default 清理元数据、注释、无用节点；
  * 2. 移除 width / height 以及根节点上的 class / style，尺寸交给 AppIcon / CSS；
- * 3. 用 svg-path-bbox 计算所有 path 的实际边界；
+ * 3. 遍历可见图形（path / rect / circle 等）合并包围盒，defs、不可见节点不参与；
  * 4. 把 viewBox 收缩到图形边界，取长边作为正方形边长、内容居中；
  * 5. color/ 保留颜色，mono/ 的颜色统一转成 currentColor。
  *
@@ -98,45 +98,238 @@ async function walk(dir) {
 }
 
 function kindOf(relative) {
-  return relative.startsWith('mono/') ? 'mono' : 'color'
+  // Windows 的 path.relative 返回 `mono\ant\close.svg`，不能只按 `/` 判断目录
+  return relative.split(/[\\/]/)[0] === 'mono' ? 'mono' : 'color'
 }
 
-/**
- * 合并所有 path 的包围盒，并按 1:1 画布收缩。
- *
- * 图标设计在正方形画布上，图形本身可能是长方形（文件图标、横线等）。
- * 因此不能直接取内容外接矩形当 viewBox，否则画布比例变了，图标会被拉伸。
- * 这里取内容长边作为正方形边长、内容居中，既去掉四周留白，又保持原纵横比。
- */
-function shrinkViewBox(svg) {
+/** 不直接绘制的容器：子树里的图形不会出现在最终画布上，不参与包围盒计算 */
+const NON_RENDERED = new Set([
+  'defs',
+  'clipPath',
+  'mask',
+  'symbol',
+  'marker',
+  'pattern',
+  'linearGradient',
+  'radialGradient',
+  'filter',
+  'title',
+  'desc'
+])
+
+function toNumber(value, fallback = 0) {
+  const number = Number.parseFloat(value)
+  return Number.isFinite(number) ? number : fallback
+}
+
+/** 属性也可能写在 style 里（如 style="stroke:none"），两种形式都要认 */
+function styleValue(node, name) {
+  const style = node.attributes?.style
+
+  if (!style) {
+    return undefined
+  }
+
+  for (const declaration of style.split(';')) {
+    const separator = declaration.indexOf(':')
+
+    if (separator !== -1 && declaration.slice(0, separator).trim() === name) {
+      return declaration.slice(separator + 1).trim()
+    }
+  }
+
+  return undefined
+}
+
+function inheritedValue(node, name, fallback) {
+  return node.attributes?.[name] ?? styleValue(node, name) ?? fallback
+}
+
+function parsePoints(points) {
+  const numbers = points
+    .trim()
+    .split(/[\s,]+/)
+    .map(Number)
+
+  if (numbers.length < 4 || numbers.length % 2 !== 0 || numbers.some((n) => !Number.isFinite(n))) {
+    return null
+  }
+
   let minX = Infinity
   let minY = Infinity
   let maxX = -Infinity
   let maxY = -Infinity
-  let counted = 0
 
-  for (const match of svg.matchAll(/\bd="([^"]+)"/g)) {
-    let box
-    try {
-      box = svgPathBbox(match[1])
-    } catch {
-      continue
-    }
-
-    if (!box || box.some((value) => !Number.isFinite(value))) {
-      continue
-    }
-
-    minX = Math.min(minX, box[0])
-    minY = Math.min(minY, box[1])
-    maxX = Math.max(maxX, box[2])
-    maxY = Math.max(maxY, box[3])
-    counted += 1
+  for (let index = 0; index < numbers.length; index += 2) {
+    minX = Math.min(minX, numbers[index])
+    maxX = Math.max(maxX, numbers[index])
+    minY = Math.min(minY, numbers[index + 1])
+    maxY = Math.max(maxY, numbers[index + 1])
   }
 
-  if (counted === 0) {
+  return [minX, minY, maxX, maxY]
+}
+
+/** 基本图形的几何包围盒；无法确定时返回 null，不参与收缩 */
+function geometryBbox(node) {
+  const attributes = node.attributes ?? {}
+
+  switch (node.name) {
+    case 'path': {
+      if (!attributes.d) {
+        return null
+      }
+
+      try {
+        const box = svgPathBbox(attributes.d)
+        return box.every(Number.isFinite) ? box : null
+      } catch {
+        return null
+      }
+    }
+    case 'rect': {
+      const width = toNumber(attributes.width)
+      const height = toNumber(attributes.height)
+
+      if (width <= 0 || height <= 0) {
+        return null
+      }
+
+      const x = toNumber(attributes.x)
+      const y = toNumber(attributes.y)
+      return [x, y, x + width, y + height]
+    }
+    case 'circle': {
+      const radius = toNumber(attributes.r)
+
+      if (radius <= 0) {
+        return null
+      }
+
+      const cx = toNumber(attributes.cx)
+      const cy = toNumber(attributes.cy)
+      return [cx - radius, cy - radius, cx + radius, cy + radius]
+    }
+    case 'ellipse': {
+      const rx = toNumber(attributes.rx)
+      const ry = toNumber(attributes.ry)
+
+      if (rx <= 0 || ry <= 0) {
+        return null
+      }
+
+      const cx = toNumber(attributes.cx)
+      const cy = toNumber(attributes.cy)
+      return [cx - rx, cy - ry, cx + rx, cy + ry]
+    }
+    case 'line': {
+      const x1 = toNumber(attributes.x1)
+      const y1 = toNumber(attributes.y1)
+      const x2 = toNumber(attributes.x2)
+      const y2 = toNumber(attributes.y2)
+      return [Math.min(x1, x2), Math.min(y1, y2), Math.max(x1, x2), Math.max(y1, y2)]
+    }
+    case 'polygon':
+    case 'polyline':
+      return attributes.points ? parsePoints(attributes.points) : null
+    default:
+      return null
+  }
+}
+
+/**
+ * 遍历可见图形，合并包围盒。
+ *
+ * 只统计真正会绘制的节点：defs / clipPath / mask 等容器里的图形不算，
+ * fill 与 stroke 都为 none 的图形不算，display:none / visibility:hidden 的子树直接跳过。
+ * 遇到 transform 时返回 transformed —— 节点坐标已不在画布坐标系，
+ * 按未变换的 d 计算会裁掉内容，此时保留原 viewBox 更安全。
+ */
+function collectContentBox(svg) {
+  const box = {
+    minX: Infinity,
+    minY: Infinity,
+    maxX: -Infinity,
+    maxY: -Infinity,
+    counted: 0,
+    stroke: 0,
+    transformed: false
+  }
+
+  const visit = (node, inherited) => {
+    if (node.type !== 'element' || NON_RENDERED.has(node.name)) {
+      return
+    }
+
+    const attributes = node.attributes ?? {}
+
+    if (attributes.display === 'none' || attributes.visibility === 'hidden') {
+      return
+    }
+
+    if (attributes.transform) {
+      box.transformed = true
+    }
+
+    const fill = inheritedValue(node, 'fill', inherited.fill)
+    const stroke = inheritedValue(node, 'stroke', inherited.stroke)
+    const strokeWidth = toNumber(
+      inheritedValue(node, 'stroke-width', inherited.strokeWidth),
+      inherited.strokeWidth
+    )
+    const stroked = stroke !== 'none' && stroke !== 'transparent'
+    const filled = fill !== 'none' && fill !== 'transparent'
+
+    if (stroked) {
+      box.stroke = Math.max(box.stroke, strokeWidth)
+    }
+
+    const geometry = geometryBbox(node)
+
+    if (geometry && (filled || stroked)) {
+      box.minX = Math.min(box.minX, geometry[0])
+      box.minY = Math.min(box.minY, geometry[1])
+      box.maxX = Math.max(box.maxX, geometry[2])
+      box.maxY = Math.max(box.maxY, geometry[3])
+      box.counted += 1
+    }
+
+    for (const child of node.children ?? []) {
+      visit(child, { fill, stroke, strokeWidth })
+    }
+  }
+
+  visit(svg, { fill: 'black', stroke: 'none', strokeWidth: 1 })
+
+  return box
+}
+
+/**
+ * 合并所有可见图形的包围盒，并按 1:1 画布收缩。
+ *
+ * 图标设计在正方形画布上，图形本身可能是长方形（文件图标、横线等）。
+ * 因此不能直接取内容外接矩形当 viewBox，否则画布比例变了，图标会被拉伸。
+ * 这里取内容长边作为正方形边长、内容居中，既去掉四周留白，又保持原纵横比。
+ * stroke 沿路径两侧各占半个线宽，计算时向外扩，避免收缩后描边被裁。
+ */
+function computeViewBox(root) {
+  const svg = root.children.find((node) => node.type === 'element' && node.name === 'svg')
+
+  if (!svg) {
     return null
   }
+
+  const box = collectContentBox(svg)
+
+  if (box.transformed || box.counted === 0) {
+    return null
+  }
+
+  const padding = box.stroke > 0 ? box.stroke / 2 : 0
+  const minX = box.minX - padding
+  const minY = box.minY - padding
+  const maxX = box.maxX + padding
+  const maxY = box.maxY + padding
 
   // 向外取整到 0.01，避免曲线边缘被裁掉
   const side = Math.ceil(Math.max(maxX - minX, maxY - minY) * 100) / 100
@@ -153,22 +346,49 @@ function shrinkViewBox(svg) {
   return `${x} ${y} ${side} ${side}`
 }
 
+/**
+ * 把 viewBox 收缩实现为 svgo 插件，直接在 AST 上计算并写回。
+ *
+ * 相比在 optimize 之后用正则扫 `d="..."`：这里只统计可见图形，
+ * 能识别 rect / circle 等基本图形和 stroke 宽度，
+ * 也不会被 defs / clipPath 里的路径带偏。
+ */
+function shrinkViewBoxPlugin(onViewBox) {
+  return {
+    name: 'shrinkViewBox',
+    fn: (root) => {
+      const viewBox = computeViewBox(root)
+
+      if (viewBox) {
+        for (const node of root.children) {
+          if (node.type === 'element' && node.name === 'svg') {
+            node.attributes.viewBox = viewBox
+            break
+          }
+        }
+      }
+
+      onViewBox(viewBox)
+    }
+  }
+}
+
 function transformFile(source, kind) {
+  let viewBox = null
+
   const result = optimize(source, {
     multipass: true,
-    plugins: pluginsFor(kind)
+    plugins: [
+      ...pluginsFor(kind),
+      shrinkViewBoxPlugin((value) => {
+        if (value) {
+          viewBox = value
+        }
+      })
+    ]
   })
 
-  const viewBox = shrinkViewBox(result.data)
-  if (!viewBox) {
-    return { svg: result.data, viewBox: null }
-  }
-
-  const withViewBox = result.data.includes('viewBox=')
-    ? result.data.replace(/\bviewBox="[^"]*"/, `viewBox="${viewBox}"`)
-    : result.data.replace(/<svg\b/, `<svg viewBox="${viewBox}"`)
-
-  return { svg: withViewBox, viewBox }
+  return { svg: result.data, viewBox }
 }
 
 /**
